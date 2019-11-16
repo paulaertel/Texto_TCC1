@@ -45,7 +45,7 @@
 \usepackage{csquotes}
 \usepackage[
 backend=biber,
-style=abnt, noerroretextools=true
+style=numeric-comp, noerroretextools=true
 ]{biblatex}
 \addbibresource{referencias.bib}
 
@@ -56,22 +56,30 @@ style=abnt, noerroretextools=true
  
 \begin{document}
 
-\title{\Large{Análise Teórica de Máquinas de Vetores Suporte}} 
-\author{\large{Aluna: Paula Cristina Rohr Ertel} \\ \large{Orientador: Luiz Rafael dos Santos} \\ \large{Universidade Federal de Santa Catarina - Campus Blumenau}}
-
+\title{Análise Teórica de Máquinas de Vetores Suporte} 
+\author{ \normalfont Aluna: Paula Cristina Rohr Ertel \\ \normalfont Orientador: Luiz Rafael dos Santos \\ \normalfont Universidade Federal de Santa Catarina - Campus Blumenau}
+\date{18 de Novembro de 2019}
 \maketitle
-\section{Introdução}
+\section{Introdução à SVM}
 
 A Aprendizagem de Máquina (do inglês \textit{Machine Learning}) é o estudo do uso de técnicas computacionais para automaticamente detectar padrões em dados e usá-los para fazer predições e tomar decisões. De acordo com \textcite{Evelin2017}, existem dois tipos de Aprendizagem de Máquina, a aprendizagem supervisionada, em que a partir de um conjunto de dados de entrada e saída a máquina constrói um modelo que deduz a saída para novas entradas, e a não supervisionada, na qual a máquina cria sua própria solução. 
-
-O objetivo deste trabalho será desenvolver um estudo teórico de uma técnica supervisionada: as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}). Segundo \textcite{Evelin2017}, essa técnica foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes, com base na Teoria de Aprendizagem Estatística. Em muitas situações queremos que o nosso algoritmo de aprendizado de máquina preveja uma dentre várias saídas possíveis. Um exemplo, como apresentado por \textcite{Faisal2019}, é o telescópio, o qual identifica se um objeto no céu noturno é uma galáxia, uma estrela ou um planeta . Assim, o objetivo específico será estudar a SVM para o problema de classificação, abordando inicialmente o problema de classificação binária, isto é, quando o conjunto de valores possíveis que a classe de saída pode atingir é binário. Para tanto, neste trabalho denotaremos o conjunto de saída por $\{1,-1\}$. Entretanto, quaisquer dois valores distintos poderiam ser utilizados, como $\{0,1\}$, $\{True, False\}$, $\{red, blue\}$. Algumas aplicações de SVM em problemas práticos, citadas por \textcite{Evelin2017}, são o reconhecimento facial, leitura de placas automotivas e detecção de spam. 
-
-\textbf{Palavras-Chave:} Aprendizado de Máquina, Máquinas de Vetores Suporte, Métodos de Otimização.
+Um exemplo de uma técnica de aprendizagem supervisionada são as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}), a qual, conforme mencionado por \textcite{Evelin2017}, é indicada nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos, além de apresentar uma boa capacidade de generalização.
 
 
-\section{Máquinas de Vetores Suporte - Margem Rígida}
+\subsection{Objetivos}
+
+O objetivo geral deste trabalho será desenvolver um estudo teórico das Máquinas de Vetores Suporte. Segundo \textcite{Evelin2017}, essa técnica foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes, com base na Teoria de Aprendizagem Estatística. Algumas aplicações de SVM em problemas práticos, citadas por \textcite{Evelin2017}, são o reconhecimento facial, leitura de placas automotivas e detecção de spam.
+
+Em muitas situações queremos que o nosso algoritmo de aprendizado de máquina preveja uma dentre várias saídas possíveis. Um exemplo, como apresentado por \textcite{Faisal2019}, é o telescópio, o qual identifica se um objeto no céu noturno é uma galáxia, uma estrela ou um planeta. Dessa forma, nosso objetivo específico será estudar a SVM para o problema de classificação, abordando inicialmente o problema de classificação binária, isto é, quando o conjunto de valores possíveis que a classe de saída pode atingir é binário. Para tanto, neste trabalho denotaremos o conjunto de saída por $\{1,-1\}$. Entretanto, quaisquer dois valores distintos poderiam ser utilizados, como $\{0,1\}$, $\{True, False\}$, $\{red, blue\}$.  
+
+
+\subsection{Referencial Teórico}
+Baseado em \textcite{Faisal2019} realizou-se primeiramente uma revisão dos principais conceitos da Álgebra Linear e do Cálculo de várias variáveis relacionados ao assunto, assim como, o estudo teórico das condições de otimalidade para problemas de otimização sem restrições, utilizando para tanto \textcite{Ademir2013}. Para dar continuidade ao desenvolvimento desse projeto pretende-se também estudar a otimização restrita utilizando como principal referencial teórico \textcite{Ana1994}. E o estudo teórico sobre as SVM seá norteado por \textcite{Evelin2017}.
+
+
+\subsection{Máquinas de Vetores Suporte - Margem Rígida}
  
-Considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig1} a seguir.
+Considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig1}.
 
 \begin{figure}[!h] 
 \centering
@@ -95,15 +103,13 @@ Considere um conjunto de dados, pertencentes a duas classes distintas, conforme 
 
 Observe que na \Cref{fig1:a} os dados podem ser classificados corretamente através de uma reta. Já na \Cref{fig1:b} é possível encontrar uma reta que separa alguns poucos dados, porém incorretamente. E na \Cref{fig1:c} não é possível classificar os dados como nos casos anteriores. Nestes exemplos temos representados os três casos de SVM: o linear com margem rígida, o linear com margem flexível e o não linear, respectivamente.
 
-
-
-Assim, a modelagem do problema de classificação, utilizando a técnica de SVM, consiste em encontrar um hiperplano ótimo que melhor separe os dados de entrada $x^i$ em duas saídas $y_i$ através de uma função de decisão. Matematicamente, temos um problema de programação quadrática, convexa e com restrições, que pode ser formulado como
+A modelagem do problema de classificação, utilizando a técnica de SVM, consiste em encontrar um hiperplano ótimo que melhor separe os dados de entrada $x^i$ em duas saídas $y_i$ através de uma função de decisão. Matematicamente, mostraremos que trata-se um problema de programação quadrática convexa com restrições lineares, que pode ser formulado como
 \[
 \begin{aligned}
 \min_{w,b} & \quad f(w,b) \\
 \text{s.a.} &  \quad g(w,b) \leq 0, \end{aligned}
 \]
-com $w\in \RR^n$ e $b\in \RR $.
+com $w\in \RR^n$ e $b\in \RR $, em que $f: \RR^n \rightarrow \RR$ é uma função quadrática e $g: \RR^{n+1} \rightarrow \RR^m$ é linear. Note também que $f$ e $g$ são continuamente diferenciáveis.
 
 %envolve um problema de programação não linear, quadrático, convexo e restrito, no qual o objetivo é encontrar um hiperplano ótimo $(w^{*})^{T}x+b^{*}=0$ que separe os dados de entrada $x^{i}$ em duas classes de saída $y_{i}$. Assim, pretendemos estudar primeiramente o caso de classificação com margem rígida e posteriormente sua generalização para o caso com margem flexível. Por fim, abordaremos o problema de classificação não linear. 
 
@@ -124,7 +130,7 @@ O hiperplano $\Hset(w,b)$ divide o espaço $\RR^n$ em dois semiespaços, dados p
 \]
 
 Considere dois conjuntos de dados de treinamento representados no $\RR^2$ como na \Cref{fig2:a}, em que os pontos em azul representam a classe positiva, e os pontos em vermelho a classe negativa. Perceba na \Cref{fig2:b} que todos os hiperplanos representados separam corretamente os dados, porém nosso objetivo será encontrar o hiperplano que melhor separa esses dados, o qual está representado na \Cref{fig3:a} pela cor violeta. Logo, desejamos encontrar o hiperplano que possibilita a maior faixa que não contém nenhum dado, pois caso a faixa seja muito estreita pequenas perturbações no hiperplano ou no conjunto de dados podem resultar uma classificação incorreta. 
-\begin{figure}[h] 
+\begin{figure}[htbp] 
 	\centering
 	\begin{subfigure}[h]{0.4\textwidth}
 		\centering
@@ -139,14 +145,14 @@ Considere dois conjuntos de dados de treinamento representados no $\RR^2$ como n
 \caption{Conjunto de Dados e Hiperplanos. \label{fig2}
 	\\ Fonte: \textcite{Evelin2017}}
 \end{figure}
-\begin{figure}[h] 
+\begin{figure}[hbtp] 
 	\centering
-	\begin{subfigure}[h]{0.4\textwidth}
+	\begin{subfigure}[h]{0.38\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{hiperplano_otimo}
 		\caption{Hiperplano ótimo. \label{fig3:a}}
 	\end{subfigure}
-	\begin{subfigure}[h]{0.4\textwidth}
+	\begin{subfigure}[h]{0.38\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{maxima_margem}
 		\caption{Máxima margem. \label{fig3:b}}	
@@ -239,21 +245,37 @@ Utilizando a \Cref{prop1} podemos demonstrar o Lema seguinte, o qual estabelece 
 \end{lema}
 \begin{proof}
 Considere um ponto arbitrário $\xbar\in \Hset^{+}$ e seja $x^{*}\in \Hset^{-}$ a projeção ortogonal de $\xbar$ sobre $\Hset^{-}$. Usando a \Cref{prop1}, temos
-\[ x^{*}= \proj_{\Hset}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w. \]
+\[ \label{eq6} x^{*}= \proj_{\Hset^{-}}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w. \] 
 
-Como a $\proj_{\Hset}(\xbar)$ satisfaz a menor distância e $\Hset^{+}$ é paralelo a $\Hset^{-}$, temos que 
-\[ d(\Hset^{+},\Hset^{-})=\Vert \xbar-x^{*}\Vert = \dfrac{\vert w^{T}\xbar+b+1\vert }{\Vert w\Vert^{2}}\Vert w\Vert = \dfrac{\vert w^{T}\xbar+b+1\vert }{\Vert w\Vert}, \]
+Além disso, a distância entre dois conjuntos é definida por
+\[ d(\Hset^{+}, \Hset^{-}):= \inf\{\Vert x^{+}-x^{-} \Vert , \ \text{com} \ x^{+}\in \Hset^{+} \ \text{e} \ x^{-}\in \Hset^{-}\},
+\]
+e como a $\proj_{\Hset^{-}}(\xbar)$ satisfaz a menor distância entre $\xbar$ e $\Hset^{-}$, e $\Hset^{+}$ é paralelo a $\Hset^{-}$, temos que 
+\[ \label{eq7} d(\Hset^{+},\Hset^{-})=\Vert \xbar-x^{*}\Vert \]
+
+Substituindo \eqref{eq7} em \eqref{eq6} obtemos
+\begin{align} 
+d(\Hset^{+},\Hset^{-}) &= \Vert \xbar-x^{*}\Vert \\
+&= \Vert \xbar -\xbar +\dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w \Vert \\
+&=  \dfrac{\vert w^{T}\xbar+b+1 \vert}{\Vert w\Vert^{2}} \Vert w\Vert \\
+&= \dfrac{\vert w^{T}\xbar+b+1 \vert}{\Vert w\Vert},
+\end{align}
 e como $\xbar\in \Hset^{+}$,  $ w^{T}\xbar+b=1$ implica
 \[  w^{T}\xbar =1-b, \]
 concluindo que 
-\[ d(\Hset^{+},\Hset^{-})= \dfrac{2}{\Vert w\Vert }. \]
+\begin{align} 
+d(\Hset^{+},\Hset^{-})&= \dfrac{\vert 1-b+b+1 \vert}{\Vert w\Vert} \\
+&= \dfrac{2}{\Vert w\Vert }. 
+\end{align}
 \end{proof}
 
-\section{Formulação do Problema de Classificação}
+\subsection{Formulação do Problema de Classificação}
 
 Portanto, encontrar o hiperplano que melhor separa os dados implica maximizar a largura da margem, isto é, maximizar $d=\dfrac{2}{\Vert w\Vert }$. Isso equivale a minimizar seu inverso $\dfrac{1}{2}\Vert w\Vert $ ou ainda minimizar $\dfrac{1}{2}\Vert w\Vert^{2}$. De fato, seja $w^{*}=\argmax\dfrac{2}{\Vert w\Vert}$. Então, para todo $w\in \RR^n$,
-\[ \dfrac{2}{\Vert w^{*}\Vert} \geq \dfrac{2}{\Vert w\Vert} \Longrightarrow \Vert w\Vert \geq \Vert w^{*}\Vert, \]
-logo, $w^{*}=\argmin\Vert w\Vert$. 
+\[ \dfrac{2}{\Vert w^{*}\Vert} \geq \dfrac{2}{\Vert w\Vert} \]
+implica
+\[ \Vert w\Vert \geq \Vert w^{*}\Vert. \]
+Logo, $w^{*}=\argmin\Vert w\Vert$. 
 
 Além disso, como $\Vert .\Vert$ é não negativa, temos que 
 \[ \Vert w\Vert\geq \Vert w^{*}\Vert \Longrightarrow \Vert w\Vert^{2} \geq \Vert w^{*}\Vert^{2} \Longrightarrow \dfrac{1}{2}\Vert w\Vert^{2} \geq \dfrac{1}{2}\Vert w^{*}\Vert^{2}. \]
@@ -276,7 +298,7 @@ Portanto, o problema de encontrar o hiperplano ótimo pode ser formulado da segu
 \min_{w,b} & \quad \dfrac{1}{2} \Vert w\Vert^{2} \\
 \text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1, \quad i=1, \ldots , m, \end{aligned}
  \]
-onde $w\in \RR^{n}$ e $b\in \RR$. 
+em que $w\in \RR^{n}$ e $b\in \RR$. 
 
 O problema \eqref{eq5} possui função objetivo 
 \[ f(w,b)=\dfrac{1}{2}\Vert w\Vert^{2} \]
@@ -284,13 +306,11 @@ convexa, e restrições lineares
 \[ g_i(w,b)=1-y_i(w^{T}x^{i}+b) \leq 0, \quad i=1, \ldots, m, \]
 em que a função $g:\RR^{n+1} \rightarrow \RR^{m}$ pode ser escrita da forma 
 \[ g(w,b)= e - (YX^{T}w+by) \leq 0, \]
-em que $e=\ones(m)$, $Y=\diag(y_{i})$, $X=\diag(x^{i})$, $y^{T}=[y_{i} \ \ldots \ y_{m}]$, $w\in \RR^n$ e $b\in \RR$.
+com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_{i})$, $X=\diag(x^{i})$, $y^{T}=[y_{i} \ \ldots \ y_{m}]$, $w\in \RR^n$ e $b\in \RR$.
 
 \section{Projetos Futuros}
-Para resolver o problema proposto é preciso estudar a teoria de otimização com restrições e a teoria de dualidade, em particular a relacionada ao problema de programação quadrática com restrições lineares. Até o momento já foi realizada uma revisão dos principais conceitos da Álgebra Linear e do Cálculo de várias variáveis relacionados com o assunto, assim como, o estudo teórico das condições de otimalidade para problemas de otimização restrita. Portanto, para dar continuidade ao projeto pretende-se avançar o estudo para os problemas de otimização irrestrita, e sobre as teorias de dualidade e programação quadrática. Por fim, pretendemos realizar uma pequena implementação computacional da técnica de Máquinas de Vetores Suporte a um problema de classificação. Para tanto, utilizaremos a linguagem de programação \texttt{Julia}, sobre a qual também será preciso estudar e se aperfeiçoar.
+Portanto, o problema de classificação usando a técnica de SVM trata-se de um problema de programação quadrática convexa com restrições lineares. Para dar continuidade ao projeto será necessário estudar a teoria de otimização com restrições e a teoria de dualidade, em particular a relacionada ao problema de programação quadrática com restrições lineares. Por fim, pretendemos realizar uma pequena implementação computacional da técnica de Máquinas de Vetores Suporte a um problema de classificação. Para tanto, utilizaremos a linguagem de programação \texttt{Julia}, sobre a qual também será preciso estudar e se aperfeiçoar.
 
 
 \printbibliography
-
-
 \end{document}
