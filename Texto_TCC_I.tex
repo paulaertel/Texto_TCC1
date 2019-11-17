@@ -277,11 +277,9 @@ d(\Hset^{+},\Hset^{-})&= \dfrac{\vert 1-b+b+1 \vert}{\Vert w\Vert} \\
 Portanto, encontrar o hiperplano que melhor separa os dados implica maximizar a largura da margem, isto é, maximizar $d=\dfrac{2}{\Vert w\Vert }$. Isso equivale a minimizar seu inverso $\dfrac{1}{2}\Vert w\Vert $ ou ainda minimizar $\dfrac{1}{2}\Vert w\Vert^{2}$. De fato, seja $w^{*}=\argmax\dfrac{2}{\Vert w\Vert}$. Então, para todo $w\in \RR^n$,
 \[ \dfrac{2}{\Vert w^{*}\Vert} \geq \dfrac{2}{\Vert w\Vert} \]
 implica
-\[ \Vert w\Vert \geq \Vert w^{*}\Vert. \]
-Logo, $w^{*}=\argmin\Vert w\Vert$. 
-
-Além disso, como $\Vert .\Vert$ é não negativa, temos que 
-\[ \Vert w\Vert\geq \Vert w^{*}\Vert \Longrightarrow \Vert w\Vert^{2} \geq \Vert w^{*}\Vert^{2} \Longrightarrow \dfrac{1}{2}\Vert w\Vert^{2} \geq \dfrac{1}{2}\Vert w^{*}\Vert^{2}. \]
+\[ \label{eq8} \Vert w\Vert \geq \Vert w^{*}\Vert. \]
+Logo, $w^{*}=\argmin\Vert w\Vert$. Além disso, como $\Vert .\Vert$ é não negativa, elevando ao quadrado ambos os lados da desigualdade \eqref{eq8} temos que  $\Vert w\Vert^{2} \geq \Vert w^{*}\Vert^{2}$ implica
+\[ \dfrac{1}{2}\Vert w\Vert^{2} \geq \dfrac{1}{2}\Vert w^{*}\Vert^{2}. \]
 
 Portanto, 
 \[ \argmax\dfrac{2}{\Vert w\Vert} = \argmin\dfrac{1}{2}\Vert w\Vert^2. \]
