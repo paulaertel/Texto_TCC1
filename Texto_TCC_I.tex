@@ -62,8 +62,9 @@ style=numeric-comp, noerroretextools=true
 \maketitle
 \section{Introdução à SVM}
 
-A Aprendizagem de Máquina (do inglês \textit{Machine Learning}) é o estudo do uso de técnicas computacionais para automaticamente detectar padrões em dados e usá-los para fazer predições e tomar decisões. De acordo com \textcite{Evelin2017}, existem dois tipos de Aprendizagem de Máquina, a aprendizagem supervisionada, em que a partir de um conjunto de dados de entrada e saída a máquina constrói um modelo que deduz a saída para novas entradas, e a não supervisionada, na qual a máquina cria sua própria solução. 
-Um exemplo de uma técnica de aprendizagem supervisionada são as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}), a qual, conforme mencionado por \textcite{Evelin2017}, é indicada nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos, além de apresentar uma boa capacidade de generalização.
+A Aprendizagem de Máquina (do inglês \textit{Machine Learning}) é o estudo do uso de técnicas computacionais para automaticamente detectar padrões em dados e usá-los para fazer predições e tomar decisões. De acordo com \textcite{Evelin2017}, existem dois tipos de Aprendizagem de Máquina, a aprendizagem supervisionada, em que a partir de um conjunto de dados de entrada e saída a máquina constrói um modelo que deduz a saída para novas entradas, e a não supervisionada, na qual a máquina cria sua própria solução. Algumas técnicas para aprendizagem de máquina supervisionada são as SVM, Regressão Linear, Regressão Logística e Redes Neurais, enquanto que a \textit{Singular Value Decomposition} (SVD), Clusterização e Análise de Componentes Principais \cite{Evelin2017} são exemplos de técnicas para a aprendizagem não supervisionada. 
+
+As Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}), em especial, é uma técnica de aprendizagem supervisionada que, conforme mencionado por \textcite{Evelin2017}, é indicada nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos, além de apresentar uma boa capacidade de generalização. Esta técnica pode ser aplicada tanto para problemas de regressão como de classificação. Ademais, a aprendizagem supervisionada é composta por uma etapa denominada fase de treinamento, na qual é dado um conjunto de treinamento formado por vários dados de entrada e saída que funcionam como exemplos, a partir dos quais a máquina detecta padrões e cria um modelo para deduzir a saída de novos dados. Após essa fase novas entradas são testadas, denominadas conjunto de teste, no intuito de analisar se a máquina está gerando as saídas corretas. 
 
 
 \subsection{Objetivos}
@@ -74,7 +75,9 @@ Em muitas situações queremos que o nosso algoritmo de aprendizado de máquina 
 
 
 \subsection{Referencial Teórico}
-Baseado em \textcite{Faisal2019} realizou-se primeiramente uma revisão dos principais conceitos da Álgebra Linear e do Cálculo de várias variáveis relacionados ao assunto, assim como, o estudo teórico das condições de otimalidade para problemas de otimização sem restrições, utilizando para tanto \textcite{Ademir2013}. Para dar continuidade ao desenvolvimento desse projeto pretende-se também estudar a otimização restrita utilizando como principal referencial teórico \textcite{Ana1994}. E o estudo teórico sobre as SVM seá norteado por \textcite{Evelin2017}.
+Primeiramente, fez-se necessário estudar os aspectos teóricos-matemáticos dos Métodos de Otimização relacionados ao aprendizado de máquina, mais especificamente os associados as Máquinas de Vetores Suporte. Para tanto, assim como proposto por \textcite{Faisal2019}, realizou-se uma revisão dos principais conceitos de Álgebra Linear e do Cálculo de Várias Variáveis relacionados ao assunto. Por conseguinte, desenvolveu-se um estudo teórico das condições de otimalidade para problemas de otimização sem restrições baseando-se em \textcite{Ademir2013}. Para dar continuidade ao desenvolvimento desse projeto de TCC será necessário estudar as condições de otimalidade para problemas com restrições, haja vista que um dos problemas que se pretende resolver trata-se um problema de programação quadrática convexa com restrições lineares. Em vista disso, pretende-se utilizar \textcite{Ana1994}, \textcite{Solodov2014} e \textcite{Izmailov2014} para estudar a teoria de otimização com restrições, progamação quadrática e dualidade. O estudo específico acerca dos aspectos teóricos-matemáticos da técnica de Máquinas de Vetores Suporte será desenvolvido a partir de \textcite{Evelin2017}.
+
+%Baseado em \textcite{Faisal2019} realizou-se primeiramente uma revisão dos principais conceitos da Álgebra Linear e do Cálculo de várias variáveis relacionados ao assunto, assim como, o estudo teórico das condições de otimalidade para problemas de otimização sem restrições, utilizando para tanto \textcite{Ademir2013}. Para dar continuidade ao desenvolvimento desse projeto pretende-se também estudar a otimização restrita utilizando como principal referencial teórico \textcite{Ana1994}. E o estudo teórico sobre as SVM seá norteado por \textcite{Evelin2017}.
 
 
 \subsection{Máquinas de Vetores Suporte - Margem Rígida}
@@ -251,7 +254,7 @@ Além disso, a distância entre dois conjuntos é definida por
 \[ d(\Hset^{+}, \Hset^{-}):= \inf\{\Vert x^{+}-x^{-} \Vert , \ \text{com} \ x^{+}\in \Hset^{+} \ \text{e} \ x^{-}\in \Hset^{-}\},
 \]
 e como a $\proj_{\Hset^{-}}(\xbar)$ satisfaz a menor distância entre $\xbar$ e $\Hset^{-}$, e $\Hset^{+}$ é paralelo a $\Hset^{-}$, temos que 
-\[ \label{eq7} d(\Hset^{+},\Hset^{-})=\Vert \xbar-x^{*}\Vert \]
+\[ \label{eq7} d(\Hset^{+},\Hset^{-})=\Vert \xbar-x^{*}\Vert. \]
 
 Substituindo \eqref{eq7} em \eqref{eq6} obtemos
 \begin{align} 
@@ -309,7 +312,7 @@ em que a função $g:\RR^{n+1} \rightarrow \RR^{m}$ pode ser escrita da forma
 com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_{i})$, $X=\diag(x^{i})$, $y^{T}=[y_{i} \ \ldots \ y_{m}]$, $w\in \RR^n$ e $b\in \RR$.
 
 \section{Projetos Futuros}
-Portanto, o problema de classificação usando a técnica de SVM trata-se de um problema de programação quadrática convexa com restrições lineares. Para dar continuidade ao projeto será necessário estudar a teoria de otimização com restrições e a teoria de dualidade, em particular a relacionada ao problema de programação quadrática com restrições lineares. Por fim, pretendemos realizar uma pequena implementação computacional da técnica de Máquinas de Vetores Suporte a um problema de classificação. Para tanto, utilizaremos a linguagem de programação \texttt{Julia}, sobre a qual também será preciso estudar e se aperfeiçoar.
+Portanto, o problema de classificação utilizando a técnica de SVM trata-se de um problema de programação quadrática convexa com restrições lineares. Para dar continuidade ao projeto será necessário estudar a teoria de otimização com restrições e a teoria de dualidade, em particular a relacionada ao problema de programação quadrática com restrições lineares. Por fim, pretendemos realizar uma pequena implementação computacional da técnica de Máquinas de Vetores Suporte a um problema de classificação. Para tanto, utilizaremos a linguagem de programação \texttt{Julia}, sobre a qual também será preciso estudar e se aperfeiçoar.
 
 
 \printbibliography
