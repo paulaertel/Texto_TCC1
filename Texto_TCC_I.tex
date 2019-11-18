@@ -164,10 +164,10 @@ Considere dois conjuntos de dados de treinamento representados no $\RR^2$ como n
 \\ Fonte: \textcite{Evelin2017}}
 \end{figure}
 
-\begin{defi} \label{def1} Dizemos que os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são linearmente separáveis quando existem $w\in \RR^n$ e $b\in \RR$  tais que $w^{T}x+b>0$ para todo $x\in \Xset^{+}$ e $w^{T}x+b<0$ para todo $x\in \Xset^{-}$. O hiperplano $\Hset(w,b)$ é chamado hiperplano separador dos conjuntos $\Xset^{+}$ e $\Xset^{-}$.
+\begin{defi} \label{def1} Os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são ditos linearmente separáveis quando existem $w\in \RR^n$ e $b\in \RR$  tais que $w^{T}x+b>0$ para todo $x\in \Xset^{+}$ e $w^{T}x+b<0$ para todo $x\in \Xset^{-}$. O hiperplano $\Hset(w,b)$ é chamado hiperplano separador dos conjuntos $\Xset^{+}$ e $\Xset^{-}$.
 \end{defi}
 
-\begin{lema} Suponha que os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são finitos e linearmente separáveis, com hiperplano separador $\Hset(w,b)$. Então, existem $\overline{w}\in \RR^n$ e $\overline{b}\in \RR$ tais que $\Hset(w,b)$ pode ser descrito por
+\begin{lema} \label{lema1} Suponha que os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são finitos e linearmente separáveis, com hiperplano separador $\Hset(w,b)$. Então, existem $\overline{w}\in \RR^n$ e $\overline{b}\in \RR$ tais que $\Hset(w,b)$ pode ser descrito por
 \[
 \wbar^{T}x+\bbar =0,
 \]
@@ -191,13 +191,13 @@ Como $\Xset^{+}\cup \Xset^{-}$ é um conjunto finito, podemos definir
 Portanto, para todo $x\in \Xset^{+}\cup \Xset^{-}$, $\gamma \leq \vert w^{T}x+b\vert$ e consequentemente, $\dfrac{\vert w^{T}x+b\vert }{\gamma} \geq 1$. Assim, para $x\in \Xset^{+}$ temos
 \[ \dfrac{w^{T}x+b}{\gamma} = \dfrac{\vert w^{T}x+b\vert }{\gamma} \geq 1, \]
 e para $x\in \Xset^{-}$, temos
-\[- \dfrac{w^{T}x+b}{\gamma} = \dfrac{\vert w^{T}x+b\vert }{\gamma} \leq 1. \]
+\[- \dfrac{w^{T}x+b}{\gamma} = \dfrac{\vert w^{T}x+b\vert }{\gamma} \geq 1. \]
 
 Logo, definindo $\wbar:=\dfrac{w}{\gamma}$ e $\bbar :=\dfrac{b}{\gamma}$, obtemos as desigualdades \eqref{eq1} e \eqref{eq2}. 
 
 \end{proof}
 
-A partir deste Lema temos que $\Hset^{+}:=\{x\in \RR^n \mid w^{T}x+b\geq 1\}$ e $\Hset^{-}:=\{x\in \RR^n \mid w^{T}x+b\leq -1\}$ são os hiperplanos que definem a faixa que separa os conjuntos $\Xset^{+}$ e $\Xset^{-}$.
+A partir do \Cref{lema1} temos que $\Hset^{+}:=\{x\in \RR^n \mid w^{T}x+b\geq 1\}$ e $\Hset^{-}:=\{x\in \RR^n \mid w^{T}x+b\leq -1\}$ são os hiperplanos que definem a faixa que separa os conjuntos $\Xset^{+}$ e $\Xset^{-}$.
 
 \begin{prop} \label{prop1} A projeção ortogonal de um vetor $\xbar\in \RR^n$ sobre um hiperplano afim $\Hset(w,b)$, é dada por
 \[ \proj_{\Hset}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b}{w^{T}w}w. \]
@@ -216,22 +216,23 @@ Substituindo \eqref{eq4} em \eqref{eq3}, obtemos
 &= w^{T}\xbar-\lambda w^{T}w - w^{T}\bar{z}.
 \end{align}
 
-Resolvendo para $\lambda$, temos
-\[ \lambda =\dfrac{w^{T}\xbar-w^{T}\bar{z}}{w^{T}w} =\dfrac{w^{T}\xbar-b}{w^{T}w}. \]
+Resolvendo para $\lambda$ e como $w^{T}\bar{z} = -b$, temos
+\[ \lambda =\dfrac{w^{T}\xbar-w^{T}\bar{z}}{w^{T}w} =\dfrac{w^{T}\xbar+b}{w^{T}w}. \]
 
 Portanto, 
-\[ x^{*}=\xbar-\dfrac{w^{T}\xbar-b}{w^{T}w}w . \]
+\[ x^{*}=\xbar-\dfrac{w^{T}\xbar+b}{w^{T}w}w . \]
 
-Ademais, vamos provar que
+Ademais, vamos provar que a $\proj_{\Hset}(\xbar)$ satisfaz a menor distância, isto é,
 \[ \Vert\xbar-x^{*}\Vert_{2} \leq \Vert \xbar-x\Vert_{2}, \]
 para todo $x\in \Hset(w,b)$.
 
 De fato, tomando $u=\xbar-x^{*}$ e $v=x^{*}-x$ observe que 
 \begin{align}
-u^{T}v&=(\xbar-(\xbar+\lambda w)^{T}(x^{*}-x) \\
-&= -\lambda w^{T}(x^{*}-x) \\
-&= \lambda (-w^{T}x^{*}+w^{T}x) \\
-&= \lambda (b-b) \\
+u^{T}v&= (\xbar-x^{*})^{T}(x^{*}-x) \\
+&= (\xbar-\xbar+\lambda w)^{T}(x^{*}-x) \\
+&= \lambda w^{T}(x^{*}-x) \\
+&= \lambda (w^{T}x^{*}-w^{T}x) \\
+&= \lambda (-b-(-b)) \\
 &= 0.
 \end{align}
 
