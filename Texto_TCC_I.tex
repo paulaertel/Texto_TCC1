@@ -197,7 +197,7 @@ Logo, definindo $\wbar:=\dfrac{w}{\gamma}$ e $\bbar :=\dfrac{b}{\gamma}$, obtemo
 
 \end{proof}
 
-A partir do \Cref{lema1} temos que $\Hset^{+}:=\{x\in \RR^n \mid w^{T}x+b\geq 1\}$ e $\Hset^{-}:=\{x\in \RR^n \mid w^{T}x+b\leq -1\}$ são os hiperplanos que definem a faixa que separa os conjuntos $\Xset^{+}$ e $\Xset^{-}$.
+A partir do \Cref{lema1} temos que $\Hset^{+}:=\{x\in \RR^n \mid w^{T}x+b= 1\}$ e $\Hset^{-}:=\{x\in \RR^n \mid w^{T}x+b= -1\}$ são os hiperplanos que definem a faixa que separa os conjuntos $\Xset^{+}$ e $\Xset^{-}$.
 
 \begin{prop} \label{prop1} A projeção ortogonal de um vetor $\xbar\in \RR^n$ sobre um hiperplano afim $\Hset(w,b)$, é dada por
 \[ \proj_{\Hset}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b}{w^{T}w}w. \]
@@ -243,21 +243,21 @@ ou seja,
 
 \end{proof}
 
-Utilizando a \Cref{prop1} podemos demonstrar o Lema seguinte, o qual estabelece a largura da faixa entre os hiperplanos separadores $\Hset^{+}$ e $\Hset^{-}$.
+Utilizando a \Cref{prop1} podemos demonstrar o \Cref{lema2}, o qual estabelece a largura da faixa entre os hiperplanos separadores $\Hset^{+}$ e $\Hset^{-}$.
 
-\begin{lema} A distância entre os hiperplanos $\Hset^{+}$ e $\Hset^{-}$ é dada por $d=\dfrac{2}{\Vert w\Vert}$. 
+\begin{lema} \label{lema2} A distância entre os hiperplanos $\Hset^{+}$ e $\Hset^{-}$ é dada por $d=\dfrac{2}{\Vert w\Vert}$. 
 \end{lema}
 \begin{proof}
 Considere um ponto arbitrário $\xbar\in \Hset^{+}$ e seja $x^{*}\in \Hset^{-}$ a projeção ortogonal de $\xbar$ sobre $\Hset^{-}$. Usando a \Cref{prop1}, temos
 \[ \label{eq6} x^{*}= \proj_{\Hset^{-}}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w. \] 
 
 Além disso, a distância entre dois conjuntos é definida por
-\[ d(\Hset^{+}, \Hset^{-}):= \inf\{\Vert x^{+}-x^{-} \Vert , \ \text{com} \ x^{+}\in \Hset^{+} \ \text{e} \ x^{-}\in \Hset^{-}\},
+\[ d(\Hset^{+}, \Hset^{-}):= \inf\{\Vert x^{+}-x^{-} \Vert : x^{+}\in \Hset^{+} \ \text{e} \ x^{-}\in \Hset^{-}\},
 \]
 e como a $\proj_{\Hset^{-}}(\xbar)$ satisfaz a menor distância entre $\xbar$ e $\Hset^{-}$, e $\Hset^{+}$ é paralelo a $\Hset^{-}$, temos que 
 \[ \label{eq7} d(\Hset^{+},\Hset^{-})=\Vert \xbar-x^{*}\Vert. \]
 
-Substituindo \eqref{eq7} em \eqref{eq6} obtemos
+Substituindo \eqref{eq6} em \eqref{eq7} obtemos
 \begin{align} 
 d(\Hset^{+},\Hset^{-}) &= \Vert \xbar-x^{*}\Vert \\
 &= \Vert \xbar -\xbar +\dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w \Vert \\
@@ -275,7 +275,7 @@ d(\Hset^{+},\Hset^{-})&= \dfrac{\vert 1-b+b+1 \vert}{\Vert w\Vert} \\
 
 \subsection{Formulação do Problema de Classificação}
 
-Portanto, encontrar o hiperplano que melhor separa os dados implica maximizar a largura da margem, isto é, maximizar $d=\dfrac{2}{\Vert w\Vert }$. Isso equivale a minimizar seu inverso $\dfrac{1}{2}\Vert w\Vert $ ou ainda minimizar $\dfrac{1}{2}\Vert w\Vert^{2}$. De fato, seja $w^{*}=\argmax\dfrac{2}{\Vert w\Vert}$. Então, para todo $w\in \RR^n$,
+Encontrar o hiperplano que melhor separa os dados implica maximizar a largura da margem, isto é, maximizar $d=\dfrac{2}{\Vert w\Vert }$. Isso equivale a minimizar seu inverso $\dfrac{1}{2}\Vert w\Vert $ ou ainda minimizar $\dfrac{1}{2}\Vert w\Vert^{2}$. De fato, seja $w^{*}=\argmax\dfrac{2}{\Vert w\Vert}$. Então, para todo $w\in \RR^n$,
 \[ \dfrac{2}{\Vert w^{*}\Vert} \geq \dfrac{2}{\Vert w\Vert} \]
 implica
 \[ \label{eq8} \Vert w\Vert \geq \Vert w^{*}\Vert. \]
@@ -308,7 +308,7 @@ convexa, e restrições lineares
 \[ g_i(w,b)=1-y_i(w^{T}x^{i}+b) \leq 0, \quad i=1, \ldots, m, \]
 em que a função $g:\RR^{n+1} \rightarrow \RR^{m}$ pode ser escrita da forma 
 \[ g(w,b)= e - (YX^{T}w+by) \leq 0, \]
-com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_{i})$, $X=\diag(x^{i})$, $y^{T}=[y_{i} \ \ldots \ y_{m}]$, $w\in \RR^n$ e $b\in \RR$.
+com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_{i})$, $X=\diag(x^{i})$, $y^{T}=[y_{1} \ \ldots \ y_{m}]$, $w\in \RR^n$ e $b\in \RR$.
 
 \section{Projetos Futuros}
 O problema de classificação utilizando a técnica de SVM trata-se de um problema de programação quadrática convexa com restrições lineares. Para dar continuidade ao projeto será necessário estudar a teoria de otimização com restrições e a teoria de dualidade, em particular a relacionada ao problema de programação quadrática com restrições lineares. Por fim, pretendemos realizar uma pequena implementação computacional da técnica de Máquinas de Vetores Suporte a um problema de classificação. Para tanto, utilizaremos a linguagem de programação \texttt{Julia}, sobre a qual também será preciso estudar e se aperfeiçoar.
