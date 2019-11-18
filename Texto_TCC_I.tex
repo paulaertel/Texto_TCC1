@@ -40,12 +40,12 @@
 
 \theoremstyle{definition}%ambientes normais
 \newtheorem{exem}{Exemplo}[subsection]
-\newtheorem{defi}{Definição}
+\newtheorem{defi}{Definição}	
 
 \usepackage{csquotes}
 \usepackage[
 backend=biber,
-style=numeric-comp, noerroretextools=true
+style=numeric-comp, noerroretextools=true, sorting=nty,
 ]{biblatex}
 \addbibresource{referencias.bib}
 
@@ -56,11 +56,12 @@ style=numeric-comp, noerroretextools=true
  
 \begin{document}
 
-\title{Análise Teórica de Máquinas de Vetores Suporte} 
-\author{ \normalfont Aluna: Paula Cristina Rohr Ertel \\ \normalfont Orientador: Luiz Rafael dos Santos \\ \normalfont Universidade Federal de Santa Catarina - Campus Blumenau}
-\date{18 de Novembro de 2019}
+\title{Métodos de Otimização e Máquinas de Vetores Suporte} 
+\author{ \normalfont Paula Cristina Rohr Ertel\thanks{Acadêmica do curso de Licenciatura em Matemática/UFSC-Blumenau} \\ \small Orientador: Luiz Rafael dos Santos \\ \small Universidade Federal de Santa Catarina - Campus Blumenau}
+\date{\small 18 de Novembro de 2019}
+\subtitle{Qualificação de Trabalho de Conclusão de Curso}
 \maketitle
-\section{Introdução à SVM}
+\section{Introdução}
 
 A Aprendizagem de Máquina (do inglês \textit{Machine Learning}) é o estudo do uso de técnicas computacionais para automaticamente detectar padrões em dados e usá-los para fazer predições e tomar decisões. De acordo com \textcite{Evelin2017}, existem dois tipos de Aprendizagem de Máquina, a aprendizagem supervisionada, em que a partir de um conjunto de dados de entrada e saída a máquina constrói um modelo que deduz a saída para novas entradas, e a não supervisionada, na qual a máquina cria sua própria solução. 
 
@@ -71,16 +72,16 @@ As Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}
 
 \subsection{Objetivos}
 
-Desenvolver um estudo teórico das Máquinas de Vetores Suporte, em particular, estudar a SVM para o problema de classificação, abordando inicialmente o problema de classificação binária, isto é, quando o conjunto de valores possíveis que a classe de saída pode atingir é binário. Para tanto, neste trabalho o conjunto de saída será denotado por $\{1,-1\}$. Entretanto, quaisquer dois valores distintos poderiam ser utilizados, como $\{0,1\}$, $\{True, False\}$, $\{red, blue\}$.  
+Desenvolver um estudo teórico, do ponto de vista matemático, das Máquinas de Vetores Suporte, em particular, estudar a SVM para o problema de classificação, abordando inicialmente o problema de classificação binária, isto é, quando o conjunto de valores possíveis que a classe de saída pode atingir é binário. Para tanto, neste trabalho o conjunto de saída será denotado por $\{1,-1\}$. Entretanto, quaisquer dois valores distintos poderiam ser utilizados, como $\{0,1\}$, $\{True, False\}$, $\{red, blue\}$.  
 
 %Em muitas situações queremos que o nosso algoritmo de aprendizado de máquina preveja uma dentre várias saídas possíveis. Um exemplo, como apresentado por \textcite{Faisal2019}, é o telescópio, o qual identifica se um objeto no céu noturno é uma galáxia, uma estrela ou um planeta. 
 
 
-\subsection{Referencial Teórico}
-Primeiramente, fez-se necessário estudar os aspectos teóricos-matemáticos dos Métodos de Otimização relacionados ao aprendizado de máquina, mais especificamente os associados as Máquinas de Vetores Suporte. Para tanto, assim como proposto por \textcite{Faisal2019}, realizou-se uma revisão dos principais conceitos de Álgebra Linear e do Cálculo de Várias Variáveis relacionados ao assunto. Por conseguinte, desenvolveu-se um estudo teórico das condições de otimalidade para problemas de otimização sem restrições baseando-se em \textcite{Ademir2013}. Para dar continuidade ao desenvolvimento desse projeto será necessário estudar as condições de otimalidade para problemas com restrições, haja vista que um dos problemas que se pretende resolver trata-se de um problema de programação quadrática convexa com restrições lineares. Em vista disso, pretende-se utilizar como referência \textcite{Ana1994}, \textcite{Solodov2014,Izmailov2014} e \textcite{Ademir2013} para estudar a teoria de otimização com restrições, progamação quadrática e dualidade. O estudo específico acerca dos aspectos teóricos-matemáticos da técnica de Máquinas de Vetores Suporte será desenvolvido a partir de \textcite{Evelin2017}.
+\section{Máquinas de Vetor de Suporte}
+Primeiramente, fez-se necessário estudar os aspectos teóricos-matemáticos dos Métodos de Otimização relacionados ao aprendizado de máquina, mais especificamente os associados as Máquinas de Vetores Suporte. Para tanto, assim como proposto por \textcite{Faisal2019}, realizou-se uma revisão dos principais conceitos de Álgebra Linear e do Cálculo de Várias Variáveis relacionados ao assunto. Por conseguinte, desenvolveu-se um estudo teórico das condições de otimalidade para problemas de otimização sem restrições baseando-se em \textcite{Ademir2013}. Para dar continuidade ao desenvolvimento desse projeto será necessário estudar as condições de otimalidade para problemas com restrições, haja vista que um dos problemas que se pretende resolver trata-se de um problema de programação quadrática convexa com restrições lineares. Em vista disso, pretende-se utilizar como referência \textcite{Ana1994}, \textcite{Solodov2014,Izmailov2014} e \textcite{Ademir2013} para estudar a teoria de otimização com restrições, programação quadrática e dualidade. O estudo específico acerca dos aspectos teóricos-matemáticos da técnica de Máquinas de Vetores Suporte será desenvolvido a partir de \textcite{Evelin2017}.
 
 
-\subsection{Máquinas de Vetores Suporte - Margem Rígida}
+% \subsection{Máquinas de Vetores Suporte - Margem Rígida}
  
 Considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig1}.
 
@@ -310,8 +311,8 @@ em que a função $g:\RR^{n+1} \rightarrow \RR^{m}$ pode ser escrita da forma
 \[ g(w,b)= e - (YX^{T}w+by) \leq 0, \]
 com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_{i})$, $X=\diag(x^{i})$, $y^{T}=[y_{1} \ \ldots \ y_{m}]$, $w\in \RR^n$ e $b\in \RR$.
 
-\section{Projetos Futuros}
-O problema de classificação utilizando a técnica de SVM trata-se de um problema de programação quadrática convexa com restrições lineares. Para dar continuidade ao projeto será necessário estudar a teoria de otimização com restrições e a teoria de dualidade, em particular a relacionada ao problema de programação quadrática com restrições lineares. Por fim, pretendemos realizar uma pequena implementação computacional da técnica de Máquinas de Vetores Suporte a um problema de classificação. Para tanto, utilizaremos a linguagem de programação \texttt{Julia}, sobre a qual também será preciso estudar e se aperfeiçoar.
+\section{Metodologia e Resultados Esperados}
+O problema de classificação utilizando a técnica de SVM trata-se de um problema de programação quadrática convexa com restrições lineares. Para dar continuidade ao projeto será necessário estudar a teoria de otimização com restrições e a teoria de dualidade, em particular a relacionada ao problema de programação quadrática com restrições lineares. Por fim, pretendemos realizar uma pequena implementação computacional da técnica de Máquinas de Vetores Suporte a um problema de classificação. Para tanto, utilizaremos a linguagem de programação \texttt{Julia}~\cite{Bezanson:2017g}, sobre a qual também será preciso estudar e se aperfeiçoar.
 
 
 \printbibliography
