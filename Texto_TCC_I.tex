@@ -23,6 +23,7 @@
 \DeclareMathOperator*{\argmin}{arg\, min}
 \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\ones}{ones}
+\DeclareMathOperator{\dist}{dist}
 
 \def\Xset{\mathcal{X}}
 \def\Yset{\mathcal{Y}}
@@ -61,7 +62,8 @@ style=numeric-comp, noerroretextools=true, sorting=nty,
 \date{\small 18 de Novembro de 2019}
 \subtitle{Qualificação de Trabalho de Conclusão de Curso}
 \maketitle
-\section{Introdução}
+
+\section{Introdução às Máquinas de Vetores Suporte}
 
 A Aprendizagem de Máquina (do inglês \textit{Machine Learning}) é o estudo do uso de técnicas computacionais para automaticamente detectar padrões em dados e usá-los para fazer predições e tomar decisões. De acordo com \textcite{Evelin2017}, existem dois tipos de Aprendizagem de Máquina, a aprendizagem supervisionada, em que a partir de um conjunto de dados de entrada e saída a máquina constrói um modelo que deduz a saída para novas entradas, e a não supervisionada, na qual a máquina cria sua própria solução. 
 
@@ -70,20 +72,13 @@ A aprendizagem supervisionada é composta por uma etapa denominada fase de trein
 As Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}), conforme mencionado por \textcite{Evelin2017}, são indicadas nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos, além de apresentar uma boa capacidade de generalização. Esta técnica pode ser aplicada tanto para problemas de regressão como de classificação. Segundo \textcite{Evelin2017}, essa técnica foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes, com base na Teoria de Aprendizagem Estatística. Algumas aplicações de SVM em problemas práticos são o reconhecimento facial, leitura de placas automotivas e detecção de spam.
 
 
-\subsection{Objetivos}
 
-Desenvolver um estudo teórico, do ponto de vista matemático, das Máquinas de Vetores Suporte, em particular, estudar a SVM para o problema de classificação, abordando inicialmente o problema de classificação binária, isto é, quando o conjunto de valores possíveis que a classe de saída pode atingir é binário. Para tanto, neste trabalho o conjunto de saída será denotado por $\{1,-1\}$. Entretanto, quaisquer dois valores distintos poderiam ser utilizados, como $\{0,1\}$, $\{True, False\}$, $\{red, blue\}$.  
-
+%Desenvolver um estudo teórico, do ponto de vista matemático, das Máquinas de Vetores Suporte, em particular, estudar a SVM para o problema de classificação, abordando inicialmente o problema de classificação binária, isto é, quando o conjunto de valores possíveis que a classe de saída pode atingir é binário. Para tanto, neste trabalho o conjunto de saída será denotado por $\{1,-1\}$. Entretanto, quaisquer dois valores distintos poderiam ser utilizados, como $\{0,1\}$, $\{True, False\}$, $\{red, blue\}$.  
 %Em muitas situações queremos que o nosso algoritmo de aprendizado de máquina preveja uma dentre várias saídas possíveis. Um exemplo, como apresentado por \textcite{Faisal2019}, é o telescópio, o qual identifica se um objeto no céu noturno é uma galáxia, uma estrela ou um planeta. 
 
+%Primeiramente, fez-se necessário estudar os aspectos teóricos-matemáticos dos Métodos de Otimização relacionados ao aprendizado de máquina, mais especificamente os associados as Máquinas de Vetores Suporte. Para tanto, assim como proposto por \textcite{Faisal2019}, realizou-se uma revisão dos principais conceitos de Álgebra Linear e do Cálculo de Várias Variáveis relacionados ao assunto. Por conseguinte, desenvolveu-se um estudo teórico das condições de otimalidade para problemas de otimização sem restrições baseando-se em \textcite{Ademir2013}. Para dar continuidade ao desenvolvimento desse projeto será necessário estudar as condições de otimalidade para problemas com restrições, haja vista que um dos problemas que se pretende resolver trata-se de um problema de programação quadrática convexa com restrições lineares. Em vista disso, pretende-se utilizar como referência \textcite{Ana1994}, \textcite{Izmailov2014ac,Izmailov2014mc} e \textcite{Ademir2013} para estudar a teoria de otimização com restrições, programação quadrática e dualidade. O estudo específico acerca dos aspectos teóricos-matemáticos da técnica de Máquinas de Vetores Suporte será desenvolvido a partir de \textcite{Evelin2017}.
 
-\section{Máquinas de Vetor de Suporte}
-Primeiramente, fez-se necessário estudar os aspectos teóricos-matemáticos dos Métodos de Otimização relacionados ao aprendizado de máquina, mais especificamente os associados as Máquinas de Vetores Suporte. Para tanto, assim como proposto por \textcite{Faisal2019}, realizou-se uma revisão dos principais conceitos de Álgebra Linear e do Cálculo de Várias Variáveis relacionados ao assunto. Por conseguinte, desenvolveu-se um estudo teórico das condições de otimalidade para problemas de otimização sem restrições baseando-se em \textcite{Ademir2013}. Para dar continuidade ao desenvolvimento desse projeto será necessário estudar as condições de otimalidade para problemas com restrições, haja vista que um dos problemas que se pretende resolver trata-se de um problema de programação quadrática convexa com restrições lineares. Em vista disso, pretende-se utilizar como referência \textcite{Ana1994}, \textcite{Solodov2014,Izmailov2014} e \textcite{Ademir2013} para estudar a teoria de otimização com restrições, programação quadrática e dualidade. O estudo específico acerca dos aspectos teóricos-matemáticos da técnica de Máquinas de Vetores Suporte será desenvolvido a partir de \textcite{Evelin2017}.
-
-
-% \subsection{Máquinas de Vetores Suporte - Margem Rígida}
- 
-Considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig1}.
+Agora, vamos formular matematicamente o problema de classificação utilizando as Máquinas de Vetores Suporte. Para tanto, considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig1}.
 
 \begin{figure}[!h] 
 \centering
@@ -246,22 +241,22 @@ ou seja,
 
 Utilizando a \Cref{prop1} podemos demonstrar o \Cref{lema2}, o qual estabelece a largura da faixa entre os hiperplanos separadores $\Hset^{+}$ e $\Hset^{-}$.
 
-\begin{lema} \label{lema2} A distância entre os hiperplanos $\Hset^{+}$ e $\Hset^{-}$ é dada por $d=\dfrac{2}{\Vert w\Vert}$. 
+\begin{lema} \label{lema2} A distância entre os hiperplanos $\Hset^{+}$ e $\Hset^{-}$ é dada por $\dist(\Hset^{+}, \Hset^{-})=\dfrac{2}{\Vert w\Vert}$. 
 \end{lema}
 \begin{proof}
 Considere um ponto arbitrário $\xbar\in \Hset^{+}$ e seja $x^{*}\in \Hset^{-}$ a projeção ortogonal de $\xbar$ sobre $\Hset^{-}$. Usando a \Cref{prop1}, temos
 \[ \label{eq6} x^{*}= \proj_{\Hset^{-}}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w. \] 
 
 Além disso, a distância entre dois conjuntos é definida por
-\[ d(\Hset^{+}, \Hset^{-}):= \inf\{\Vert x^{+}-x^{-} \Vert : x^{+}\in \Hset^{+} \ \text{e} \ x^{-}\in \Hset^{-}\},
+\[ \dist(\Hset^{+}, \Hset^{-}):= \inf\{\Vert x^{+}-x^{-} \Vert : x^{+}\in \Hset^{+} \ \text{e} \ x^{-}\in \Hset^{-}\},
 \]
 e como a $\proj_{\Hset^{-}}(\xbar)$ satisfaz a menor distância entre $\xbar$ e $\Hset^{-}$, e $\Hset^{+}$ é paralelo a $\Hset^{-}$, temos que 
-\[ \label{eq7} d(\Hset^{+},\Hset^{-})=\Vert \xbar-x^{*}\Vert. \]
+\[ \label{eq7} \dist(\Hset^{+},\Hset^{-})=\Vert \xbar-x^{*}\Vert. \]
 
 Substituindo \eqref{eq6} em \eqref{eq7} obtemos
 \begin{align} 
-d(\Hset^{+},\Hset^{-}) &= \Vert \xbar-x^{*}\Vert \\
-&= \Vert \xbar -\xbar +\dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w \Vert \\
+\dist(\Hset^{+},\Hset^{-}) &= \Vert \xbar-x^{*}\Vert \\
+&= \left\Vert \xbar -\xbar +\dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w \right\Vert \\
 &=  \dfrac{\vert w^{T}\xbar+b+1 \vert}{\Vert w\Vert^{2}} \Vert w\Vert \\
 &= \dfrac{\vert w^{T}\xbar+b+1 \vert}{\Vert w\Vert},
 \end{align}
@@ -269,18 +264,18 @@ e como $\xbar\in \Hset^{+}$,  $ w^{T}\xbar+b=1$ implica
 \[  w^{T}\xbar =1-b, \]
 concluindo que 
 \begin{align} 
-d(\Hset^{+},\Hset^{-})&= \dfrac{\vert 1-b+b+1 \vert}{\Vert w\Vert} \\
+\dist(\Hset^{+},\Hset^{-})&= \dfrac{\vert 1-b+b+1 \vert}{\Vert w\Vert} \\
 &= \dfrac{2}{\Vert w\Vert }. 
 \end{align}
 \end{proof}
 
-\subsection{Formulação do Problema de Classificação}
+\subsection{Formulação Matemática do Problema de Classificação}
 
-Encontrar o hiperplano que melhor separa os dados implica maximizar a largura da margem, isto é, maximizar $d=\dfrac{2}{\Vert w\Vert }$. Isso equivale a minimizar seu inverso $\dfrac{1}{2}\Vert w\Vert $ ou ainda minimizar $\dfrac{1}{2}\Vert w\Vert^{2}$. De fato, seja $w^{*}=\argmax\dfrac{2}{\Vert w\Vert}$. Então, para todo $w\in \RR^n$,
+Encontrar o hiperplano que melhor separa os dados implica maximizar a largura da margem, isto é, maximizar $\dist(\Hset^{+} , \Hset^{-}) =\dfrac{2}{\Vert w\Vert }$. Isso equivale a minimizar seu inverso $\dfrac{1}{2}\Vert w\Vert $ ou ainda minimizar $\dfrac{1}{2}\Vert w\Vert^{2}$. De fato, seja $w^{*}=\argmax\dfrac{2}{\Vert w\Vert}$. Então, para todo $w\in \RR^n$,
 \[ \dfrac{2}{\Vert w^{*}\Vert} \geq \dfrac{2}{\Vert w\Vert} \]
 implica
 \[ \label{eq8} \Vert w\Vert \geq \Vert w^{*}\Vert. \]
-Logo, $w^{*}=\argmin\Vert w\Vert$. Além disso, como $\Vert .\Vert$ é não negativa, elevando ao quadrado ambos os lados da desigualdade \eqref{eq8} temos que  $\Vert w\Vert^{2} \geq \Vert w^{*}\Vert^{2}$ implica
+Logo, $w^{*}=\argmin\Vert w\Vert$. Além disso, como $\Vert \cdot \Vert$ é não negativa, elevando ao quadrado ambos os lados da desigualdade \eqref{eq8} temos que  $\Vert w\Vert^{2} \geq \Vert w^{*}\Vert^{2}$ implica
 \[ \dfrac{1}{2}\Vert w\Vert^{2} \geq \dfrac{1}{2}\Vert w^{*}\Vert^{2}. \]
 
 Portanto, 
@@ -296,14 +291,14 @@ Considerando que $\Xset^{+}=\{x^i \in \Xset\mid y_i=1\}$ e $\Xset^{-}=\{x^i \in 
 \[ y_{i}(w^{T}x^{i}+b)\geq 1, \quad i=1, \ldots ,m. \]
 
 Portanto, o problema de encontrar o hiperplano ótimo pode ser formulado da seguinte maneira
-\[ \label{eq5}
+\[ \label{eq:problemageralSVM}
 \begin{aligned}
 \min_{w,b} & \quad \dfrac{1}{2} \Vert w\Vert^{2} \\
 \text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1, \quad i=1, \ldots , m, \end{aligned}
  \]
 em que $w\in \RR^{n}$ e $b\in \RR$. 
 
-O problema \eqref{eq5} possui função objetivo 
+O problema \eqref{eq:problemageralSVM} possui função objetivo 
 \[ f(w,b)=\dfrac{1}{2}\Vert w\Vert^{2} \]
 convexa, e restrições lineares
 \[ g_i(w,b)=1-y_i(w^{T}x^{i}+b) \leq 0, \quad i=1, \ldots, m, \]
@@ -311,9 +306,37 @@ em que a função $g:\RR^{n+1} \rightarrow \RR^{m}$ pode ser escrita da forma
 \[ g(w,b)= e - (YX^{T}w+by) \leq 0, \]
 com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_{i})$, $X=\diag(x^{i})$, $y^{T}=[y_{1} \ \ldots \ y_{m}]$, $w\in \RR^n$ e $b\in \RR$.
 
-\section{Metodologia e Resultados Esperados}
-O problema de classificação utilizando a técnica de SVM trata-se de um problema de programação quadrática convexa com restrições lineares. Para dar continuidade ao projeto será necessário estudar a teoria de otimização com restrições e a teoria de dualidade, em particular a relacionada ao problema de programação quadrática com restrições lineares. Por fim, pretendemos realizar uma pequena implementação computacional da técnica de Máquinas de Vetores Suporte a um problema de classificação. Para tanto, utilizaremos a linguagem de programação \texttt{Julia}~\cite{Bezanson:2017g}, sobre a qual também será preciso estudar e se aperfeiçoar.
 
+
+\section{Objetivos}
+Este trabalho tem os seguintes objetivos:
+\begin{itemize}                  
+	\item Resumir a teoria de otimização com e sem restrições.                            
+	\item Estudar os problemas de otimização que surgem do Aprendizado de Máquina.   
+	\item Desenvolver um estudo teórico, do ponto de vista matemático, das Máquinas de Vetores Suporte.  
+	\item Explorar a linguagem de programação \texttt{Julia} com a implementação de métodos de otimização.
+	\item Estudar a técnica de Máquinas de Vetores Suporte aplicada ao problema de classificação.  
+	\item Realizar uma implementação computacional da técnica de SVM aplicada a um problema de classificação utilizando \texttt{Julia}.                
+	%\item Manipular a Biblioteca CUTEst e outras bibliotecas de problemas de aprendizado de máquina.                              
+  	%\item Utilizar os métodos estudados aplicados à aprendizagem de máquina.        
+	%\item Comparar os resultados numéricos.                                                       
+\end{itemize}
+
+
+\section{Metodologia e Resultados Esperados}
+%O problema de classificação utilizando a técnica de SVM trata-se de um problema de programação quadrática convexa com restrições lineares. Para dar continuidade ao projeto será necessário estudar a teoria de otimização com restrições e a teoria de dualidade, em particular a relacionada ao problema de programação quadrática com restrições lineares. Por fim, pretendemos realizar uma pequena implementação computacional da técnica de Máquinas de Vetores Suporte a um problema de classificação. Para tanto, utilizaremos a linguagem de programação \texttt{Julia}~\cite{Bezanson:2017g}, sobre a qual também será preciso estudar e se aperfeiçoar.
+
+O desenvolvimento da pesquisa será composto por dois momentos distintos, porém relacionados. O primeiro diz respeito ao estudo dos aspectos teórico-matemáticos dos métodos de otimização relacionados com a Aprendizagem de Máquina, em particular relacionados à técnica de Máquinas de Vetores Suporte. O segundo se refere a implementação computacional dos métodos de otimização e testes em bibliotecas de problemas de Aprendizagem de Máquina.
+
+A análise matemática da pesquisa será feita através do estudo das ferramentas usuais da área de Métodos Computacionais de Otimização, tais como Análise Numérica e Otimização Linear: convergência de algoritmos, condições para convergência, entre outros. Até o momento realizou-se uma revisão dos principais aspectos de Álgebra Linear e do Cálculo de várias variáveis relacionados ao assunto, assim como proposto por \textcite{Faisal2019}, e desenvolveu-se um estudo das condições de otimalidade para problemas de otimização irrestrita baseado em \textcite{Ademir2013}. 
+
+Para dar continuidade ao desenvolvimento da pesquisa será necessário estudar as condições de otimalidade para problemas com restrições, haja vista que, como visto, o problema \eqref{eq:problemageralSVM} é um problema de programação quadrática convexa com restrições lineares. Em vista disso, pretende-se utilizar como referência \textcite{Ana1994,Izmailov2014ac,Izmailov2014mc,Ademir2013} para estudar a teoria de otimização com restrições, programação quadrática e dualidade.
+
+Para uma abordagem completa acerca das técnicas de otimização relacionadas ao problema de Aprendizagem de Máquina será utilizado \textcite{Witten:2011kh}, e o estudo específico acerca dos aspectos teóricos-matemáticos da técnica de Máquinas de Vetores Suporte será desenvolvido a partir da dissertação de \textcite{Evelin2017}. 
+
+Por fim, pretende-se realizar a implementação computacional, a qual consiste em traduzir os métodos escolhidos e suas variantes propostos para uma linguagem de programação e o teste dos mesmos na biblioteca de problemas CUTEst~\cite{Gould:2015kc} e outras bibliotecas com problemas relacionados à Aprendizagem de Máquina. Para tanto, neste projeto será utilizada a linguagem de programação \texttt{Julia}~\cite{Bezanson:2017g}.
+
+\newpage
 
 \printbibliography
 \end{document}
