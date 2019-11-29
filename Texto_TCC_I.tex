@@ -105,7 +105,7 @@ Observe que na \Cref{fig1:a} os dados podem ser classificados corretamente atrav
 A modelagem do problema de classificação, utilizando a técnica de SVM, consiste em encontrar um hiperplano ótimo que melhor separe os dados de entrada $x^i$ em duas saídas $y_i$ através de uma função de decisão. Matematicamente, mostraremos que trata-se um problema de programação quadrática convexa com restrições lineares, que pode ser formulado como
 \[
 \begin{aligned}
-\min_{w,b} & \quad f(w,b) \\
+\min_{w,b} & \quad f(w) \\
 \text{s.a.} &  \quad g(w,b) \leq 0, \end{aligned}
 \]
 com $w\in \RR^n$ e $b\in \RR $, em que $f: \RR^n \rightarrow \RR$ é uma função quadrática e $g: \RR^{n+1} \rightarrow \RR^m$ é linear. Note também que $f$ e $g$ são continuamente diferenciáveis.
