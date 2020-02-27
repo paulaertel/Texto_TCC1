@@ -71,14 +71,8 @@ A aprendizagem supervisionada é composta por uma etapa denominada fase de trein
 
 As Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}), conforme mencionado por \textcite{Evelin2017}, são indicadas nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos, além de apresentar uma boa capacidade de generalização. Esta técnica pode ser aplicada tanto para problemas de regressão como de classificação. Segundo \textcite{Evelin2017}, essa técnica foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes, com base na Teoria de Aprendizagem Estatística. Algumas aplicações de SVM em problemas práticos são o reconhecimento facial, leitura de placas automotivas e detecção de spam.
 
-
-
-%Desenvolver um estudo teórico, do ponto de vista matemático, das Máquinas de Vetores Suporte, em particular, estudar a SVM para o problema de classificação, abordando inicialmente o problema de classificação binária, isto é, quando o conjunto de valores possíveis que a classe de saída pode atingir é binário. Para tanto, neste trabalho o conjunto de saída será denotado por $\{1,-1\}$. Entretanto, quaisquer dois valores distintos poderiam ser utilizados, como $\{0,1\}$, $\{True, False\}$, $\{red, blue\}$.  
-%Em muitas situações queremos que o nosso algoritmo de aprendizado de máquina preveja uma dentre várias saídas possíveis. Um exemplo, como apresentado por \textcite{Faisal2019}, é o telescópio, o qual identifica se um objeto no céu noturno é uma galáxia, uma estrela ou um planeta. 
-
-%Primeiramente, fez-se necessário estudar os aspectos teóricos-matemáticos dos Métodos de Otimização relacionados ao aprendizado de máquina, mais especificamente os associados as Máquinas de Vetores Suporte. Para tanto, assim como proposto por \textcite{Faisal2019}, realizou-se uma revisão dos principais conceitos de Álgebra Linear e do Cálculo de Várias Variáveis relacionados ao assunto. Por conseguinte, desenvolveu-se um estudo teórico das condições de otimalidade para problemas de otimização sem restrições baseando-se em \textcite{Ademir2013}. Para dar continuidade ao desenvolvimento desse projeto será necessário estudar as condições de otimalidade para problemas com restrições, haja vista que um dos problemas que se pretende resolver trata-se de um problema de programação quadrática convexa com restrições lineares. Em vista disso, pretende-se utilizar como referência \textcite{Ana1994}, \textcite{Izmailov2014ac,Izmailov2014mc} e \textcite{Ademir2013} para estudar a teoria de otimização com restrições, programação quadrática e dualidade. O estudo específico acerca dos aspectos teóricos-matemáticos da técnica de Máquinas de Vetores Suporte será desenvolvido a partir de \textcite{Evelin2017}.
-
 Agora, vamos formular matematicamente o problema de classificação utilizando as Máquinas de Vetores Suporte. Para tanto, considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig1}.
+
 
 \begin{figure}[!h] 
 \centering
@@ -110,8 +104,6 @@ A modelagem do problema de classificação, utilizando a técnica de SVM, consis
 \]
 com $w\in \RR^n$ e $b\in \RR $, em que $f: \RR^n \rightarrow \RR$ é uma função quadrática e $g: \RR^{n+1} \rightarrow \RR^m$ é linear. Note também que $f$ e $g$ são continuamente diferenciáveis.
 
-%envolve um problema de programação não linear, quadrático, convexo e restrito, no qual o objetivo é encontrar um hiperplano ótimo $(w^{*})^{T}x+b^{*}=0$ que separe os dados de entrada $x^{i}$ em duas classes de saída $y_{i}$. Assim, pretendemos estudar primeiramente o caso de classificação com margem rígida e posteriormente sua generalização para o caso com margem flexível. Por fim, abordaremos o problema de classificação não linear. 
-
 
 
 Para formular matematicamente o problema de classificação, considere os conjuntos de entrada $\Xset =\{x^1, \ldots , x^m \} \subset \RR^n$ e de treinamento $\Yset=\{(x^1, y_1), \ldots , (x^m, y_m)\mid x^i \in \Xset \, e \, y_i \in \{-1,1\}\}$, com a partição 
@@ -127,6 +119,7 @@ O hiperplano $\Hset(w,b)$ divide o espaço $\RR^n$ em dois semiespaços, dados p
 \[ \label{conj2}
 \mathcal{S}^{+}=\{x\in \RR^n \mid w^{T}x+b\geq 0\} \quad e \quad \mathcal{S}^{-}=\{x\in \RR^n \mid w^{T}x+b\leq 0\}.
 \]
+
 
 Considere dois conjuntos de dados de treinamento representados no $\RR^2$ como na \Cref{fig2:a}, em que os pontos em azul representam a classe positiva, e os pontos em vermelho a classe negativa. Perceba na \Cref{fig2:b} que todos os hiperplanos representados separam corretamente os dados, porém nosso objetivo será encontrar o hiperplano que melhor separa esses dados, o qual está representado na \Cref{fig3:a} pela cor violeta. Logo, desejamos encontrar o hiperplano que possibilita a maior faixa que não contém nenhum dado, pois caso a faixa seja muito estreita pequenas perturbações no hiperplano ou no conjunto de dados podem resultar uma classificação incorreta. 
 \begin{figure}[htbp] 
@@ -160,8 +153,10 @@ Considere dois conjuntos de dados de treinamento representados no $\RR^2$ como n
 \\ Fonte: \textcite{Evelin2017}}
 \end{figure}
 
+
 \begin{defi} \label{def1} Os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são ditos linearmente separáveis quando existem $w\in \RR^n$ e $b\in \RR$  tais que $w^{T}x+b>0$ para todo $x\in \Xset^{+}$ e $w^{T}x+b<0$ para todo $x\in \Xset^{-}$. O hiperplano $\Hset(w,b)$ é chamado hiperplano separador dos conjuntos $\Xset^{+}$ e $\Xset^{-}$.
 \end{defi}
+
 
 \begin{lema} \label{lema1} Suponha que os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são finitos e linearmente separáveis, com hiperplano separador $\Hset(w,b)$. Então, existem $\overline{w}\in \RR^n$ e $\overline{b}\in \RR$ tais que $\Hset(w,b)$ pode ser descrito por
 \[
@@ -192,6 +187,7 @@ e para $x\in \Xset^{-}$, temos
 Logo, definindo $\wbar:=\dfrac{w}{\gamma}$ e $\bbar :=\dfrac{b}{\gamma}$, obtemos as desigualdades \eqref{eq1} e \eqref{eq2}. 
 
 \end{proof}
+
 
 A partir do \Cref{lema1} temos que $\Hset^{+}:=\{x\in \RR^n \mid w^{T}x+b= 1\}$ e $\Hset^{-}:=\{x\in \RR^n \mid w^{T}x+b= -1\}$ são os hiperplanos que definem a faixa que separa os conjuntos $\Xset^{+}$ e $\Xset^{-}$.
 
@@ -239,6 +235,7 @@ ou seja,
 
 \end{proof}
 
+
 Utilizando a \Cref{prop1} podemos demonstrar o \Cref{lema2}, o qual estabelece a largura da faixa entre os hiperplanos separadores $\Hset^{+}$ e $\Hset^{-}$.
 
 \begin{lema} \label{lema2} A distância entre os hiperplanos $\Hset^{+}$ e $\Hset^{-}$ é dada por $\dist(\Hset^{+}, \Hset^{-})=\dfrac{2}{\Vert w\Vert}$. 
@@ -269,7 +266,9 @@ concluindo que
 \end{align}
 \end{proof}
 
-\subsection{Formulação Matemática do Problema de Classificação}
+%--------------------------------------------------------------------------------------------------------------------------
+
+\subsection{Formulação Matemática do Problema de Classificação - Margem Rígida}
 
 Encontrar o hiperplano que melhor separa os dados implica maximizar a largura da margem, isto é, maximizar $\dist(\Hset^{+} , \Hset^{-}) =\dfrac{2}{\Vert w\Vert }$. Isso equivale a minimizar seu inverso $\dfrac{1}{2}\Vert w\Vert $ ou ainda minimizar $\dfrac{1}{2}\Vert w\Vert^{2}$. De fato, seja $w^{*}=\argmax\dfrac{2}{\Vert w\Vert}$. Então, para todo $w\in \RR^n$,
 \[ \dfrac{2}{\Vert w^{*}\Vert} \geq \dfrac{2}{\Vert w\Vert} \]
@@ -307,34 +306,99 @@ em que a função $g:\RR^{n+1} \rightarrow \RR^{m}$ pode ser escrita da forma
 com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_{i})$, $X=\diag(x^{i})$, $y^{T}=[y_{1} \ \ldots \ y_{m}]$, $w\in \RR^n$ e $b\in \RR$.
 
 
+%----------------------------------------------------------------------------------------------------------------------
 
-\section{Objetivos}
-Este trabalho tem os seguintes objetivos:
-\begin{itemize}                  
-	\item Resumir a teoria de otimização com e sem restrições.                            
-	\item Estudar os problemas de otimização que surgem do Aprendizado de Máquina.   
-	\item Desenvolver um estudo teórico, do ponto de vista matemático, das Máquinas de Vetores Suporte.  
-	\item Explorar a linguagem de programação \texttt{Julia} com a implementação de métodos de otimização.
-	\item Estudar a técnica de Máquinas de Vetores Suporte aplicada ao problema de classificação.  
-	\item Realizar uma implementação computacional da técnica de SVM aplicada a um problema de classificação utilizando \texttt{Julia}.                
-	%\item Manipular a Biblioteca CUTEst e outras bibliotecas de problemas de aprendizado de máquina.                              
-  	%\item Utilizar os métodos estudados aplicados à aprendizagem de máquina.        
-	%\item Comparar os resultados numéricos.                                                       
-\end{itemize}
+\section{Máquinas de Vetores Suporte - CSVM}
+
+Situações reias dificilmente envolvem problemas cujos dados são linearmente separáveis. Em vista disso, faz-se necessário estender os conceitos e resultados estudados nas SVMs lineares de margem rígida para o caso de SVM com margem flexível, quando os dados não são linearmente separáveis. Para tanto, considere um conjunto de dados não linearmente sepavável como da \Cref{fig4:b}, isto é, não existe um hiperplano separador. 
 
 
-\section{Metodologia e Resultados Esperados}
-%O problema de classificação utilizando a técnica de SVM trata-se de um problema de programação quadrática convexa com restrições lineares. Para dar continuidade ao projeto será necessário estudar a teoria de otimização com restrições e a teoria de dualidade, em particular a relacionada ao problema de programação quadrática com restrições lineares. Por fim, pretendemos realizar uma pequena implementação computacional da técnica de Máquinas de Vetores Suporte a um problema de classificação. Para tanto, utilizaremos a linguagem de programação \texttt{Julia}~\cite{Bezanson:2017g}, sobre a qual também será preciso estudar e se aperfeiçoar.
+\begin{figure}[htbp] 
+	\centering
+	\begin{subfigure}[h]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{dados_linearmenteseparaveismmll}
+		\caption{Dados linearmente separáveis. \label{fig4:a}}
+	\end{subfigure}
+	\begin{subfigure}[h]{0.31\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{dados_nlinearmenteseparaveismml}
+		\caption{Dados não linearmente separáveis. \label{fig4:b}}
+	\end{subfigure}
+\caption{Fonte: \textcite{Faisal2019} \label{fig4}}
+\end{figure}
 
-O desenvolvimento da pesquisa será composto por dois momentos distintos, porém relacionados. O primeiro diz respeito ao estudo dos aspectos teórico-matemáticos dos métodos de otimização relacionados com a Aprendizagem de Máquina, em particular relacionados à técnica de Máquinas de Vetores Suporte. O segundo se refere a implementação computacional dos métodos de otimização e testes em bibliotecas de problemas de Aprendizagem de Máquina.
 
-A análise matemática da pesquisa será feita através do estudo das ferramentas usuais da área de Métodos Computacionais de Otimização, tais como Análise Numérica e Otimização Linear: convergência de algoritmos, condições para convergência, entre outros. Até o momento realizou-se uma revisão dos principais aspectos de Álgebra Linear e do Cálculo de várias variáveis relacionados ao assunto, assim como proposto por \textcite{Faisal2019}, e desenvolveu-se um estudo das condições de otimalidade para problemas de otimização irrestrita baseado em \textcite{Ademir2013}. 
+Neste caso, temos que o conjunto viável
+\[
+\{ (w,b) \in \RR^{n+1} \mid 1-y_{i}(w^{T}x^{i} + b) \leq 0 , \quad i=1, \ldots , m \}
+\]
+é vazio e, portanto, a formulação dada pelo problema \eqref{eq:problemageralSVM} não fornece um classificador.
 
-Para dar continuidade ao desenvolvimento da pesquisa será necessário estudar as condições de otimalidade para problemas com restrições, haja vista que, como visto, o problema \eqref{eq:problemageralSVM} é um problema de programação quadrática convexa com restrições lineares. Em vista disso, pretende-se utilizar como referência \textcite{Ana1994,Izmailov2014ac,Izmailov2014mc,Ademir2013} para estudar a teoria de otimização com restrições, programação quadrática e dualidade.
+Assim, no intuito de contornar esse problema utilizamos regularização para suavizar as margens, acrescentando variáveis de folga $\xi_{i} \geq 0$ associadas aos dados de treinamento $x_{i}$, com $i=1, \ldots , m$, e permitindo, assim, uma flexibilização do problema de estimar as variáveis $w$ e $b$. Em outras palavras, a restrição $1-y_{i}(w^{T}x^{i} + b) \leq 0$ é relaxada e substituída por $1-y_{i}(w^{T}x^{i} + b) \leq \xi_{i} $, com $\xi_{i} \geq 0$. Cada variável de folga $\xi_{i}$ mensura a distância que determinado dado $x_{i}$ está do seu respectivo hiperplano separador, caso este dado esteja do lado errado.
 
-Para uma abordagem completa acerca das técnicas de otimização relacionadas ao problema de Aprendizagem de Máquina será utilizado \textcite{Witten:2011kh}, e o estudo específico acerca dos aspectos teóricos-matemáticos da técnica de Máquinas de Vetores Suporte será desenvolvido a partir da dissertação de \textcite{Evelin2017}. 
+%Esta imagem também não está sendo lida, detectar problema #chateada -Uhhhul deu certo! LEMBRETE: não usar acento ao nomear figuras
+\begin{figure}[!h] 
+	\centering
+	\includegraphics[width=0.40\textwidth]{mmlinterpretacao_variavel_xi}
+	\caption{Variáveis de folga \label{fig5} \\ Fonte: \textcite{Faisal2019}}
+\end{figure}
 
-Por fim, pretende-se realizar a implementação computacional, a qual consiste em traduzir os métodos escolhidos e suas variantes propostos para uma linguagem de programação e o teste dos mesmos na biblioteca de problemas CUTEst~\cite{Gould:2015kc} e outras bibliotecas com problemas relacionados à Aprendizagem de Máquina. Para tanto, neste projeto será utilizada a linguagem de programação \texttt{Julia}~\cite{Bezanson:2017g}.
+Tal procedimento permite que pontos da classe positiva permaneçam fora do semiespaço $\mathcal{S}^{+}=\{x\in \RR^n \mid w^{T}x+b\geq 1\}$ e/ou pontos da classe negativa fora do semiespaço $\mathcal{S}^{-}=\{x\in \RR^n \mid w^{T}x+b\leq -1\}$. 
+
+Nesta formulação o hiperplano separador é denominado hiperplano de margem flexível e as restrições dos hiperplanos separadores são reformuladas da seguinte maneira 
+\begin{align}
+w^{T}x^{i}+b &\geq 1 - \xi_{i} , \text{ para  todo } x^{i} \in \Xset^{+}, \label{restricoesCSVM+} \\
+w^{T}x^{i}+b &\leq -1 +\xi_{i} , \text{ para  todo } x^{i} \in \Xset^{-}. \label{restricoesCSVM-}
+\end{align}
+
+
+Agora nosso objetivo é encontrar $w$ e $b$ ótimos de modo a obter um bom classificador. Primeiramente, observe que dados $w$ e $b$ arbitrários, podemos escolher $\xi_{i} \geq 0$ de modo que as restrições \eqref{restricoesCSVM+} e \eqref{restricoesCSVM-} sejam satisfeitas. Para tanto, podemos definir
+\[
+\xi_{i} =  \left\{ \begin{align} \max\{0, 1-w^{T}x^{i}-b\}, \quad \text{se} \quad x^{i} \in \Xset^{+}, \\
+\max\{0, 1+w^{T}x^{i}+b\}, \quad \text{se} \quad x^{i} \in \Xset^{-}.
+\end{align} \right.
+\]
+ 
+Desse modo, para obter um bom classificador não basta apenas maximizar a margem definida pelos hiperplanos $\Hset^{+}$ e $\Hset^{-}$ e introduzir as variáveis de folga nas restrições, mantendo a mesma função objetivo, pois, como exemplificado por \textcite{Evelin2017}, a \Cref{fig6} ilustra o hiperplano dado por $w_{0}^{T}x+b = 0$, que não poder ser usado para classificar os dados, mas satisfaz as restrições \eqref{restricoesCSVM+} e \eqref{restricoesCSVM-}. 
+
+\begin{figure}[!h] 
+	\centering
+	\includegraphics[width=0.40\textwidth]{restricoes_maximizacaomargem}
+	\caption{Pensar. \label{fig6} \\ Fonte: \textcite{Evelin2017}}
+\end{figure}
+ 
+
+Portanto, para reformular o problema original de maximizar a margem é preciso também controlar o valor dessas variáveis de modo a estimular uma classificação correta, pois quanto maior o valor delas mais será permitido violar as restrições. Em vista disso, é acrescentada na função objetivo uma parcela que corresponde à penalização das violações e o problema \eqref{eq:problemageralSVM} é reformulado da seguinte forma
+
+\[ \label{eq:problemaCSVM}
+\begin{aligned}
+\min_{w,b,\xi} & \quad \dfrac{1}{2} \Vert w\Vert^{2} + C \sum_{i=1}^{m} \xi_{i} \\
+\text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1 - \xi_{i}, \quad i=1, \ldots , m, \\
+& \xi_{i} \geq 0, \quad i=1, \ldots , m,\end{aligned}
+\]
+%não consegui alinhar a última linha às duas primeiras
+em que $C>0$ é um parâmetro de regularização que tem o objetivo de controlar a importância das variáveis de folga. O valor do parâmetro $C$ que fornece uma boa classificação dos dados é escolhido de maneira heurística na fase de treinamento, geralmente a partir da natureza do problema.É devido a utilização desse parâmetro esta modelagem de SVM também é conhecida como C-SVM.
+
+O termo $C \sum_{i=1}^{m} \xi_{i}$ na função objetivo do problema \eqref{eq:problemaCSVM} pode ser pensado como uma medida de erro de classificação, pois minimiza o valor das variáveis de folga e reduz desse modo o número de pontos classificados incorretamente. De fato, aumentando o valor do parâmetro $C$ aumenta-se a penalização sobre a violação da restrição original do problema SVM. Por outro lado, diminuindo o valor de $C$ o modelo se torna mais flexível a esse tipo de violação. 
+
+O problema de margem flexível \eqref{eq:problemaCSVM}, assim como o problema \eqref{eq:problemageralSVM}, também possui restrições lineares 
+\begin{align} 
+g_{i}(w,b,\xi) = & 1-\xi_{i} - y_i(w^{T}x^{i}+b) \leq 0 \quad \text{e} \\
+h_{i}(w,b,\xi) = & - \xi_{i} \leq 0, \quad i=1, \ldots, m,
+\end{align}
+
+e assim, o conjunto viável
+\[
+\Omega = \{(w,b,\xi) \in \RR^{n+1+m} \mid g_{i}(w,b,\xi) \leq 0, \, h_{i}(w,b,\xi) \leq 0, \, i=1, \ldots, m \} 
+\]
+é um poliedro não vazio.
+
+Ademais, a função objetivo $f$ é quadrática e limitada inferiormente em $\Omega$, pois 
+\[
+f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m} \underbrace{\xi_{i}}_{\geq 0} \geq 0.
+\]
+%Assim o Teorema de Programação Quadrática (1.34) garante a existência de um minimizador global para o problema \eqref{eq:problemaCSVM}.
 
 \newpage
 
