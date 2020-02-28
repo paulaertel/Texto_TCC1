@@ -41,7 +41,8 @@
 
 \theoremstyle{definition}%ambientes normais
 \newtheorem{exem}{Exemplo}[subsection]
-\newtheorem{defi}{Definição}	
+\newtheorem{defi}{Definição}
+\newtheorem{obs}{Observação}	
 
 \usepackage{csquotes}
 \usepackage[
@@ -516,6 +517,43 @@ para todo $\alpha \geq 0$.
 
 \subsection{Funções Convexas}
 
+\begin{defi} [\textcite{Ademir2013}, p. 56] \label{defi:funcao_convexa}
+Seja $C \subset \RR^{n}$ um conjunto convexo. Dizemos que a função $f: \RR^{n} \longrightarrow \RR$ é convexa em $C$ quando
+\[
+f((1-t)x + ty) \leq (1-t)f(x) + tf(y),
+\]
+para todos $x,y \in C$ e $t \in [0,1]$.
+\end{defi}
+
+A noção geométrica da \Cref{defi:funcao_convexa} é apresentada na \Cref{fig_funcao_convexa}, em que qualquer arco do gráfico de uma função convexa está sempre abaixo do segmento que liga as extremidades.
+
+%criar minha própria imagem
+\begin{figure}[!h] 
+	\centering
+	\includegraphics[width=0.85\textwidth]{funcao_convexa}
+	\caption{ Função Convexa. \label{fig_funcao_convexa} \\ Fonte: \textcite{Evelin2017}}
+\end{figure}
+
+\begin{obs}
+Todo problema de maximização
+\[
+\begin{aligned}
+\max_{x} & \quad f(x) \\
+\text{s.a.} & \quad x \in \Omega \end{aligned}
+ \]
+pode ser transformado em um problema de minimização equivalente
+\[
+\begin{aligned}
+\min_{x} & \quad -f(x) \\
+\text{s.a.} & \quad x \in \Omega .\end{aligned}
+ \]
+\end{obs}
+
+\begin{defi} [\textcite{Izmailov2014ac}, p. 80]
+Se $D \subset \RR^{n}$ é um conjunto convexo, dizemos que $f: D \longrightarrow \RR $ é uma \emph{função côncava} em $D$, quando a função $(-f)$ é convexa em $D$.
+\end{defi}
+
+Assim, maximizar uma função côncava num conjunto convexo equivale a minimizar uma função convexa num conjunto convexo.
 
 \newpage
 
