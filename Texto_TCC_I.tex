@@ -508,7 +508,7 @@ para todo $x \in S$, então $\bar{z} = \proj_{S} (z)$.
 O \Cref{lema_defineprojecao_convexidade} fornece uma condição necessária de otimalidade ao minimizar uma função em um conjunto convexo fechado.
 
 \begin{lema} [\textcite{Ademir2013}, p. 54]
-Sejam $f: \RR^{n} \longrightarrow \RR$ uma função diferenciável e $C \subset \RR^{n}$ convexo e fechado. Se $x^{*} \in C$ é minimizador local de $f$ em $C$, então
+Sejam $f: \RR^{n} \rightarrow \RR$ uma função diferenciável e $C \subset \RR^{n}$ convexo e fechado. Se $x^{*} \in C$ é minimizador local de $f$ em $C$, então
 \[
 \proj_{C} (x^{*} - \alpha \nabla f(x^{*})) = x^{*} ,
 \]
@@ -518,7 +518,7 @@ para todo $\alpha \geq 0$.
 \subsection{Funções Convexas}
 
 \begin{defi} [\textcite{Ademir2013}, p. 56] \label{defi:funcao_convexa}
-Seja $C \subset \RR^{n}$ um conjunto convexo. Dizemos que a função $f: \RR^{n} \longrightarrow \RR$ é convexa em $C$ quando
+Seja $C \subset \RR^{n}$ um conjunto convexo. Dizemos que a função $f: \RR^{n} \rightarrow \RR$ é convexa em $C$ quando
 \[
 f((1-t)x + ty) \leq (1-t)f(x) + tf(y),
 \]
@@ -550,10 +550,80 @@ pode ser transformado em um problema de minimização equivalente
 \end{obs}
 
 \begin{defi} [\textcite{Izmailov2014ac}, p. 80]
-Se $D \subset \RR^{n}$ é um conjunto convexo, dizemos que $f: D \longrightarrow \RR $ é uma \emph{função côncava} em $D$, quando a função $(-f)$ é convexa em $D$.
+Se $D \subset \RR^{n}$ é um conjunto convexo, dizemos que $f: D \rightarrow \RR $ é uma \emph{função côncava} em $D$, quando a função $(-f)$ é convexa em $D$.
 \end{defi}
 
 Assim, maximizar uma função côncava num conjunto convexo equivale a minimizar uma função convexa num conjunto convexo.
+
+O teorema seguinte justifica o fato da convexidade ser uma propriedade tão importante em otimização.
+
+\begin{teo} [\textcite{Ademir2013}, p. 57]
+Sejam $C \subset \RR^{n}$ um conjunto convexo e $f:C \rightarrow \RR$ uma função convexa. Se $x^{*} \in C$ é minimizador local de $f$, então $x^{*}$ é minimizador global de $f$.
+\end{teo}
+\begin{proof}
+Seja $x^{*}$ um minimizador local de $f$. Então, existe $\delta > 0$ tal que $f(x^{*}) \leq f(x)$, para todo $x \in B(x^{*}, \delta) \cap C$. Dado $y \in C$, tal que $y \notin B(x^{*}, \delta)$, e tome $t \in (0,1]$ de modo que $t \Vert y-x^{*} \Vert < \delta$. Assim, o ponto $x = (1-t)x^{*} + ty$ satisfaz
+\[
+\Vert x - x^{*} \Vert = \Vert (1-t)x^{*} + ty - x^{*} \Vert = \Vert x^{*} - tx^{*} + ty - x^{*} \Vert = t \Vert y - x^{*} \Vert < \delta ,
+\]
+e, portanto, $x \in B(x^{*}, \delta) \cap C$.
+
+Desse modo, como $C$ é um conjunto convexo, temos
+\[
+f(x^{*}) \leq f(x) \leq (1-t)f(x^{*}) + tf(y) = f(x^{*}) + t(f(y)-f(x^{*})),
+\]
+donde segue que $f(x^{*}) \leq f(y)$.
+
+Portanto, $x^{*}$ é minimizador global de $f$.
+\end{proof}
+
+A seguir apresentamos outra forma de caracterizar a convexidade de uma função quando temos hipóteses de diferenciabilidade.
+
+\begin{teo} [\textcite{Ademir2013}, p. 58]
+Sejam $f: \RR^{n} \rightarrow \RR $ uma função diferenciável e $C \in \RR^{n}$ um conjunto convexo. A função $f$ é convexa em $C$ se, e somente se, 
+\[
+f(y) \geq f(x) + \nabla f(x)^{T}(y-x),
+\]
+para todos $x, y \in C$.
+\end{teo}
+
+\begin{proof}
+Seja $f$ uma função convexa. Para $x,y \in C$ e $t \in (0,1]$ quaisquer, temos $(1-t)x + ty = x + t(y-x)$, pois $C$ é convexo. Assim, definindo $d = y-x$, temos que $x + td \in C$ e
+\[
+f(x+td) = f((1-t)x + ty) \leq (1-t)f(x) + tf(y),
+\]
+logo
+\[
+f(x+td) \leq f(x) + t(f(y)-f(x)),
+\]
+o que implica em 
+\[
+f(y)-f(x) \geq \dfrac{f(x+td)-f(x)}{t} .
+\]
+
+Passando o limite quando $t \rightarrow 0^{+}$, temos
+\[
+f(y)-f(x) \geq \lim_{t \rightarrow 0^{+}} \dfrac{f(x+td)-f(x)}{t} = \nabla f(x)^{T} d = \nabla f(x)^{T} (y-x) ,
+\]
+e, portanto,
+\[
+f(y) \geq f(x) + \nabla f(x)^{T} (y-x) .
+\]
+
+Reciprocamente, considere $z = (1-t)x + ty$ e observe que 
+\[
+f(x) \geq f(z) + \nabla f(z)^{T}(x-z) \quad \text{e} \quad f(y) \geq f(z) + \nabla f(z)^{T}(y-z) .
+\]
+
+Agora, multiplicando a primeira desigualdade por $(1-t)$ e a segunda por $t$, obtemos
+\begin{align}
+(1-t)f(x) + tf(y) & \geq (1-t)(f(z) + \nabla f(z)^{T}(x-z)) + t(f(z) + \nabla f(z)^{T}(y-z)) \\
+& \geq f(z) - tf(z) -t\nabla f(z)^{T}(x-z) + tf(z) + t\nabla f(z)^{T}(y-z) \\ %dúvida nessa passagem - rever demonstração
+& \geq f((1-t)x + ty) .
+\end{align}
+
+Portanto, a função $f$ é convexa em $C$.
+\end{proof}
+
 
 \newpage
 
