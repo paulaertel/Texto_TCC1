@@ -355,9 +355,9 @@ w^{T}x^{i}+b &\leq -1 +\xi_{i} , \text{ para  todo } x^{i} \in \Xset^{-}. \label
 
 Agora nosso objetivo é encontrar $w$ e $b$ ótimos de modo a obter um bom classificador. Primeiramente, observe que dados $w$ e $b$ arbitrários, podemos escolher $\xi_{i} \geq 0$ de modo que as restrições \eqref{restricoesCSVM+} e \eqref{restricoesCSVM-} sejam satisfeitas. Para tanto, podemos definir
 \[
-\xi_{i} =  \left\{ \begin{align} \max\{0, 1-w^{T}x^{i}-b\}, \quad \text{se} \quad x^{i} \in \Xset^{+}, \\
-\max\{0, 1+w^{T}x^{i}+b\}, \quad \text{se} \quad x^{i} \in \Xset^{-}.
-\end{align} \right.
+\xi_{i} =  \left \{ \begin{array}{cc} \max\{0, 1-w^{T}x^{i}-b\}, & \quad \text{se} \quad x^{i} \in \Xset^{+}, \\
+\max\{0, 1+w^{T}x^{i}+b\}, & \quad \text{se} \quad x^{i} \in \Xset^{-}.
+\end{array} \right .
 \]
  
 Desse modo, para obter um bom classificador não basta apenas maximizar a margem definida pelos hiperplanos $\Hset^{+}$ e $\Hset^{-}$ e introduzir as variáveis de folga nas restrições, mantendo a mesma função objetivo, pois, como exemplificado por \textcite{Evelin2017}, a \Cref{fig6} ilustra o hiperplano dado por $w_{0}^{T}x+b = 0$, que não poder ser usado para classificar os dados, mas satisfaz as restrições \eqref{restricoesCSVM+} e \eqref{restricoesCSVM-}. 
@@ -399,6 +399,123 @@ Ademais, a função objetivo $f$ é quadrática e limitada inferiormente em $\Om
 f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m} \underbrace{\xi_{i}}_{\geq 0} \geq 0.
 \]
 %Assim o Teorema de Programação Quadrática (1.34) garante a existência de um minimizador global para o problema \eqref{eq:problemaCSVM}.
+
+
+%-------------------------------------------------------------------------------------------------------------------------
+
+\section{Otimização Convexa}
+
+Em otimização uma hipótese com ótimas consequências é a convexidade, pois ela permite concluir que minimizadores locais são globais e garante que pontos estacionários são minimizadores. A partir disso, os problemas de classificação podem ser formulados em termos de otimização convexa.
+Inicialmente, definimos um conjunto convexo e apresentamos alguns resultados importantes da análise convexa.
+
+\subsection{Conjuntos Convexos}
+
+\begin{defi} [\textcite{Ademir2013}, p. 49]
+Um conjunto $C \subset \RR^{n}$ é dito convexo quando dados $x,y \in C$, o segmento $[x,y] = \{ (1-t)x + ty \mid t\in [0,1] \}$ estiver inteiramente contido em $C$.
+\end{defi}
+
+A \Cref{fig_conjuntos_convexos} apresenta a noção de convexidade de conjuntos, ilustrando um conjunto convexo e outro não convexo. Em outras palavras um conjunto convexo se caracteriza por conter todos os segmentos cujos extremos pertencem ao conjunto, o que não ocorre no segundo conjunto por exemplo.
+
+%criar minha própria figura
+\begin{figure}[!h] 
+	\centering
+	\includegraphics[width=0.40\textwidth]{conjunto_convexo}
+	\caption{ Exemplo de conjunto convexo e não convexo. \label{fig_conjuntos_convexos} \\ Fonte: \textcite{Evelin2017}}
+\end{figure}
+
+Alguns exemplos de conjuntos convexos são o conjunto vazio, o espaço $\RR^{n}$, qualquer hiperplano do $\RR^{n}$ e um conjunto que contém um ponto só.
+
+Vejamos agora alguns resultados importantes da análise convexa.
+
+%OBS.: Apresentar a definição de norma.
+\begin{lema}[\textcite{Ademir2013}, p. 50]
+Considere $\Vert \cdot \Vert$ a norma euclidiana em $\RR^{n}$. Sejam $u,v \in \RR^{n}$ com $u\neq v$. Se $\Vert u \Vert = \Vert v \Vert = r$, então $\Vert (1-t)u + tv \Vert < r$, para todo $t \in (0,1)$.
+\end{lema}
+
+\begin{proof}
+Seja $t \in (0,1)$ e suponha que $\Vert u \Vert = \Vert v \Vert = r$. Aplicando a desigualdade triangular, temos
+\[
+\Vert (1-t)u + tv \Vert \leq (1-t)\Vert u \Vert + t\Vert v \Vert = (1-t)r + tr = r.
+\]
+
+Agora, suponha por absurdo que $\Vert (1-t)u + tv \Vert = r$. Então
+\[ \label{eq:lema1_convexidade_1}
+(1-t)^{2} u^{T}u + 2t(1-t)u^{T}v + t^{2}v^{T}v = \Vert (1-t)u + tv \Vert = r^{2}.
+\]
+
+Como $u^{T}u = v^{T}v = r^{2}$ e $t \in (0,1)$, substituindo e desenvolvendo \eqref{eq:lema1_convexidade_1}, obtemos 
+\begin{align}
+r^{2} &= (1-2t+t^{2}) u^{T}u + (2t-2t^{2})u^{T}v + t^{2}v^{T}v \\
+&= (1-2t+t^{2}) r^{2} + (2t-2t^{2})u^{T}v + t^{2}r^{2} \\
+&= r^{2} - 2tr^{2} + t^{2}r^{2} + (2t-2t^{2})u^{T}v + t^{2}r^{2} .\\
+\end{align}
+
+Evidenciando $r^{2}$, temos
+\[ 
+(2t-2t^{2})r^{2} = (2t-2t^{2})u^{T}v,
+\]
+e, portanto,
+\[ \label{eq:lema1_convexidade_2}
+r^{2} = u^{T}v.
+\]
+
+Assim, por \eqref{eq:lema1_convexidade_2},
+\[
+\Vert u-v \Vert^{2} = u^{T}u - 2u^{T}v + v^{T}v = r^{2} - 2r^{2} + r^{2} = 0,
+\]
+o que é uma contradição, pois por hipótese $u \neq v$. Portanto, concluímos que $\Vert (1-t)u + tv \Vert < r$, para todo $t \in (0,1)$.
+\end{proof}
+
+Agora, dado um conjunto $S \subset \RR^{n}$ e um ponto $z \in \RR^{n}$, considere o problema de encontrar um ponto de $S$ mais próximo de $z$, em outras palavras, queremos minimizar a distânica de um ponto a um conjunto. Assim, os próximos resultados garantem a existência da solução no caso de $S$ ser um conjunto fechado e sua unicidade se, além de fechado, $S$ for convexo. Tal solução é chamada de projeção de $z$ sobre $S$, e denotada por $\proj_{S} (z)$. 
+
+\begin{lema} [\textcite{Ademir2013}, p. 51]
+Seja $S \subset \RR^{n}$ um conjunto fechado não vazio. Dado $z \in \RR^{n}$, existe $\bar{z} \in S$ tal que
+\[
+\Vert z - \bar{z} \Vert \leq \Vert z - x \Vert,
+\]
+para todo $x \in S$.
+\end{lema}
+
+\begin{lema} [\textcite{Ademir2013}, p. 52] \label{lema_existenciaprojecao_convexidade}
+Seja $S \subset \RR^{n}$ um conjunto não vazio, convexo e fechado. Dado $z \in \RR^{n}$, existe um único $\bar{z} \in S$ tal que
+\[
+\Vert z - \bar{z} \Vert \leq \Vert z - x \Vert
+\]
+para todo $x \in S$.
+\end{lema}
+
+No \Cref{lema_existenciaprojecao_convexidade} denotamos $\bar{z} = \proj_{S} (z)$.
+
+\begin{teo} [\textcite{Ademir2013}, p. 53] \label{lema_condicaoprojecao_convexidade}
+Sejam $S \subset \RR^{n}$ um conjunto não vazio, convexo e fechado, $z \in \RR^{n}$ e $\bar{z} = \proj_{S} (z)$. Então, 
+\[
+(z - \bar{z})^{T}(x - \bar{z}) \leq 0 ,
+\]
+para todo $x \in S$.
+\end{teo}
+
+O \Cref{lema_condicaoprojecao_convexidade} estabelece uma condição necessária e suficiente para caracterizar a projeção. Este resultado é provado no lema seguinte.
+
+\begin{lema} [\textcite{Ademir2013}, p. 54] \label{lema_defineprojecao_convexidade}
+Sejam $S \subset \RR^{n}$ um conjunto não vazio, convexo e fechado e $z \in \RR^{n}$. Se $\bar{z} \in S$ satisfaz
+\[
+(z - \bar{z})^{T}(x - \bar{z}) \leq 0 ,
+\]
+para todo $x \in S$, então $\bar{z} = \proj_{S} (z)$.
+\end{lema}
+
+O \Cref{lema_defineprojecao_convexidade} fornece uma condição necessária de otimalidade ao minimizar uma função em um conjunto convexo fechado.
+
+\begin{lema} [\textcite{Ademir2013}, p. 54]
+Sejam $f: \RR^{n} \longrightarrow \RR$ uma função diferenciável e $C \subset \RR^{n}$ convexo e fechado. Se $x^{*} \in C$ é minimizador local de $f$ em $C$, então
+\[
+\proj_{C} (x^{*} - \alpha \nabla f(x^{*})) = x^{*} ,
+\]
+para todo $\alpha \geq 0$.
+\end{lema}
+
+\subsection{Funções Convexas}
+
 
 \newpage
 
