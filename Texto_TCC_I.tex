@@ -24,6 +24,7 @@
 \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\ones}{ones}
 \DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator{\interior}{int}
 
 \def\Xset{\mathcal{X}}
 \def\Yset{\mathcal{Y}}
@@ -578,7 +579,7 @@ Portanto, $x^{*}$ é minimizador global de $f$.
 
 A seguir apresentamos outra forma de caracterizar a convexidade de uma função quando temos hipóteses de diferenciabilidade.
 
-\begin{teo} [\textcite{Ademir2013}, p. 58]
+\begin{teo} [\textcite{Ademir2013}, p. 58] \label{teo:diferenciabilidade_e_convexidade}
 Sejam $f: \RR^{n} \rightarrow \RR $ uma função diferenciável e $C \in \RR^{n}$ um conjunto convexo. A função $f$ é convexa em $C$ se, e somente se, 
 \[
 f(y) \geq f(x) + \nabla f(x)^{T}(y-x),
@@ -617,13 +618,65 @@ f(x) \geq f(z) + \nabla f(z)^{T}(x-z) \quad \text{e} \quad f(y) \geq f(z) + \nab
 Agora, multiplicando a primeira desigualdade por $(1-t)$ e a segunda por $t$, obtemos
 \begin{align}
 (1-t)f(x) + tf(y) & \geq (1-t)(f(z) + \nabla f(z)^{T}(x-z)) + t(f(z) + \nabla f(z)^{T}(y-z)) \\
-& \geq f(z) - tf(z) -t\nabla f(z)^{T}(x-z) + tf(z) + t\nabla f(z)^{T}(y-z) \\ %dúvida nessa passagem - rever demonstração
-& \geq f((1-t)x + ty) .
+& \geq f(z) + \nabla f(z)^{T}(x-z) - tf(z) -t\nabla f(z)^{T}(x-z) + tf(z) + t\nabla f(z)^{T}(y-z) \\
+& \geq f(z) + \nabla f(z)^{T}(x-z) + t\nabla f(z)^{T}(-x+z+y-z) \\
+& \geq f(z) + \nabla f(z)^{T}(x-z) + t\nabla f(z)^{T}(y-x) \\
+& \geq f(z) + \nabla f(z)^{T}(x-z) + t\nabla f(z)^{T} \dfrac{(z-x)}{t} \\
+& \geq f(z) + \nabla f(z)^{T}(x-z) - \nabla f(z)^{T}(x-z) \\
+& = f(z) \\
+& = f((1-t)x + ty) .
 \end{align}
 
 Portanto, a função $f$ é convexa em $C$.
 \end{proof}
 
+
+\begin{lema} \label{lema:auxiliar_para_teo_hessiana_convexidade}
+Sejam $C \subset \RR^{n}$ convexo, $x \in \bar{C}$ e $y \in \interior C$. Então, $(x,y] \subset \interior C$.
+\end{lema}
+
+
+\begin{teo} [\textcite{Ademir2013}, p. 60] \label{teo:hessiana_convexidade}
+Sejam $f:\RR^{n} \rightarrow \RR $ uma função de classe $\mathcal{C}^{2}$ e $C \subset \RR^{n}$ um conjunto convexo com interior não vazio. A função $f$ é convexa em $C$ se, e somente se, a Hessiana $\nabla^{2} f(x)$ é semidefinida positiva para todo $x \in C$.
+\end{teo}
+\begin{proof}
+Considere $x \in \interior C$. Então, dado $d \in \RR^{n}$ temos que $x+td \in C$, para $t$ suficientemente pequeno. Portanto, pela convexidade de $f$ e pelo \Cref{teo:diferenciabilidade_e_convexidade}, temos
+\[
+f(x+td) \geq f(x) + t\nabla f(x)^{T} d ,
+\]
+e assim, 
+\[ \label{eq:1_teo_hessiana_convexidade}
+f(x+td) -f(x) - t\nabla f(x)^{T} d \geq 0 . 
+\]
+
+Aplicando o Teorema da Expansão de Taylor de segunda ordem para $f(x+td)$, temos
+\[
+f(x+td) = f(x) + t\nabla f(x)^{T}d + \dfrac{t^{2}}{2}d^{T} \nabla^{2} f(x)d + r(t^{2}) ,
+\]
+e substituindo em \eqref{eq:1_teo_hessiana_convexidade}, obtemos
+\[
+\dfrac{t^{2}}{2}d^{T} \nabla^{2} f(x)d + r(t^{2}) \geq 0 ,
+\]
+com $\lim_{t \rightarrow 0} \dfrac{r(t^{2})}{t^{2}} = 0$. 
+
+Dividindo por $t^{2}$ e passando o limite com $t \rightarrow 0$, temos
+\[
+d^{T} \nabla^{2} f(x)d \geq 0 .
+\]
+
+Agora, considere $x \in C$ arbitrário. Como existe $y \in \interior C$, o \Cref{lema:auxiliar_para_teo_hessiana_convexidade} garante que todos os pontos do segmento $(x,y] \subset \interior C$. Então, pelo que acabamos de provar, dados $d \in \RR^{n}$ e $t\in (0,1]$, vale
+\[
+d^{T} \nabla^{2} f((1-t)x+ty)d \geq 0 .
+\]
+
+Fazendo $t \rightarrow 0^{+}$ e usando a continuidade de $\nabla^{2} f$, obtemos
+\[
+d^{T} \nabla^{2} f(x)d \geq 0,
+\]
+para todo $x \in C$.
+
+
+\end{proof}
 
 \newpage
 
