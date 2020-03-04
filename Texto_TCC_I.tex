@@ -475,7 +475,7 @@ Portanto, concluímos que $\Vert (1-t)u + tv \Vert < r$, para todo $t \in (0,1)$
 
 Agora, dado um conjunto $S \subset \RR^{n}$ e um ponto $z \in \RR^{n}$, considere o problema de encontrar um ponto de $S$ mais próximo de $z$, em outras palavras, queremos minimizar a distânica de um ponto a um conjunto. Assim, os próximos resultados garantem a existência da solução no caso de $S$ ser um conjunto fechado e sua unicidade se, além de fechado, $S$ for convexo. Tal solução é chamada de projeção de $z$ sobre $S$, e denotada por $\proj_{S} (z)$. 
 
-\begin{lema} {\cite[p. 51]{Ademir2013}} 
+\begin{lema} 
 Seja $S \subset \RR^{n}$ um conjunto fechado não vazio. Dado $z \in \RR^{n}$, existe $\bar{z} \in S$ tal que
 \[
 \Vert z - \bar{z} \Vert \leq \Vert z - x \Vert,
@@ -483,11 +483,22 @@ Seja $S \subset \RR^{n}$ um conjunto fechado não vazio. Dado $z \in \RR^{n}$, e
 para todo $x \in S$.
 \end{lema}
 \begin{proof}
-Por demosntrar.
+Seja $\alpha = \inf \{\Vert z-x \Vert \mid x \in S\}$. Então, para cada $n \in \mathds{N}$, existe $x^{n} \in S$ tal que
+\[ \label{eq:1_lema_existencia_projecao}
+\alpha \leq \Vert z-x^{n} \Vert \leq \alpha + \dfrac{1}{n}. 
+\]
+
+Em particular, $\Vert z-x^{n} \Vert \leq \alpha + 1$, para todo $n \in \mathds{N}$. Logo, existe uma subsequência $(x^{n^{k}})$ convergente, com $k \in \mathds{N}'$, tal que $x^{n^{k}} \longrightarrow \bar{z}$. Como $S$ é fechado temos que $\bar{z} \in S$. Além disso, 
+\[
+\Vert z-x^{n} \Vert \longrightarrow \Vert z-\bar{z} \Vert .
+\]
+
+Mas, por \eqref{eq:1_lema_existencia_projecao}, temos que $\Vert z-x^{n} \Vert \longrightarrow \alpha $, e portanto, concluímos que $\Vert z-\bar{z} \Vert = \alpha$.
+
 \end{proof}
 
 
-\begin{lema} {\cite[p. 52]{Ademir2013}}  \label{lema_existenciaprojecao_convexidade}
+\begin{lema} {\cite[p. 52]{Ademir2013}}  \label{lema_unicidadeprojecao_convexidade}
 Seja $S \subset \RR^{n}$ um conjunto não vazio, convexo e fechado. Dado $z \in \RR^{n}$, existe um único $\bar{z} \in S$ tal que
 \[
 \Vert z - \bar{z} \Vert \leq \Vert z - x \Vert
@@ -499,7 +510,7 @@ Por demonstrar.
 \end{proof}
 
 
-No \Cref{lema_existenciaprojecao_convexidade} denotamos $\bar{z} = \proj_{S} (z)$.
+No \Cref{lema_unicidadeprojecao_convexidade} denotamos $\bar{z} = \proj_{S} (z)$.
 
 
 \begin{teo} {\cite[p. 53]{Ademir2013}} \label{lema_condicaoprojecao_convexidade}
