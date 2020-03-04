@@ -310,7 +310,7 @@ com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_
 
 %----------------------------------------------------------------------------------------------------------------------
 
-\section{Máquinas de Vetores Suporte - CSVM}
+\subsection{Formulação Matemática do Problema de Classificação - Margem Flexível (CSVM)}
 
 Situações reias dificilmente envolvem problemas cujos dados são linearmente separáveis. Em vista disso, faz-se necessário estender os conceitos e resultados estudados nas SVMs lineares de margem rígida para o caso de SVM com margem flexível, quando os dados não são linearmente separáveis. Para tanto, considere um conjunto de dados não linearmente sepavável como da \Cref{fig4:b}, isto é, não existe um hiperplano separador. 
 
@@ -407,30 +407,33 @@ f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m}
 
 \section{Otimização Convexa}
 
-Em otimização uma hipótese com ótimas consequências é a convexidade, pois ela permite concluir que minimizadores locais são globais e garante que pontos estacionários são minimizadores. A partir disso, os problemas de classificação podem ser formulados em termos de otimização convexa.
-Inicialmente, definimos um conjunto convexo e apresentamos alguns resultados importantes da análise convexa.
+Em otimização uma hipótese com ótimas consequências é a convexidade, pois ela garante que pontos estacionários são minimizadores e permite concluir que minimizadores locais são globais. A partir disso, os problemas de classificação podem ser formulados em termos de otimização convexa.
+Os principais conceitos definidos neste capítulo são conjuntos convexos e funções convexas e a partir deles apresentamos alguns resultados importantes da análise convexa. Para desenvolvimento desse capítulo as principais referências utilizadas foram \textcite{Evelin2017,Ademir2013,Izmailov2014ac}.
+
 
 \subsection{Conjuntos Convexos}
 
-\begin{defi} [\textcite{Ademir2013}, p. 49]
+\begin{defi} 
 Um conjunto $C \subset \RR^{n}$ é dito convexo quando dados $x,y \in C$, o segmento $[x,y] = \{ (1-t)x + ty \mid t\in [0,1] \}$ estiver inteiramente contido em $C$.
 \end{defi}
 
-A \Cref{fig_conjuntos_convexos} apresenta a noção de convexidade de conjuntos, ilustrando um conjunto convexo e outro não convexo. Em outras palavras um conjunto convexo se caracteriza por conter todos os segmentos cujos extremos pertencem ao conjunto, o que não ocorre no segundo conjunto por exemplo.
+A \Cref{fig:conjuntos_convexos} apresenta a noção de convexidade de conjuntos, ilustrando um conjunto convexo e outro não convexo. Em outras palavras um conjunto convexo se caracteriza por conter todos os segmentos cujos extremos pertencem ao conjunto, o que não ocorre no segundo conjunto da \Cref{fig:conjuntos_convexos} por exemplo.
+
 
 %criar minha própria figura
 \begin{figure}[!h] 
 	\centering
 	\includegraphics[width=0.40\textwidth]{conjunto_convexo}
-	\caption{ Exemplo de conjunto convexo e não convexo. \label{fig_conjuntos_convexos} \\ Fonte: \textcite{Evelin2017}}
+	\caption{ Exemplo de conjunto convexo e não convexo. \label{fig:conjuntos_convexos} \\ Fonte: \textcite{Evelin2017}}
 \end{figure}
+
 
 Alguns exemplos de conjuntos convexos são o conjunto vazio, o espaço $\RR^{n}$, qualquer hiperplano do $\RR^{n}$ e um conjunto que contém um ponto só.
 
-Vejamos agora alguns resultados importantes da análise convexa.
+A seguir, apresentamos alguns resultados importantes da análise convexa.
 
-%OBS.: Apresentar a definição de norma.
-\begin{lema}[\textcite{Ademir2013}, p. 50]
+%{\cite[p. 50]{Ademir2013}}
+\begin{lema}  
 Considere $\Vert \cdot \Vert$ a norma euclidiana em $\RR^{n}$. Sejam $u,v \in \RR^{n}$ com $u\neq v$. Se $\Vert u \Vert = \Vert v \Vert = r$, então $\Vert (1-t)u + tv \Vert < r$, para todo $t \in (0,1)$.
 \end{lema}
 
@@ -441,15 +444,15 @@ Seja $t \in (0,1)$ e suponha que $\Vert u \Vert = \Vert v \Vert = r$. Aplicando 
 \]
 
 Agora, suponha por absurdo que $\Vert (1-t)u + tv \Vert = r$. Então
-\[ \label{eq:lema1_convexidade_1}
-(1-t)^{2} u^{T}u + 2t(1-t)u^{T}v + t^{2}v^{T}v = \Vert (1-t)u + tv \Vert = r^{2}.
+\[ \label{eq:1_lema1_convexidade}
+(1-t)^{2} u^{T}u + 2t(1-t)u^{T}v + t^{2}v^{T}v = \Vert (1-t)u + tv \Vert^{2} = r^{2}.
 \]
 
-Como $u^{T}u = v^{T}v = r^{2}$ e $t \in (0,1)$, substituindo e desenvolvendo \eqref{eq:lema1_convexidade_1}, obtemos 
+Como $u^{T}u = v^{T}v = r^{2}$ e $t \in (0,1)$, substituindo em \eqref{eq:1_lema1_convexidade} e desenvolvendo, obtemos 
 \begin{align}
 r^{2} &= (1-2t+t^{2}) u^{T}u + (2t-2t^{2})u^{T}v + t^{2}v^{T}v \\
 &= (1-2t+t^{2}) r^{2} + (2t-2t^{2})u^{T}v + t^{2}r^{2} \\
-&= r^{2} - 2tr^{2} + t^{2}r^{2} + (2t-2t^{2})u^{T}v + t^{2}r^{2} .\\
+&= r^{2} - 2tr^{2} + t^{2}r^{2} + (2t-2t^{2})u^{T}v + t^{2}r^{2} .
 \end{align}
 
 Evidenciando $r^{2}$, temos
@@ -457,68 +460,93 @@ Evidenciando $r^{2}$, temos
 (2t-2t^{2})r^{2} = (2t-2t^{2})u^{T}v,
 \]
 e, portanto,
-\[ \label{eq:lema1_convexidade_2}
+\[ \label{eq:2_lema1_convexidade}
 r^{2} = u^{T}v.
 \]
 
-Assim, por \eqref{eq:lema1_convexidade_2},
+Assim, por \eqref{eq:2_lema1_convexidade},
 \[
 \Vert u-v \Vert^{2} = u^{T}u - 2u^{T}v + v^{T}v = r^{2} - 2r^{2} + r^{2} = 0,
 \]
-o que é uma contradição, pois por hipótese $u \neq v$. Portanto, concluímos que $\Vert (1-t)u + tv \Vert < r$, para todo $t \in (0,1)$.
+o que é uma contradição, pois por hipótese $u \neq v$. 
+
+Portanto, concluímos que $\Vert (1-t)u + tv \Vert < r$, para todo $t \in (0,1)$.
 \end{proof}
 
 Agora, dado um conjunto $S \subset \RR^{n}$ e um ponto $z \in \RR^{n}$, considere o problema de encontrar um ponto de $S$ mais próximo de $z$, em outras palavras, queremos minimizar a distânica de um ponto a um conjunto. Assim, os próximos resultados garantem a existência da solução no caso de $S$ ser um conjunto fechado e sua unicidade se, além de fechado, $S$ for convexo. Tal solução é chamada de projeção de $z$ sobre $S$, e denotada por $\proj_{S} (z)$. 
 
-\begin{lema} [\textcite{Ademir2013}, p. 51]
+\begin{lema} {\cite[p. 51]{Ademir2013}} 
 Seja $S \subset \RR^{n}$ um conjunto fechado não vazio. Dado $z \in \RR^{n}$, existe $\bar{z} \in S$ tal que
 \[
 \Vert z - \bar{z} \Vert \leq \Vert z - x \Vert,
 \]
 para todo $x \in S$.
 \end{lema}
+\begin{proof}
+Por demosntrar.
+\end{proof}
 
-\begin{lema} [\textcite{Ademir2013}, p. 52] \label{lema_existenciaprojecao_convexidade}
+
+\begin{lema} {\cite[p. 52]{Ademir2013}}  \label{lema_existenciaprojecao_convexidade}
 Seja $S \subset \RR^{n}$ um conjunto não vazio, convexo e fechado. Dado $z \in \RR^{n}$, existe um único $\bar{z} \in S$ tal que
 \[
 \Vert z - \bar{z} \Vert \leq \Vert z - x \Vert
 \]
 para todo $x \in S$.
 \end{lema}
+\begin{proof}
+Por demonstrar.
+\end{proof}
+
 
 No \Cref{lema_existenciaprojecao_convexidade} denotamos $\bar{z} = \proj_{S} (z)$.
 
-\begin{teo} [\textcite{Ademir2013}, p. 53] \label{lema_condicaoprojecao_convexidade}
+
+\begin{teo} {\cite[p. 53]{Ademir2013}} \label{lema_condicaoprojecao_convexidade}
 Sejam $S \subset \RR^{n}$ um conjunto não vazio, convexo e fechado, $z \in \RR^{n}$ e $\bar{z} = \proj_{S} (z)$. Então, 
 \[
 (z - \bar{z})^{T}(x - \bar{z}) \leq 0 ,
 \]
 para todo $x \in S$.
 \end{teo}
+\begin{proof}
+Por demonstrar.
+\end{proof}
+
 
 O \Cref{lema_condicaoprojecao_convexidade} estabelece uma condição necessária e suficiente para caracterizar a projeção. Este resultado é provado no lema seguinte.
 
-\begin{lema} [\textcite{Ademir2013}, p. 54] \label{lema_defineprojecao_convexidade}
+
+\begin{lema} {\cite[p. 54]{Ademir2013}}  \label{lema_defineprojecao_convexidade}
 Sejam $S \subset \RR^{n}$ um conjunto não vazio, convexo e fechado e $z \in \RR^{n}$. Se $\bar{z} \in S$ satisfaz
 \[
 (z - \bar{z})^{T}(x - \bar{z}) \leq 0 ,
 \]
 para todo $x \in S$, então $\bar{z} = \proj_{S} (z)$.
 \end{lema}
+\begin{proof}
+Por demonstrar.
+\end{proof}
+
 
 O \Cref{lema_defineprojecao_convexidade} fornece uma condição necessária de otimalidade ao minimizar uma função em um conjunto convexo fechado.
 
-\begin{lema} [\textcite{Ademir2013}, p. 54]
+
+\begin{lema} {\cite[p. 54]{Ademir2013}}
 Sejam $f: \RR^{n} \rightarrow \RR$ uma função diferenciável e $C \subset \RR^{n}$ convexo e fechado. Se $x^{*} \in C$ é minimizador local de $f$ em $C$, então
 \[
 \proj_{C} (x^{*} - \alpha \nabla f(x^{*})) = x^{*} ,
 \]
 para todo $\alpha \geq 0$.
 \end{lema}
+\begin{proof}
+Por demonstrar.
+\end{proof}
 
+%----------------------------------------------------------------------------------------------------------------------------
 \subsection{Funções Convexas}
 
-\begin{defi} [\textcite{Ademir2013}, p. 56] \label{defi:funcao_convexa}
+\begin{defi} {\cite[56]{Ademir2013}},  \label{defi:funcao_convexa}
 Seja $C \subset \RR^{n}$ um conjunto convexo. Dizemos que a função $f: \RR^{n} \rightarrow \RR$ é convexa em $C$ quando
 \[
 f((1-t)x + ty) \leq (1-t)f(x) + tf(y),
@@ -526,7 +554,9 @@ f((1-t)x + ty) \leq (1-t)f(x) + tf(y),
 para todos $x,y \in C$ e $t \in [0,1]$.
 \end{defi}
 
+
 A noção geométrica da \Cref{defi:funcao_convexa} é apresentada na \Cref{fig_funcao_convexa}, em que qualquer arco do gráfico de uma função convexa está sempre abaixo do segmento que liga as extremidades.
+
 
 %criar minha própria imagem
 \begin{figure}[!h] 
@@ -534,6 +564,7 @@ A noção geométrica da \Cref{defi:funcao_convexa} é apresentada na \Cref{fig_
 	\includegraphics[width=0.85\textwidth]{funcao_convexa}
 	\caption{ Função Convexa. \label{fig_funcao_convexa} \\ Fonte: \textcite{Evelin2017}}
 \end{figure}
+
 
 \begin{obs}
 Todo problema de maximização
@@ -550,15 +581,19 @@ pode ser transformado em um problema de minimização equivalente
  \]
 \end{obs}
 
-\begin{defi} [\textcite{Izmailov2014ac}, p. 80]
+
+\begin{defi}
 Se $D \subset \RR^{n}$ é um conjunto convexo, dizemos que $f: D \rightarrow \RR $ é uma \emph{função côncava} em $D$, quando a função $(-f)$ é convexa em $D$.
 \end{defi}
 
+
 Assim, maximizar uma função côncava num conjunto convexo equivale a minimizar uma função convexa num conjunto convexo.
+
 
 O teorema seguinte justifica o fato da convexidade ser uma propriedade tão importante em otimização.
 
-\begin{teo} [\textcite{Ademir2013}, p. 57]
+
+\begin{teo} {\cite[p. 57]{Ademir2013}}
 Sejam $C \subset \RR^{n}$ um conjunto convexo e $f:C \rightarrow \RR$ uma função convexa. Se $x^{*} \in C$ é minimizador local de $f$, então $x^{*}$ é minimizador global de $f$.
 \end{teo}
 \begin{proof}
@@ -577,15 +612,18 @@ donde segue que $f(x^{*}) \leq f(y)$.
 Portanto, $x^{*}$ é minimizador global de $f$.
 \end{proof}
 
+
 A seguir apresentamos outra forma de caracterizar a convexidade de uma função quando temos hipóteses de diferenciabilidade.
 
-\begin{teo} [\textcite{Ademir2013}, p. 58] \label{teo:diferenciabilidade_e_convexidade}
+
+\begin{teo} {\cite[p. 58]{Ademir2013}} \label{teo:diferenciabilidade_e_convexidade}
 Sejam $f: \RR^{n} \rightarrow \RR $ uma função diferenciável e $C \in \RR^{n}$ um conjunto convexo. A função $f$ é convexa em $C$ se, e somente se, 
 \[
 f(y) \geq f(x) + \nabla f(x)^{T}(y-x),
 \]
 para todos $x, y \in C$.
 \end{teo}
+
 
 \begin{proof}
 Seja $f$ uma função convexa. Para $x,y \in C$ e $t \in (0,1]$ quaisquer, temos $(1-t)x + ty = x + t(y-x)$, pois $C$ é convexo. Assim, definindo $d = y-x$, temos que $x + td \in C$ e
@@ -631,12 +669,32 @@ Portanto, a função $f$ é convexa em $C$.
 \end{proof}
 
 
+\begin{teo}(\textbf{Taylor de Segunda Ordem}) {\cite[p.26]{Ademir2013}} \label{teo:Taylor_segunda_ordem}
+Se $f:\RR^{n} \rightarrow \RR$ é uma função duas vezes diferenciável e $\xbar \in \RR^{n}$, então
+\[
+f(x) = f(\xbar) + \nabla f(\xbar)^{T}(x-\xbar) + \dfrac{1}{2}(x-\xbar)^{T}\nabla^{2} f(\xbar)(x-\xbar) + r(x),
+\] 
+com $\lim_{x \rightarrow \xbar}\dfrac{r(x)}{\Vert x - \xbar \Vert^{2}} = 0$.
+\end{teo}
+
+
+\begin{teo}(\textbf{Taylor com Resto de Lagrange}) {\cite[p.26]{Ademir2013}} \label{teo:Taylor_com_resto_lagrange}
+Considere $f: \RR^{n} \rightarrow \RR$ uma função de classe $\mathcal{C}^{1}$ e $\xbar, d \in \RR^{n}$. Se $f$ é duas vezes diferenciável no segmento $(\xbar , \xbar + d)$, então existe $t \in (0,1)$ tal que
+\[
+f(\xbar + d) = f(\xbar) + \nabla f(\xbar)^{T} d + \dfrac{1}{2}d^{T}\nabla^{2} f(\xbar + td)d .
+\]
+\end{teo}
+
+
 \begin{lema} \label{lema:auxiliar_para_teo_hessiana_convexidade}
 Sejam $C \subset \RR^{n}$ convexo, $x \in \bar{C}$ e $y \in \interior C$. Então, $(x,y] \subset \interior C$.
 \end{lema}
+\begin{proof}
+Por demonstrar.
+\end{proof}
 
 
-\begin{teo} [\textcite{Ademir2013}, p. 60] \label{teo:hessiana_convexidade}
+\begin{teo} {\cite[p.60]{Ademir2013}} \label{teo:hessiana_convexidade}
 Sejam $f:\RR^{n} \rightarrow \RR $ uma função de classe $\mathcal{C}^{2}$ e $C \subset \RR^{n}$ um conjunto convexo com interior não vazio. A função $f$ é convexa em $C$ se, e somente se, a Hessiana $\nabla^{2} f(x)$ é semidefinida positiva para todo $x \in C$.
 \end{teo}
 \begin{proof}
@@ -649,7 +707,7 @@ e assim,
 f(x+td) -f(x) - t\nabla f(x)^{T} d \geq 0 . 
 \]
 
-Aplicando o Teorema da Expansão de Taylor de segunda ordem para $f(x+td)$, temos
+Aplicando o \Cref{teo:Taylor_segunda_ordem} para $f(x+td)$, temos
 \[
 f(x+td) = f(x) + t\nabla f(x)^{T}d + \dfrac{t^{2}}{2}d^{T} \nabla^{2} f(x)d + r(t^{2}) ,
 \]
@@ -675,8 +733,22 @@ d^{T} \nabla^{2} f(x)d \geq 0,
 \]
 para todo $x \in C$.
 
+Reciprocamente, dados $x \in C$ e $d \in \RR^{n}$ tal que $x+d \in C$, pelo \Cref{teo:Taylor_com_resto_lagrange},
+\[
+f(x+d) = f(x) + \nabla f(x)^{T}d + \dfrac{1}{2}d^{T} \nabla^{2} f(x+td)d
+\]
+para algum $t \in (0,1)$. Como $\nabla ^{2}f(x+td) \geq 0$, concluímos que 
+\[
+f(x+d) \geq f(x) + \nabla f(x)^{T}d .
+\]
 
+Logo, pelo \Cref{teo:diferenciabilidade_e_convexidade}, $f$ é convexa.
 \end{proof}
+
+
+
+
+
 
 \newpage
 
