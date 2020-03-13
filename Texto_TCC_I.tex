@@ -407,57 +407,134 @@ f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m}
 
 \section{Conceitos de Otimização}
 
-Considere o seguinte problema de encontrar um minimizador de $f$
+Nesta seção abordaremos alguns conceitos e resultados de Otimização para o problema
 \[ \label{problema_geral_otimizacao}
 \begin{aligned}
 \min_{x} & \quad f(x) \\
-\text{s.a.} & \quad x \in \Omega ,
+\text{s.a} & \quad g(x) \leq 0 , \\
+& \quad h(x) = 0,
 \end{aligned}
 \]
-em que $f: \RR^{n} \rightarrow \RR$ é uma função arbitrária e $\Omega \in \RR^{n}$ é um conjunto qualquer.
+em que a função objetivo $f: \RR^{n} \rightarrow \RR$ e as funções que definem as restrições $g: \RR^{n} \rightarrow \RR^{m}$ e $h:\RR^{n} \rightarrow \RR^{p}$ são continuamente diferenciáveis. O conjunto
+\[
+\Omega := \{ x \in \RR^{n} \mid g(x)\leq 0 , h(x)=0 \}
+\]
+é chamado de \emph{conjunto viável} do problema \eqref{problema_geral_otimizacao}, e os pontos de $\Omega$ são chamados de \emph{pontos viáveis}.
 
 
 \begin{defi} \label{defi:definicao_minimizador}
-Considere uma função $f:\RR^{n} \rightarrow \RR$ e $x^{*} \in \Omega \subset \RR^{n}$. Dizemos que $x^{*}$ é um \emph{minimizador local} de $f$ em $\Omega$ quando existe $\delta >0$, tal que 
+Dizemos que $x^{*}$ é uma solução global do problema \eqref{problema_geral_otimizacao}, ou seja, um \emph{minimizador global} de $f$ em $\Omega$, quando
 \[
 f(x^{*}) \leq f(x)
 \]
-para todo $x \in B(x^{*}, \delta) \cap \Omega $. 
-
-Caso $f(x^{*}) \leq f(x)$, para todo $x \in \Omega$, $x^{*}$ é dito \emph{minimizador global} de $f$ em $\Omega$.
+para todo $x \in \Omega $. 
 \end{defi}
 
-
-O conjunto $\Omega$ será chamado \emph{conjunto viável} do problema, os pontos de $\Omega$ serão chamados de \emph{pontos viáveis}, e $f$ será chamada \emph{função objetivo}.
-
-
-Quando as desigualdades na \Cref{defi:definicao_minimizador} forem estritas para $x \neq x^{*}$, dizemos que $x^{*}$ é minimizador estrito. Quando $\Omega = \RR^{n}$ dizemos que o problema \eqref{problema_geral_otimizacao} é \emph{irrestrito}, e quando $\Omega \neq \RR^{n}$ falamos de \emph{otimização com restrições}.
+%Quando as desigualdades na \Cref{defi:definicao_minimizador} forem estritas para $x \neq x^{*}$, dizemos que $x^{*}$ é minimizador estrito. Quando $\Omega = \RR^{n}$ dizemos que o problema \eqref{problema_geral_otimizacao} é \emph{irrestrito}, e quando $\Omega \neq \RR^{n}$ falamos de \emph{otimização com restrições}.
 
 
 \begin{defi}
-Dizemos que $\bar{v} \in [-\infty, +\infty )$ definido po
+Dizemos que $x^{*} \in [-\infty, +\infty )$ definido por
 \[
-\bar{v} = \inf_{x \in \Omega} f(x)
+x^{*} = \inf_{x \in \Omega} f(x)
 \]
 é o \emph{valor ótimo} do problema \eqref{problema_geral_otimizacao}.
 \end{defi}
 
-
-Dizemos que um conjunto é \emph{poliedral} quando ele pode ser representado como o conjunto das soluções de um sistema finito de equações e inequações lineares. Por exemplo,
+Uma classe especial de problemas de otimização se refere ao caso em que $\Omega$ é um conjunto poliedral. Assim, dizemos que um conjunto viável é \emph{poliedral} quando ele pode ser representado como o conjunto das soluções de um sistema finito de equações e inequações lineares. Por exemplo,
 \[
-\Omega = \{ x \in \RR^{n} \mid Ax = a, Bx \leq b \},
+\Omega = \{ x \in \RR^{n} \mid  Ax \leq b, Mx = r\},
 \]
-em que $A \in \RR^{lxn}$, $B \in \RR^{mxn}$, $a \in \RR^{l}$, $b \in \RR^{m}$. Neste contexto, dizemos que $h:\RR^{n} \rightarrow \RR^{l}$, $h(x) = Ax-a$, é uma função afim, assim como, $g:\RR^{n}\rightarrow \RR^{m}$, $g(x) = Bx - b$.
+em que $A \in \RR^{mxn}$, $M\in \RR^{pxn}$, $b \in \RR^{m}$, $r \in \RR^{p}$. Neste contexto, dizemos que $g:\RR^{n} \rightarrow \RR^{m}$, com $g(x) = Ax-b$, e $h:\RR^{n}\rightarrow \RR^{p}$, com $h(x) = Mx - r$, são funções afins.
 
-Uma função $f:\RR^{n} \rightarrow \RR$ definida por
+%Uma função $f:\RR^{n} \rightarrow \RR$ definida por
+%\[
+%f(x) = x^{T}Qx + c^{T}x ,
+%\]
+%em que $Q \in \RR^{nxn}$, $c \in \RR^{n}$, é chamada \emph{função quadrática}.
+
+
+Se a função objetivo $f$ for linear, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação linear}, e se $f$ for uma função quadrática, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação quadrática}. Ademais, quando $\Omega$ é um conjunto convexo e $f$ é uma função convexa, dizemos que \eqref{problema_geral_otimizacao} é um problema de \emph{programação convexo}. 
+
+%Veremos mais a frente que no caso em que $Q$ é uma matriz semidefinida positiva, os problemas quadráticos são convexos.
+
+\begin{defi}
+Dado $\xbar \in \Omega$, dizemos que uma restrição de desigualdade $g_{i}$ é ativa em $\xbar$ quando $g_{i}(\xbar)=0$. Caso $g_{i}(\xbar)<0$, dizemos que $g_{i}$ é inativa em $\xbar$. 
+
+O conjunto dos índices das restrições de desigualdade ativas é denotado por
 \[
-f(x) = x^{T}Qx + c^{T}x ,
+I(\xbar) = \{ i \mid g_{i}(\xbar)=0 \} .
 \]
-em que $Q \in \RR^{nxn}$, $c \in \RR^{n}$, é chamada \emph{função quadrática}.
+\end{defi}
 
-Uma classe especial de problemas de otimização se refere ao caso em que $\Omega$ é um conjunto poliedral. Se além disso $f$ for uma função quedrática, \eqref{problema_geral_otimizacao} se chama problema de \emph{programação quadrática}, e se $f$ for linear, o problema é de \emph{programação linear}.
 
-Ademais, quando $\Omega$ é um conjunto convexo e $f$ é uma função convexa, dizemos que \eqref{problema_geral_otimizacao} é um \emph{problema de programação convexo}. Veremos mais a frente que no caso em que $Q$ é uma matriz semidefinida positiva, os problemas quadráticos são convexos.
+\begin{defi} 
+Um ponto $x^{*} \in \RR^{n} $ é dito \emph{estacionário} para o problema \eqref{problema_geral_otimizacao} quando existirem $\mu^{*} \in \RR^{m} $, $\lambda^{*} \in \RR^{p} $ (\emph{multiplicadores de Lagrange}) tais que
+\[
+\begin{aligned} \label{eq:1_ponto_estacionario}
+\nabla f(x^{*})+\sum_{i=1}^{m} \mu_{i}^{*} \nabla g_{i}(x^{*})+\sum_{i=1}^{p} \lambda_{i}^{*} \nabla h_{i}(x^{*}) & =0,  \\ 
+g(x^{*}) \leq 0, h(x^{*}) & =0,   \\ \mu_{i}^{*} & \geq 0, \quad i= 1, \ldots , m,   \\ 
+\lambda_{i}^{*} g_{i}(x^{*}) & =0, \quad i= 1, \ldots , m.  
+\end{aligned}
+\]
+\end{defi}
+%ver como enumerar cada condição separadamente, pois não está aceitando
+As condições em \eqref{eq:1_ponto_estacionario} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). Assim, um ponto é dito estacionário quando satisfaz as condições KKT. Sob determinadas hipóteses de qualificação, as condições KKT são satisfeitas em um ponto que seja minimizador.
+
+\begin{defi}
+Dizemos que as restrições $g(x) \leq 0$ e $h(x)=0$ cumprem uma condição de qualificação em $x^{*} \in \Omega$ quando, dada qualquer função diferenciável $f$ que tenha mínimo em $x^{*}$, relativamente a $\Omega$, sejam satisfeitas as condições de otimalidade de KKT.
+\end{defi}
+Logo, um ponto $x \in \RR^{n}$ é dito qualificado quando atende uma condição de qualificação. Vejamos então algumas condições de qualificação para o problema \eqref{problema_geral_otimizacao}.
+
+\textbf{Condição de qualificação de Slater:} Dizemos que a condição de qualificação de Slater é satisfeita quando $h$ é linear, cada componente $g_{i}$, $i=1, \ldots , m$, é convexa e existe $\tilde{x} \in \Omega$ tal que $h(\tilde{x})=0$ e $g(\tilde{x})<0$.
+
+\textbf{Condição de qualificação de independência linear:} Dizemos que a condição de qualificação de independência linear (LICQ) é satisfeita em $\xbar$ quando o conjunto formado pelos gradientes das restrições de igualdade e das restrições de desigualdade ativas é linearmente independente, isto é, 
+\[
+\{ \nabla g_{i}(\xbar) \mid i \in I(\xbar) \} \cup \{ \nabla h_{i}(\xbar), i=1, \ldots , p \} \quad \text{é LI}.
+\] 
+
+\begin{teo}(\emph{KKT}) Seja $x^{*} \in \RR^{n}$ um minimizador local do problema \eqref{problema_geral_otimizacao} e suponha que seja satisfeita uma condição de qualificação. Então existem vetores $\mu^{*} \in \RR^{m}$ e $\lambda^{*} \in \RR^{p}$ tais que $(x^{*} , \mu^{*} , \lambda^{*} )$ cumpre \eqref{eq:1_ponto_estacionario}.
+\end{teo}
+
+É importante observar que se não for verificada nenhuma condição de qualificação para as restrições, podemos ter minimizadores que não cumprem KKT, o que dificulta a caracterização de tais pontos. Vejamos a seguir um exemplo que justifica essa afirmação.
+
+\begin{exem}
+Considere o problema 
+\[
+\begin{aligned}
+\min_{x} & \quad f(x)=x_{1} \\
+\text{s.a} & \quad g(x)=-x_{1}^{3} + x_{2} \leq 0 , \\
+& \quad h(x) = -x_{2} \leq 0.
+\end{aligned}
+\]
+
+O ponto $x^{*} = 0$ é o minimizador deste problema, mas não cumpre as condições KKT. De fato, observe que $0\leq x_{2} \leq x_{1}^{3}$, o que implica em $f(x)= x_{1} \geq 0 = f(x^{*})$, para todo ponto viável $x$.
+
+No entanto, 
+\[
+\nabla f(x^{*}) = \left( \begin{array}{cc} 1 \\ 0 \end{array} \right) , \nabla g(x^{*}) = \left( \begin{array}{cc} 0 \\ 1 \end{array} \right) \quad \text{e} \quad \nabla h(x^{*}) = \left( \begin{array}{cc} 0 \\ -1 \end{array} \right) ,
+\]
+e, portanto, as condições KKT não são satisfeitas, pois não existem $\mu^{*} \in \RR$ E $\lambda^{*} \in \RR$ tais que 
+\[
+\left( \begin{array}{cc} 1 \\ 0 \end{array} \right) + \mu^{*} \left( \begin{array}{cc} 0 \\ 1 \end{array} \right) + \lambda^{*} \left( \begin{array}{cc} 0 \\ -1 \end{array} \right) = \left( \begin{array}{cc} 0 \\ 0 \end{array} \right) .
+\]
+
+\end{exem}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 %-------------------------------------------------------------------------------------------------------------------------
