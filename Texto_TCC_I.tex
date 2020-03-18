@@ -310,7 +310,7 @@ com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_
 
 %----------------------------------------------------------------------------------------------------------------------
 
-\section{Máquinas de Vetores Suporte - CSVM}
+\subsection{Formulação Matemática do Problema de Classificação - Margem Flexível (CSVM)}
 
 Situações reias dificilmente envolvem problemas cujos dados são linearmente separáveis. Em vista disso, faz-se necessário estender os conceitos e resultados estudados nas SVMs lineares de margem rígida para o caso de SVM com margem flexível, quando os dados não são linearmente separáveis. Para tanto, considere um conjunto de dados não linearmente sepavável como da \Cref{fig4:b}, isto é, não existe um hiperplano separador. 
 
@@ -402,35 +402,173 @@ f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m}
 \]
 %Assim o Teorema de Programação Quadrática (1.34) garante a existência de um minimizador global para o problema \eqref{eq:problemaCSVM}.
 
+%-------------------------------------------------------------------------------------------------------------------------
+
+
+\section{Conceitos de Otimização}
+
+Nesta seção abordaremos alguns conceitos e resultados de Otimização para o problema
+\[ \label{problema_geral_otimizacao}
+\begin{aligned}
+\min_{x} & \quad f(x) \\
+\text{s.a} & \quad g(x) \leq 0 , \\
+& \quad h(x) = 0,
+\end{aligned}
+\]
+em que a função objetivo $f: \RR^{n} \rightarrow \RR$ e as funções que definem as restrições $g: \RR^{n} \rightarrow \RR^{m}$ e $h:\RR^{n} \rightarrow \RR^{p}$ são continuamente diferenciáveis. O conjunto
+\[
+\Omega := \{ x \in \RR^{n} \mid g(x)\leq 0 , h(x)=0 \}
+\]
+é chamado de \emph{conjunto viável} do problema \eqref{problema_geral_otimizacao}, e os pontos de $\Omega$ são chamados de \emph{pontos viáveis}.
+
+
+\begin{defi} \label{defi:definicao_minimizador}
+Dizemos que $x^{*}$ é uma solução global do problema \eqref{problema_geral_otimizacao}, ou seja, um \emph{minimizador global} de $f$ em $\Omega$, quando
+\[
+f(x^{*}) \leq f(x)
+\]
+para todo $x \in \Omega $. 
+\end{defi}
+
+%Quando as desigualdades na \Cref{defi:definicao_minimizador} forem estritas para $x \neq x^{*}$, dizemos que $x^{*}$ é minimizador estrito. Quando $\Omega = \RR^{n}$ dizemos que o problema \eqref{problema_geral_otimizacao} é \emph{irrestrito}, e quando $\Omega \neq \RR^{n}$ falamos de \emph{otimização com restrições}.
+
+
+\begin{defi}
+Dizemos que $x^{*} \in [-\infty, +\infty )$ definido por
+\[
+x^{*} = \inf_{x \in \Omega} f(x)
+\]
+é o \emph{valor ótimo} do problema \eqref{problema_geral_otimizacao}.
+\end{defi}
+
+Uma classe especial de problemas de otimização se refere ao caso em que $\Omega$ é um conjunto poliedral. Assim, dizemos que um conjunto viável é \emph{poliedral} quando ele pode ser representado como o conjunto das soluções de um sistema finito de equações e inequações lineares. Por exemplo,
+\[
+\Omega = \{ x \in \RR^{n} \mid  Ax \leq b, Mx = r\},
+\]
+em que $A \in \RR^{mxn}$, $M\in \RR^{pxn}$, $b \in \RR^{m}$, $r \in \RR^{p}$. Neste contexto, dizemos que $g:\RR^{n} \rightarrow \RR^{m}$, com $g(x) = Ax-b$, e $h:\RR^{n}\rightarrow \RR^{p}$, com $h(x) = Mx - r$, são funções afins.
+
+%Uma função $f:\RR^{n} \rightarrow \RR$ definida por
+%\[
+%f(x) = x^{T}Qx + c^{T}x ,
+%\]
+%em que $Q \in \RR^{nxn}$, $c \in \RR^{n}$, é chamada \emph{função quadrática}.
+
+
+Se a função objetivo $f$ for linear, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação linear}, e se $f$ for uma função quadrática, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação quadrática}. Ademais, quando $\Omega$ é um conjunto convexo e $f$ é uma função convexa, dizemos que \eqref{problema_geral_otimizacao} é um problema de \emph{programação convexo}. 
+
+%Veremos mais a frente que no caso em que $Q$ é uma matriz semidefinida positiva, os problemas quadráticos são convexos.
+
+\begin{defi}
+Dado $\xbar \in \Omega$, dizemos que uma restrição de desigualdade $g_{i}$ é ativa em $\xbar$ quando $g_{i}(\xbar)=0$. Caso $g_{i}(\xbar)<0$, dizemos que $g_{i}$ é inativa em $\xbar$. 
+
+O conjunto dos índices das restrições de desigualdade ativas é denotado por
+\[
+I(\xbar) = \{ i \mid g_{i}(\xbar)=0 \} .
+\]
+\end{defi}
+
+
+\begin{defi} 
+Um ponto $x^{*} \in \RR^{n} $ é dito \emph{estacionário} para o problema \eqref{problema_geral_otimizacao} quando existirem $\mu^{*} \in \RR^{m} $, $\lambda^{*} \in \RR^{p} $ (\emph{multiplicadores de Lagrange}) tais que
+\[
+\begin{aligned} \label{eq:1_ponto_estacionario}
+\nabla f(x^{*})+\sum_{i=1}^{m} \mu_{i}^{*} \nabla g_{i}(x^{*})+\sum_{i=1}^{p} \lambda_{i}^{*} \nabla h_{i}(x^{*}) & =0,  \\ 
+g(x^{*}) \leq 0, h(x^{*}) & =0,   \\ \mu_{i}^{*} & \geq 0, \quad i= 1, \ldots , m,   \\ 
+\lambda_{i}^{*} g_{i}(x^{*}) & =0, \quad i= 1, \ldots , m.  
+\end{aligned}
+\]
+\end{defi}
+%ver como enumerar cada condição separadamente, pois não está aceitando
+As condições em \eqref{eq:1_ponto_estacionario} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). Assim, um ponto é dito estacionário quando satisfaz as condições KKT. Sob determinadas hipóteses de qualificação, as condições KKT são satisfeitas em um ponto que seja minimizador.
+
+\begin{defi}
+Dizemos que as restrições $g(x) \leq 0$ e $h(x)=0$ cumprem uma condição de qualificação em $x^{*} \in \Omega$ quando, dada qualquer função diferenciável $f$ que tenha mínimo em $x^{*}$, relativamente a $\Omega$, sejam satisfeitas as condições de otimalidade de KKT.
+\end{defi}
+Logo, um ponto $x \in \RR^{n}$ é dito qualificado quando atende uma condição de qualificação. Vejamos então algumas condições de qualificação para o problema \eqref{problema_geral_otimizacao}.
+
+\textbf{Condição de qualificação de Slater:} Dizemos que a condição de qualificação de Slater é satisfeita quando $h$ é linear, cada componente $g_{i}$, $i=1, \ldots , m$, é convexa e existe $\tilde{x} \in \Omega$ tal que $h(\tilde{x})=0$ e $g(\tilde{x})<0$.
+
+\textbf{Condição de qualificação de independência linear:} Dizemos que a condição de qualificação de independência linear (LICQ) é satisfeita em $\xbar$ quando o conjunto formado pelos gradientes das restrições de igualdade e das restrições de desigualdade ativas é linearmente independente, isto é, 
+\[
+\{ \nabla g_{i}(\xbar) \mid i \in I(\xbar) \} \cup \{ \nabla h_{i}(\xbar), i=1, \ldots , p \} \quad \text{é LI}.
+\] 
+
+\begin{teo}(\emph{KKT}) Seja $x^{*} \in \RR^{n}$ um minimizador local do problema \eqref{problema_geral_otimizacao} e suponha que seja satisfeita uma condição de qualificação. Então existem vetores $\mu^{*} \in \RR^{m}$ e $\lambda^{*} \in \RR^{p}$ tais que $(x^{*} , \mu^{*} , \lambda^{*} )$ cumpre \eqref{eq:1_ponto_estacionario}.
+\end{teo}
+
+É importante observar que se não for verificada nenhuma condição de qualificação para as restrições, podemos ter minimizadores que não cumprem KKT, o que dificulta a caracterização de tais pontos. Vejamos a seguir um exemplo que justifica essa afirmação.
+
+\begin{exem}
+Considere o problema 
+\[
+\begin{aligned}
+\min_{x} & \quad f(x)=x_{1} \\
+\text{s.a} & \quad g(x)=-x_{1}^{3} + x_{2} \leq 0 , \\
+& \quad h(x) = -x_{2} \leq 0.
+\end{aligned}
+\]
+
+O ponto $x^{*} = 0$ é o minimizador deste problema, mas não cumpre as condições KKT. De fato, observe que $0\leq x_{2} \leq x_{1}^{3}$, o que implica em $f(x)= x_{1} \geq 0 = f(x^{*})$, para todo ponto viável $x$.
+
+No entanto, 
+\[
+\nabla f(x^{*}) = \left( \begin{array}{cc} 1 \\ 0 \end{array} \right) , \nabla g(x^{*}) = \left( \begin{array}{cc} 0 \\ 1 \end{array} \right) \quad \text{e} \quad \nabla h(x^{*}) = \left( \begin{array}{cc} 0 \\ -1 \end{array} \right) ,
+\]
+e, portanto, as condições KKT não são satisfeitas, pois não existem $\mu^{*} \in \RR$ E $\lambda^{*} \in \RR$ tais que 
+\[
+\left( \begin{array}{cc} 1 \\ 0 \end{array} \right) + \mu^{*} \left( \begin{array}{cc} 0 \\ 1 \end{array} \right) + \lambda^{*} \left( \begin{array}{cc} 0 \\ -1 \end{array} \right) = \left( \begin{array}{cc} 0 \\ 0 \end{array} \right) .
+\]
+
+\end{exem}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 %-------------------------------------------------------------------------------------------------------------------------
 
+
 \section{Otimização Convexa}
 
-Em otimização uma hipótese com ótimas consequências é a convexidade, pois ela permite concluir que minimizadores locais são globais e garante que pontos estacionários são minimizadores. A partir disso, os problemas de classificação podem ser formulados em termos de otimização convexa.
-Inicialmente, definimos um conjunto convexo e apresentamos alguns resultados importantes da análise convexa.
+Em otimização uma hipótese com ótimas consequências é a convexidade, pois ela garante que pontos estacionários são minimizadores e permite concluir que minimizadores locais são globais. A partir disso, os problemas de classificação podem ser formulados em termos de otimização convexa.
+Os principais conceitos definidos neste capítulo são conjuntos convexos e funções convexas e a partir deles apresentamos alguns resultados importantes da análise convexa. Para desenvolvimento desse capítulo as principais referências utilizadas foram \textcite{Evelin2017,Ademir2013,Izmailov2014ac}.
+
 
 \subsection{Conjuntos Convexos}
 
-\begin{defi} [\textcite{Ademir2013}, p. 49]
+\begin{defi} 
 Um conjunto $C \subset \RR^{n}$ é dito convexo quando dados $x,y \in C$, o segmento $[x,y] = \{ (1-t)x + ty \mid t\in [0,1] \}$ estiver inteiramente contido em $C$.
 \end{defi}
 
-A \Cref{fig_conjuntos_convexos} apresenta a noção de convexidade de conjuntos, ilustrando um conjunto convexo e outro não convexo. Em outras palavras um conjunto convexo se caracteriza por conter todos os segmentos cujos extremos pertencem ao conjunto, o que não ocorre no segundo conjunto por exemplo.
+A \Cref{fig:conjuntos_convexos} apresenta a noção de convexidade de conjuntos, ilustrando um conjunto convexo e outro não convexo. Em outras palavras um conjunto convexo se caracteriza por conter todos os segmentos cujos extremos pertencem ao conjunto, o que não ocorre no segundo conjunto da \Cref{fig:conjuntos_convexos} por exemplo.
+
 
 %criar minha própria figura
 \begin{figure}[!h] 
 	\centering
 	\includegraphics[width=0.40\textwidth]{conjunto_convexo}
-	\caption{ Exemplo de conjunto convexo e não convexo. \label{fig_conjuntos_convexos} \\ Fonte: \textcite{Evelin2017}}
+	\caption{ Exemplo de conjunto convexo e não convexo. \label{fig:conjuntos_convexos} \\ Fonte: \textcite{Evelin2017}}
 \end{figure}
+
 
 Alguns exemplos de conjuntos convexos são o conjunto vazio, o espaço $\RR^{n}$, qualquer hiperplano do $\RR^{n}$ e um conjunto que contém um ponto só.
 
-Vejamos agora alguns resultados importantes da análise convexa.
+A seguir, apresentamos alguns resultados importantes da análise convexa.
 
-%OBS.: Apresentar a definição de norma.
-\begin{lema}[\textcite{Ademir2013}, p. 50]
+%{\cite[p. 50]{Ademir2013}}
+\begin{lema} \label{lema:1_convexidade}
 Considere $\Vert \cdot \Vert$ a norma euclidiana em $\RR^{n}$. Sejam $u,v \in \RR^{n}$ com $u\neq v$. Se $\Vert u \Vert = \Vert v \Vert = r$, então $\Vert (1-t)u + tv \Vert < r$, para todo $t \in (0,1)$.
 \end{lema}
 
@@ -441,15 +579,15 @@ Seja $t \in (0,1)$ e suponha que $\Vert u \Vert = \Vert v \Vert = r$. Aplicando 
 \]
 
 Agora, suponha por absurdo que $\Vert (1-t)u + tv \Vert = r$. Então
-\[ \label{eq:lema1_convexidade_1}
-(1-t)^{2} u^{T}u + 2t(1-t)u^{T}v + t^{2}v^{T}v = \Vert (1-t)u + tv \Vert = r^{2}.
+\[ \label{eq:1_lema1_convexidade}
+(1-t)^{2} u^{T}u + 2t(1-t)u^{T}v + t^{2}v^{T}v = \Vert (1-t)u + tv \Vert^{2} = r^{2}.
 \]
 
-Como $u^{T}u = v^{T}v = r^{2}$ e $t \in (0,1)$, substituindo e desenvolvendo \eqref{eq:lema1_convexidade_1}, obtemos 
+Como $u^{T}u = v^{T}v = r^{2}$ e $t \in (0,1)$, substituindo em \eqref{eq:1_lema1_convexidade} e desenvolvendo, obtemos 
 \begin{align}
 r^{2} &= (1-2t+t^{2}) u^{T}u + (2t-2t^{2})u^{T}v + t^{2}v^{T}v \\
 &= (1-2t+t^{2}) r^{2} + (2t-2t^{2})u^{T}v + t^{2}r^{2} \\
-&= r^{2} - 2tr^{2} + t^{2}r^{2} + (2t-2t^{2})u^{T}v + t^{2}r^{2} .\\
+&= r^{2} - 2tr^{2} + t^{2}r^{2} + (2t-2t^{2})u^{T}v + t^{2}r^{2} .
 \end{align}
 
 Evidenciando $r^{2}$, temos
@@ -457,68 +595,205 @@ Evidenciando $r^{2}$, temos
 (2t-2t^{2})r^{2} = (2t-2t^{2})u^{T}v,
 \]
 e, portanto,
-\[ \label{eq:lema1_convexidade_2}
+\[ \label{eq:2_lema1_convexidade}
 r^{2} = u^{T}v.
 \]
 
-Assim, por \eqref{eq:lema1_convexidade_2},
+Assim, por \eqref{eq:2_lema1_convexidade},
 \[
 \Vert u-v \Vert^{2} = u^{T}u - 2u^{T}v + v^{T}v = r^{2} - 2r^{2} + r^{2} = 0,
 \]
-o que é uma contradição, pois por hipótese $u \neq v$. Portanto, concluímos que $\Vert (1-t)u + tv \Vert < r$, para todo $t \in (0,1)$.
+o que é uma contradição, pois por hipótese $u \neq v$. 
+
+Portanto, concluímos que $\Vert (1-t)u + tv \Vert < r$, para todo $t \in (0,1)$.
 \end{proof}
 
 Agora, dado um conjunto $S \subset \RR^{n}$ e um ponto $z \in \RR^{n}$, considere o problema de encontrar um ponto de $S$ mais próximo de $z$, em outras palavras, queremos minimizar a distânica de um ponto a um conjunto. Assim, os próximos resultados garantem a existência da solução no caso de $S$ ser um conjunto fechado e sua unicidade se, além de fechado, $S$ for convexo. Tal solução é chamada de projeção de $z$ sobre $S$, e denotada por $\proj_{S} (z)$. 
 
-\begin{lema} [\textcite{Ademir2013}, p. 51]
+\begin{lema} \label{lema:existencia_projecao}
 Seja $S \subset \RR^{n}$ um conjunto fechado não vazio. Dado $z \in \RR^{n}$, existe $\bar{z} \in S$ tal que
 \[
 \Vert z - \bar{z} \Vert \leq \Vert z - x \Vert,
 \]
 para todo $x \in S$.
 \end{lema}
+\begin{proof}
+Seja $\alpha = \inf \{\Vert z-x \Vert \mid x \in S\}$. Então, para cada $n \in \mathds{N}$, existe $x^{n} \in S$ tal que
+\[ \label{eq:1_lema_existencia_projecao}
+\alpha \leq \Vert z-x^{n} \Vert \leq \alpha + \dfrac{1}{n}. 
+\]
 
-\begin{lema} [\textcite{Ademir2013}, p. 52] \label{lema_existenciaprojecao_convexidade}
+Em particular, $\Vert z-x^{n} \Vert \leq \alpha + 1$, para todo $n \in \mathds{N}$. Logo, existe uma subsequência $(x^{n^{k}})$ convergente, com $k \in \mathds{N}'$, tal que $x^{n^{k}} \longrightarrow \bar{z}$. Como $S$ é fechado temos que $\bar{z} \in S$. Além disso, 
+\[
+\Vert z-x^{n} \Vert \longrightarrow \Vert z-\bar{z} \Vert .
+\]
+
+Mas, por \eqref{eq:1_lema_existencia_projecao}, temos que $\Vert z-x^{n} \Vert \longrightarrow \alpha $, e portanto, concluímos que $\Vert z-\bar{z} \Vert = \alpha$.
+
+\end{proof}
+
+
+\begin{lema}  \label{lema:unicidadeprojecao_convexidade}
 Seja $S \subset \RR^{n}$ um conjunto não vazio, convexo e fechado. Dado $z \in \RR^{n}$, existe um único $\bar{z} \in S$ tal que
 \[
 \Vert z - \bar{z} \Vert \leq \Vert z - x \Vert
 \]
 para todo $x \in S$.
 \end{lema}
+\begin{proof}
+A existência é garantida pelo \Cref{lema:existencia_projecao}. Para provar a unicidade suponha que existam $\bar{z}, \tilde{z} \in S$, com $\bar{z} \neq \tilde{z}$, ta{}is que
+\[ \label{eq:1_lema_unicidade_projecao}
+\Vert z-\bar{z} \Vert \leq \Vert z-x \Vert \quad \text{e} \quad \Vert z-\tilde{z} \Vert \leq \Vert z-x \Vert ,
+\]
+para todo $x \in S$. Tomando $x=\tilde{z}$ na primeira desigualdade e $x=\bar{z}$ na segunda, obtemos
+\[
+\Vert z-\bar{z} \Vert = \Vert z-\tilde{z} \Vert .
+\]
 
-No \Cref{lema_existenciaprojecao_convexidade} denotamos $\bar{z} = \proj_{S} (z)$.
+Por outro lado, o ponto $z^{*} = \dfrac{\bar{z} - \tilde{z}}{2}$ pertence ao conjunto convexo $S$. Além disso, pelo \Cref{lema:1_convexidade}, com $r= \Vert z-\bar{z} \Vert = \Vert z - \tilde{z} \Vert$ e $t=1/2$, temos
+\begin{align}
+\Vert z-z^{*} \Vert &=  \Vert z-t(\bar{z}+\tilde{z}) \Vert \\
+& = \Vert z - t\bar{z} - t\tilde{z} \Vert \\
+& = \Vert (1-t)(z-\bar{z}) + t(z-\tilde{z}) \Vert \\
+& < r ,
+\end{align}
+o que é uma contradição, pois por \eqref{eq:1_lema_unicidade_projecao} teríamos
+\[
+r = \Vert z-\bar{z} \Vert = \Vert z - \tilde{z} \Vert \leq \Vert z-z^{*} \Vert < r .
+\]
 
-\begin{teo} [\textcite{Ademir2013}, p. 53] \label{lema_condicaoprojecao_convexidade}
+Portanto, $\bar{z} = \tilde{z}$.
+
+
+\end{proof}
+
+
+No \Cref{lema:unicidadeprojecao_convexidade} denotamos $\bar{z} = \proj_{S} (z)$.
+
+
+\begin{teo}  \label{lema_condicaoprojecao_convexidade}
 Sejam $S \subset \RR^{n}$ um conjunto não vazio, convexo e fechado, $z \in \RR^{n}$ e $\bar{z} = \proj_{S} (z)$. Então, 
 \[
 (z - \bar{z})^{T}(x - \bar{z}) \leq 0 ,
 \]
 para todo $x \in S$.
 \end{teo}
+\begin{proof}
+Sejam $x \in S$ um ponto arbitrário e $\bar{z} = \proj_{S} (z)$. Pelo \Cref{lema:existencia_projecao} $\bar{z} \in S$ e, dado $t \in (0,1)$, pela convexidade de $S$, temos que $(1-t)\bar{z} + tx \in S$. Assim, 
+\[
+\Vert z-\bar{z} \Vert \leq \Vert z-(1-t)\bar{z} - tx \Vert = \Vert (z-\bar{z}) - t(x-\bar{z}) \Vert.
+\]
+
+Então, 
+\[
+\Vert z-\bar{z} \Vert^{2} \leq \Vert (z-\bar{z}) - t(x-\bar{z}) \Vert^{2} = \Vert z-\bar{z} \Vert^{2} - 2t(z-\bar{z})^{T}(x-\bar{z}) + t^{2}\Vert x- \bar{z} \Vert^{2} ,
+\]
+e como $t>0$, temos
+\[ \label{eq:1_lema_condicaoprojecao_convexidade}
+2(z-\bar{z})^{T}(x-\bar{z}) \leq t \Vert x- \bar{z} \Vert^{2} .
+\]
+
+Passando o limite em \eqref{eq:1_lema_condicaoprojecao_convexidade} quando $t\rightarrow 0$, obtemos
+\[
+(z-\bar{z})^{T}(x-\bar{z}) \leq 0, 
+\]
+completando a demonstração.
+\end{proof}
+
 
 O \Cref{lema_condicaoprojecao_convexidade} estabelece uma condição necessária e suficiente para caracterizar a projeção. Este resultado é provado no lema seguinte.
 
-\begin{lema} [\textcite{Ademir2013}, p. 54] \label{lema_defineprojecao_convexidade}
+
+\begin{lema} \label{lema:defineprojecao_convexidade}
 Sejam $S \subset \RR^{n}$ um conjunto não vazio, convexo e fechado e $z \in \RR^{n}$. Se $\bar{z} \in S$ satisfaz
 \[
 (z - \bar{z})^{T}(x - \bar{z}) \leq 0 ,
 \]
 para todo $x \in S$, então $\bar{z} = \proj_{S} (z)$.
 \end{lema}
+\begin{proof}
+Dado $x\in S$ arbitrário, temos
+\begin{align}
+\Vert z-\bar{z} \Vert^{2} - \Vert z-x \Vert^{2} & = z^{T}z - 2z^{T}\bar{z} + \bar{z}^{T}\bar{z} - z^{T}z + 2z^{T}x - x^{T}x \\
+& = - 2z^{T}\bar{z} + \bar{z}^{T}\bar{z} + 2z^{T}x - x^{T}x \\
+& = (x-\bar{z})^{T}(2z-x-\bar{z}) \\
+& = (x-\bar{z})^{T}(2(z-\bar{z})-(x-\bar{z})) \\
+& = 2(x-\bar{z})^{T}(z-\bar{z}) - (x-\bar{z})^{T}(x-\bar{z}) \\
+& \leq 0 .
+\end{align}
+pois $(x-\bar{z})^{T}(z-\bar{z}) \leq 0$ por hipótese, e $(x-\bar{z})^{T}(x-\bar{z}) = \Vert (x-\bar{z}) \Vert \geq 0$.
 
-O \Cref{lema_defineprojecao_convexidade} fornece uma condição necessária de otimalidade ao minimizar uma função em um conjunto convexo fechado.
+Logo,
+\[
+\Vert z-\bar{z} \Vert^{2} - \Vert z-x \Vert^{2} \leq 0,
+\]
+e, então
+\[
+\Vert z-\bar{z} \Vert^{2} \leq \Vert z-x \Vert^{2} ,
+\]
+para todo $x\in S$.
 
-\begin{lema} [\textcite{Ademir2013}, p. 54]
-Sejam $f: \RR^{n} \rightarrow \RR$ uma função diferenciável e $C \subset \RR^{n}$ convexo e fechado. Se $x^{*} \in C$ é minimizador local de $f$ em $C$, então
+Portanto, $\bar{z} = \proj_{S} (z)$.
+\end{proof}
+
+
+O \Cref{lema:defineprojecao_convexidade} fornece uma condição necessária de otimalidade ao minimizar uma função em um conjunto convexo fechado.
+
+\begin{teo}(\textbf{Taylor de Primeira Ordem}) {\cite[p.25]{Ademir2013}} \label{teo:Taylor_primeira_ordem}
+Considere $f:\RR^{n} \rightarrow \RR$ uma função diferenciável e $\xbar \in \RR^{n}$. Então podemos escrever
+\[
+f(x) = f(\xbar) + \nabla f(\xbar)^{T}(x-\xbar) + r(x),
+\]
+com $\lim_{x \rightarrow \xbar}\dfrac{r(x)}{\Vert x-\xbar \Vert} = 0$.
+\end{teo}
+
+
+\begin{lema} \label{lema:associa_projecao_minimizador}
+Sejam $f: \RR^{n} \rightarrow \RR$ uma função diferenciável e $C \subset \RR^{n}$ um conjunto convexo e fechado. Se $x^{*} \in C$ é minimizador local de $f$ em $C$, então
 \[
 \proj_{C} (x^{*} - \alpha \nabla f(x^{*})) = x^{*} ,
 \]
 para todo $\alpha \geq 0$.
 \end{lema}
+\begin{proof}
+Seja $x^{*} \in C$ minimizador local de $f$ em $C$. Fixando $x\in C$, como $C$ é um conjunto convexo, temos
+\[ \label{eq:1_lema_associa_projecao_minimizador}
+f(x^{*}) \leq f((1-t)x^{*} + tx),
+\]
+para todo $t\geq 0$ suficientemente pequeno. Pelo \Cref{teo:Taylor_primeira_ordem}, 
+\[ \label{eq:2_lema_associa_projecao_minimizador}
+f(x^{*}+t(x-x^{*})) = f(x^{*}) + t\nabla f(x^{*})^{T}(x-x^{*}) + r(t) ,
+\]
+em que $\lim_{t\rightarrow 0} \dfrac{r(t)}{t} = 0$. Dessa forma, por \eqref{eq:1_lema_associa_projecao_minimizador} e \eqref{eq:2_lema_associa_projecao_minimizador}, temos
+\[
+0 \leq f(x^{*}+t(x-x^{*})) - f(x^{*}) = t\nabla f(x^{*})^{T}(x-x^{*}) + r(t) ,
+\]
+e portanto, 
+\[ \label{eq:3_lema_associa_projecao_minimizador}
+t\nabla f(x^{*})^{T}(x-x^{*}) + r(t) \geq 0.
+\]
+
+Dividindo por $t$ e passando o limite quando $t \rightarrow 0$ em \eqref{eq:3_lema_associa_projecao_minimizador}, obtemos
+\[
+\nabla f(x^{*})^{T}(x-x^{*}) \geq 0.
+\]
+
+Assim, dado $\alpha \geq 0$,
+\[
+(x^{*} - \alpha \nabla f(x^{*}) - x^{*})^{T}(x-x^{*}) = -\alpha \nabla f(x^{*})^{T}(x-x^{*}) \leq 0,
+\]
+para todo $x\in C$.
+
+Portanto, pelo \Cref{lema:defineprojecao_convexidade} concluímos que $\proj_{C} (x^{*} - \alpha \nabla f(x^{*})) = x^{*}$, para todo $\alpha \geq 0$.
+\end{proof}
+
+
+%----------------------------------------------------------------------------------------------------------------------------
+
 
 \subsection{Funções Convexas}
 
-\begin{defi} [\textcite{Ademir2013}, p. 56] \label{defi:funcao_convexa}
+\begin{defi} \label{defi:funcao_convexa}
 Seja $C \subset \RR^{n}$ um conjunto convexo. Dizemos que a função $f: \RR^{n} \rightarrow \RR$ é convexa em $C$ quando
 \[
 f((1-t)x + ty) \leq (1-t)f(x) + tf(y),
@@ -526,7 +801,9 @@ f((1-t)x + ty) \leq (1-t)f(x) + tf(y),
 para todos $x,y \in C$ e $t \in [0,1]$.
 \end{defi}
 
+
 A noção geométrica da \Cref{defi:funcao_convexa} é apresentada na \Cref{fig_funcao_convexa}, em que qualquer arco do gráfico de uma função convexa está sempre abaixo do segmento que liga as extremidades.
+
 
 %criar minha própria imagem
 \begin{figure}[!h] 
@@ -534,6 +811,7 @@ A noção geométrica da \Cref{defi:funcao_convexa} é apresentada na \Cref{fig_
 	\includegraphics[width=0.85\textwidth]{funcao_convexa}
 	\caption{ Função Convexa. \label{fig_funcao_convexa} \\ Fonte: \textcite{Evelin2017}}
 \end{figure}
+
 
 \begin{obs}
 Todo problema de maximização
@@ -550,25 +828,34 @@ pode ser transformado em um problema de minimização equivalente
  \]
 \end{obs}
 
-\begin{defi} [\textcite{Izmailov2014ac}, p. 80]
-Se $D \subset \RR^{n}$ é um conjunto convexo, dizemos que $f: D \rightarrow \RR $ é uma \emph{função côncava} em $D$, quando a função $(-f)$ é convexa em $D$.
+
+\begin{defi}
+Se $C \subset \RR^{n}$ é um conjunto convexo, dizemos que $f: C \rightarrow \RR $ é uma \emph{função côncava} em $C$, quando a função $(-f)$ é convexa em $C$.
 \end{defi}
+
 
 Assim, maximizar uma função côncava num conjunto convexo equivale a minimizar uma função convexa num conjunto convexo.
 
-O teorema seguinte justifica o fato da convexidade ser uma propriedade tão importante em otimização. 
 
-\begin{teo}[{\cite[p. 57]{Ademir2013}}]
+
+\begin{teo} 
+
 Sejam $C \subset \RR^{n}$ um conjunto convexo e $f:C \rightarrow \RR$ uma função convexa. Se $x^{*} \in C$ é minimizador local de $f$, então $x^{*}$ é minimizador global de $f$.
 \end{teo}
 \begin{proof}
-Seja $x^{*}$ um minimizador local de $f$. Então, existe $\delta > 0$ tal que $f(x^{*}) \leq f(x)$, para todo $x \in B(x^{*}, \delta) \cap C$. Dado $y \in C$, tal que $y \notin B(x^{*}, \delta)$, e tome $t \in (0,1]$ de modo que $t \Vert y-x^{*} \Vert < \delta$. Assim, o ponto $x = (1-t)x^{*} + ty$ satisfaz
+Seja $x^{*}$ um minimizador local de $f$. Então, existe $\delta > 0$ tal que 
+\[
+f(x^{*}) \leq f(x), 
+\]
+para todo $x \in B(x^{*}, \delta) \cap C$. 
+
+Considere $y \in C$, tal que $y \notin B(x^{*}, \delta)$, e tome $t \in (0,1]$ de modo que $t \Vert y-x^{*} \Vert < \delta$. Assim, o ponto $x = (1-t)x^{*} + ty$ satisfaz
 \[
 \Vert x - x^{*} \Vert = \Vert (1-t)x^{*} + ty - x^{*} \Vert = \Vert x^{*} - tx^{*} + ty - x^{*} \Vert = t \Vert y - x^{*} \Vert < \delta ,
 \]
 e, portanto, $x \in B(x^{*}, \delta) \cap C$.
 
-Desse modo, como $C$ é um conjunto convexo, temos
+Desse modo, como $f$ é uma função convexa, temos
 \[
 f(x^{*}) \leq f(x) \leq (1-t)f(x^{*}) + tf(y) = f(x^{*}) + t(f(y)-f(x^{*})),
 \]
@@ -577,9 +864,12 @@ donde segue que $f(x^{*}) \leq f(y)$.
 Portanto, $x^{*}$ é minimizador global de $f$.
 \end{proof}
 
+
 A seguir apresentamos outra forma de caracterizar a convexidade de uma função quando temos hipóteses de diferenciabilidade.
 
-\begin{teo} [\textcite{Ademir2013}, p. 58] \label{teo:diferenciabilidade_e_convexidade}
+
+%{\cite[p. 58]{Ademir2013}}
+\begin{teo}  \label{teo:diferenciabilidade_e_convexidade}
 Sejam $f: \RR^{n} \rightarrow \RR $ uma função diferenciável e $C \in \RR^{n}$ um conjunto convexo. A função $f$ é convexa em $C$ se, e somente se, 
 \[
 f(y) \geq f(x) + \nabla f(x)^{T}(y-x),
@@ -587,8 +877,9 @@ f(y) \geq f(x) + \nabla f(x)^{T}(y-x),
 para todos $x, y \in C$.
 \end{teo}
 
+
 \begin{proof}
-Seja $f$ uma função convexa. Para $x,y \in C$ e $t \in (0,1]$ quaisquer, temos $(1-t)x + ty = x + t(y-x)$, pois $C$ é convexo. Assim, definindo $d = y-x$, temos que $x + td \in C$ e
+Seja $f$ uma função convexa. Para $x,y \in C$ e $t \in (0,1]$ quaisquer, temos $(1-t)x + ty = x + t(y-x)$. Assim, definindo $d = y-x$, temos que $x + td \in C$ e
 \[
 f(x+td) = f((1-t)x + ty) \leq (1-t)f(x) + tf(y),
 \]
@@ -631,12 +922,35 @@ Portanto, a função $f$ é convexa em $C$.
 \end{proof}
 
 
+A seguir, apresentamos alguns resultados necessários para demonstrar o \Cref{teo:hessiana_convexidade}.
+
+
+\begin{teo}(\textbf{Taylor de Segunda Ordem}) {\cite[p.26]{Ademir2013}} \label{teo:Taylor_segunda_ordem}
+Se $f:\RR^{n} \rightarrow \RR$ é uma função duas vezes diferenciável e $\xbar \in \RR^{n}$, então
+\[
+f(x) = f(\xbar) + \nabla f(\xbar)^{T}(x-\xbar) + \dfrac{1}{2}(x-\xbar)^{T}\nabla^{2} f(\xbar)(x-\xbar) + r(x),
+\] 
+com $\lim_{x \rightarrow \xbar}\dfrac{r(x)}{\Vert x - \xbar \Vert^{2}} = 0$.
+\end{teo}
+
+
+\begin{teo}(\textbf{Taylor com Resto de Lagrange}) {\cite[p.26]{Ademir2013}} \label{teo:Taylor_com_resto_lagrange}
+Considere $f: \RR^{n} \rightarrow \RR$ uma função de classe $\mathcal{C}^{1}$ e $\xbar, d \in \RR^{n}$. Se $f$ é duas vezes diferenciável no segmento $(\xbar , \xbar + d)$, então existe $t \in (0,1)$ tal que
+\[
+f(\xbar + d) = f(\xbar) + \nabla f(\xbar)^{T} d + \dfrac{1}{2}d^{T}\nabla^{2} f(\xbar + td)d .
+\]
+\end{teo}
+
+
 \begin{lema} \label{lema:auxiliar_para_teo_hessiana_convexidade}
 Sejam $C \subset \RR^{n}$ convexo, $x \in \bar{C}$ e $y \in \interior C$. Então, $(x,y] \subset \interior C$.
 \end{lema}
+\begin{proof}
+Por demonstrar.
+\end{proof}
 
-
-\begin{teo} [\textcite{Ademir2013}, p. 60] \label{teo:hessiana_convexidade}
+%{\cite[p.60]{Ademir2013}} 
+\begin{teo} \label{teo:hessiana_convexidade}
 Sejam $f:\RR^{n} \rightarrow \RR $ uma função de classe $\mathcal{C}^{2}$ e $C \subset \RR^{n}$ um conjunto convexo com interior não vazio. A função $f$ é convexa em $C$ se, e somente se, a Hessiana $\nabla^{2} f(x)$ é semidefinida positiva para todo $x \in C$.
 \end{teo}
 \begin{proof}
@@ -649,7 +963,7 @@ e assim,
 f(x+td) -f(x) - t\nabla f(x)^{T} d \geq 0 . 
 \]
 
-Aplicando o Teorema da Expansão de Taylor de segunda ordem para $f(x+td)$, temos
+Aplicando o \Cref{teo:Taylor_segunda_ordem} para $f(x+td)$, temos
 \[
 f(x+td) = f(x) + t\nabla f(x)^{T}d + \dfrac{t^{2}}{2}d^{T} \nabla^{2} f(x)d + r(t^{2}) ,
 \]
@@ -675,8 +989,31 @@ d^{T} \nabla^{2} f(x)d \geq 0,
 \]
 para todo $x \in C$.
 
+Reciprocamente, dados $x \in C$ e $d \in \RR^{n}$ tal que $x+d \in C$, pelo \Cref{teo:Taylor_com_resto_lagrange},
+\[
+f(x+d) = f(x) + \nabla f(x)^{T}d + \dfrac{1}{2}d^{T} \nabla^{2} f(x+td)d
+\]
+para algum $t \in (0,1)$. Como $\nabla ^{2}f(x+td) \geq 0$, concluímos que 
+\[
+f(x+d) \geq f(x) + \nabla f(x)^{T}d .
+\]
 
+Logo, pelo \Cref{teo:diferenciabilidade_e_convexidade}, $f$ é convexa.
 \end{proof}
+
+Em geral, a função objetivo dos problemas de SVM serão funções quadráticas. Assim, faz-se necessário mostrar que a função quadrática é convexa. Tal resultado é apresentado a seguir.
+
+%\cite{Gondzio2018}
+\begin{teo}
+Seja $C \in \RR^{n}$ um conjunto convexo e $Q$ uma matriz quadrada. Seja $f:C \rightarrow \RR$ tal que $f(x) = x^{T}Qx$ é uma função quadrática. Então, $f$ é convexa se, e somente se, $Q$ é semidefinida positiva.
+\end{teo}
+\begin{proof}
+Por demonstrar.
+\end{proof}
+
+
+
+
 
 \newpage
 
