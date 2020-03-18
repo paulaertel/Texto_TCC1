@@ -430,6 +430,8 @@ f(x^{*}) \leq f(x)
 para todo $x \in \Omega $. 
 \end{defi}
 
+Se a função objetivo $f$ for linear, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação linear}, e se $f$ for uma função quadrática, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação quadrática}. Ademais, quando $\Omega$ é um conjunto convexo e $f$ é uma função convexa, dizemos que \eqref{problema_geral_otimizacao} é um problema de \emph{programação convexa}. 
+
 %Quando as desigualdades na \Cref{defi:definicao_minimizador} forem estritas para $x \neq x^{*}$, dizemos que $x^{*}$ é minimizador estrito. Quando $\Omega = \RR^{n}$ dizemos que o problema \eqref{problema_geral_otimizacao} é \emph{irrestrito}, e quando $\Omega \neq \RR^{n}$ falamos de \emph{otimização com restrições}.
 
 
@@ -441,20 +443,12 @@ x^{*} = \inf_{x \in \Omega} f(x)
 é o \emph{valor ótimo} do problema \eqref{problema_geral_otimizacao}.
 \end{defi}
 
-Uma classe especial de problemas de otimização se refere ao caso em que $\Omega$ é um conjunto poliedral. Assim, dizemos que um conjunto viável é \emph{poliedral} quando ele pode ser representado como o conjunto das soluções de um sistema finito de equações e inequações lineares. Por exemplo,
-\[
-\Omega = \{ x \in \RR^{n} \mid  Ax \leq b, Mx = r\},
-\]
-em que $A \in \RR^{mxn}$, $M\in \RR^{pxn}$, $b \in \RR^{m}$, $r \in \RR^{p}$. Neste contexto, dizemos que $g:\RR^{n} \rightarrow \RR^{m}$, com $g(x) = Ax-b$, e $h:\RR^{n}\rightarrow \RR^{p}$, com $h(x) = Mx - r$, são funções afins.
 
 %Uma função $f:\RR^{n} \rightarrow \RR$ definida por
 %\[
 %f(x) = x^{T}Qx + c^{T}x ,
 %\]
 %em que $Q \in \RR^{nxn}$, $c \in \RR^{n}$, é chamada \emph{função quadrática}.
-
-
-Se a função objetivo $f$ for linear, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação linear}, e se $f$ for uma função quadrática, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação quadrática}. Ademais, quando $\Omega$ é um conjunto convexo e $f$ é uma função convexa, dizemos que \eqref{problema_geral_otimizacao} é um problema de \emph{programação convexo}. 
 
 %Veremos mais a frente que no caso em que $Q$ é uma matriz semidefinida positiva, os problemas quadráticos são convexos.
 
@@ -470,16 +464,18 @@ I(\xbar) = \{ i \mid g_{i}(\xbar)=0 \} .
 
 \begin{defi} 
 Um ponto $x^{*} \in \RR^{n} $ é dito \emph{estacionário} para o problema \eqref{problema_geral_otimizacao} quando existirem $\mu^{*} \in \RR^{m} $, $\lambda^{*} \in \RR^{p} $ (\emph{multiplicadores de Lagrange}) tais que
-\[
-\begin{aligned} \label{eq:1_ponto_estacionario}
-\nabla f(x^{*})+\sum_{i=1}^{m} \mu_{i}^{*} \nabla g_{i}(x^{*})+\sum_{i=1}^{p} \lambda_{i}^{*} \nabla h_{i}(x^{*}) & =0,  \\ 
-g(x^{*}) \leq 0, h(x^{*}) & =0,   \\ \mu_{i}^{*} & \geq 0, \quad i= 1, \ldots , m,   \\ 
-\lambda_{i}^{*} g_{i}(x^{*}) & =0, \quad i= 1, \ldots , m.  
-\end{aligned}
-\]
+
+\begin{align} \label{eq:1_ponto_estacionario}
+\nabla f(x^{*})+\sum_{i=1}^{m} \mu_{i}^{*} \nabla g_{i}(x^{*})+\sum_{i=1}^{p} \lambda_{i}^{*} \nabla h_{i}(x^{*}) & =0, \\ 
+g(x^{*}) \leq 0, h(x^{*}) & =0,  \label{eq:2_ponto_estacionario} \\ 
+\mu_{i}^{*} & \geq 0, \quad i= 1, \ldots , m,   \label{eq:3_ponto_estacionario} \\ 
+\lambda_{i}^{*} g_{i}(x^{*}) & =0, \quad i= 1, \ldots , m.  \label{eq:4_ponto_estacionario}
+\end{align}
+
+
 \end{defi}
 %ver como enumerar cada condição separadamente, pois não está aceitando
-As condições em \eqref{eq:1_ponto_estacionario} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). Assim, um ponto é dito estacionário quando satisfaz as condições KKT. Sob determinadas hipóteses de qualificação, as condições KKT são satisfeitas em um ponto que seja minimizador.
+As condições \eqref{eq:1_ponto_estacionario} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). Assim, um ponto é dito estacionário quando satisfaz as condições KKT. Sob determinadas hipóteses de qualificação, as condições KKT são satisfeitas em um ponto que seja minimizador.
 
 \begin{defi}
 Dizemos que as restrições $g(x) \leq 0$ e $h(x)=0$ cumprem uma condição de qualificação em $x^{*} \in \Omega$ quando, dada qualquer função diferenciável $f$ que tenha mínimo em $x^{*}$, relativamente a $\Omega$, sejam satisfeitas as condições de otimalidade de KKT.
@@ -503,8 +499,8 @@ Considere o problema
 \[
 \begin{aligned}
 \min_{x} & \quad f(x)=x_{1} \\
-\text{s.a} & \quad g(x)=-x_{1}^{3} + x_{2} \leq 0 , \\
-& \quad h(x) = -x_{2} \leq 0.
+\text{s.a} & \quad g_{1}(x)=-x_{1}^{3} + x_{2} \leq 0 , \\
+& \quad g_{2}(x) = -x_{2} \leq 0.
 \end{aligned}
 \]
 
@@ -512,16 +508,32 @@ O ponto $x^{*} = 0$ é o minimizador deste problema, mas não cumpre as condiç�
 
 No entanto, 
 \[
-\nabla f(x^{*}) = \left( \begin{array}{cc} 1 \\ 0 \end{array} \right) , \nabla g(x^{*}) = \left( \begin{array}{cc} 0 \\ 1 \end{array} \right) \quad \text{e} \quad \nabla h(x^{*}) = \left( \begin{array}{cc} 0 \\ -1 \end{array} \right) ,
+\nabla f(x^{*}) = \left( \begin{array}{cc} 1 \\ 0 \end{array} \right) , \nabla g_{1}(x^{*}) = \left( \begin{array}{cc} 0 \\ 1 \end{array} \right) \quad \text{e} \quad \nabla g_{2}(x^{*}) = \left( \begin{array}{cc} 0 \\ -1 \end{array} \right) ,
 \]
-e, portanto, as condições KKT não são satisfeitas, pois não existem $\mu^{*} \in \RR$ E $\lambda^{*} \in \RR$ tais que 
+ou seja, os gradientes das restrições não são LI e, portanto, não satisfazem a condição de qualificação de independência linear (LICQ). Assim, as condições KKT não são satisfeitas, pois não existem $\mu_{1}^{*} , \mu_{2}^{*} \in \RR^{+}$ tais que 
 \[
-\left( \begin{array}{cc} 1 \\ 0 \end{array} \right) + \mu^{*} \left( \begin{array}{cc} 0 \\ 1 \end{array} \right) + \lambda^{*} \left( \begin{array}{cc} 0 \\ -1 \end{array} \right) = \left( \begin{array}{cc} 0 \\ 0 \end{array} \right) .
+\left( \begin{array}{cc} 1 \\ 0 \end{array} \right) + \mu_{1}^{*} \left( \begin{array}{cc} 0 \\ 1 \end{array} \right) + \mu_{2}^{*} \left( \begin{array}{cc} 0 \\ -1 \end{array} \right) = \left( \begin{array}{cc} 0 \\ 0 \end{array} \right) .
 \]
-
 \end{exem}
 
 
+Uma classe especial de problemas de otimização se refere ao caso em que o conjunto viável $\Omega$ é um conjunto poliedral.
+
+\begin{defi}(\textbf{Conjunto viável poliedral:}) Um conjunto viável é \emph{poliedral} quando as restrições $g$ e $h$ são afins. Ou seja, o problema terá o seguinte formato
+\[
+\begin{aligned} \label{eq:conjunto_viavel_poliedral}
+\min_{x} & \quad f(x)  \\
+\text{s.a} & \quad Ax \leq b  \\
+& \quad Mx = r.
+\end{aligned}
+\]
+em que $A \in \RR^{mxn}$, $M\in \RR^{pxn}$, $b \in \RR^{m}$, $r \in \RR^{p}$. 
+%Neste contexto, dizemos que $g:\RR^{n} \rightarrow \RR^{m}$, com $g(x) = Ax-b$, e $h:\RR^{n}\rightarrow \RR^{p}$, com $h(x) = Mx - r$, são funções afins.
+\end{defi}
+
+Neste caso, todo ponto viável é qualificado. De fato (DEMONSTRAR).
+
+Portanto, se $x^{*}$ é um minimizador local do problema \eqref{eq:conjunto_viavel_poliedral}, então $x^{*}$ satisfaz as condições KKT.
 
 
 
@@ -800,7 +812,11 @@ f((1-t)x + ty) \leq (1-t)f(x) + tf(y),
 \]
 para todos $x,y \in C$ e $t \in [0,1]$.
 \end{defi}
-
+Se para todo $t \in (0,1)$ e $x \neq y$ vale que
+\[
+f((1-t)x + ty) < (1-t)f(x) + tf(y),
+\]
+dizemos que $f$ é estritamente convexa.
 
 A noção geométrica da \Cref{defi:funcao_convexa} é apresentada na \Cref{fig_funcao_convexa}, em que qualquer arco do gráfico de uma função convexa está sempre abaixo do segmento que liga as extremidades.
 
