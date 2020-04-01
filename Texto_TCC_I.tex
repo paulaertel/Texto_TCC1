@@ -407,41 +407,87 @@ f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m}
 
 \section{Conceitos de Otimização}
 
-Neste capítulo abordaremos alguns conceitos e resultados de Otimização para o problema
+
+Tendo em vista que o problema de clasificação trata-se de um problema de Otimização, neste capítulo pretendemos discutir alguns conceitos e resultados de otimização para o problema 
+
 \[ \label{problema_geral_otimizacao}
 \begin{aligned}
 \min_{x} & \quad f(x) \\
-\text{s.a} & \quad g(x) \leq 0 , \\
-& \quad h(x) = 0,
+\text{s.a} & \quad x \in \Omega ,
 \end{aligned}
 \]
-em que a função objetivo $f: \RR^{n} \rightarrow \RR$ e as funções que definem as restrições $g: \RR^{n} \rightarrow \RR^{m}$ e $h:\RR^{n} \rightarrow \RR^{p}$ são continuamente diferenciáveis. O conjunto
-\[
-\Omega := \{ x \in \RR^{n} \mid g(x)\leq 0 , h(x)=0 \}
-\]
-é chamado de \emph{conjunto viável} do problema \eqref{problema_geral_otimizacao}, e os pontos de $\Omega$ são chamados de \emph{pontos viáveis}.
+em que $f: \RR^{n} \rightarrow \RR$ é chamada \emph{função objetivo}, $\Omega \subset \RR^{n}$ é chamado \emph{conjunto factível} do problema \eqref{problema_geral_otimizacao} e os pontos de $\Omega$ são chamados de \emph{pontos factíveis}.
 
+Inicialmente, faz-se necessário caracterizar os pontos que são solução do problema \eqref{problema_geral_otimizacao}.
 
-\begin{defi} \label{defi:definicao_minimizador}
-Dizemos que $x^{*}$ é uma solução global do problema \eqref{problema_geral_otimizacao}, ou seja, um \emph{minimizador global} de $f$ em $\Omega$, quando
-\[
-f(x^{*}) \leq f(x)
-\]
-para todo $x \in \Omega $. 
+\begin{defi} \label{defi:minimizador_local_global}
+Dizemos que um ponto $x^{*} \in \Omega$ é
+\begin{enumerate}
+	\item[(a)] \emph{minimizador local} de $f$ em $\Omega$ se, e somente se, existe $\epsilon >0$ tal que $f(x^{*}) \leq f(x)$ para todo $x \in B(x^{*}, \epsilon) \cap \Omega$.
+
+	\item[(b)] \emph{minimizador global} de $f$ em $\Omega$ se, e somente se, $f(x^{*}) \leq f(x)$ para todo $x \in \Omega$
+\end{enumerate} 
 \end{defi}
 
-Se a função objetivo $f$ for linear, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação linear}, e se $f$ for uma função quadrática, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação quadrática}. Ademais, quando $\Omega$ é um conjunto convexo e $f$ é uma função convexa, dizemos que \eqref{problema_geral_otimizacao} é um problema de \emph{programação convexa}. 
+Quando as desigualdades na \Cref{defi:minimizador_local_global} forem estritas para $x \neq x^{*}$, diremos que $x^{*}$ é minimizador estrito.
 
-%Quando as desigualdades na \Cref{defi:definicao_minimizador} forem estritas para $x \neq x^{*}$, dizemos que $x^{*}$ é minimizador estrito. Quando $\Omega = \RR^{n}$ dizemos que o problema \eqref{problema_geral_otimizacao} é \emph{irrestrito}, e quando $\Omega \neq \RR^{n}$ falamos de \emph{otimização com restrições}.
+Pela \Cref{defi:minimizador_local_global}, todo minimizador global é também minimizador local, porém a recíproca não é verdadeira. É interessante salientar que ná prática, do ponto de vista teórico e computacional, em muitas circunstâncias iremos nos contentar com um ponto de mínimo local. Haja vista que em geral, condições globais e soluções globais só podem ser encontradas se o problema possuir certas propriedades de convexidade que garantem, essencialmente, que qualquer mínimo local é mínimo global.
 
-
-\begin{defi}
-Dizemos que $x^{*} \in [-\infty, +\infty )$ definido por
+\begin{defi} \label{defi:valor_otimo}
+Dizemos que $\bar{v} \in [-\infty, +\infty )$ definido por
 \[
-x^{*} = \inf_{x \in \Omega} f(x)
+\bar{v} = \inf_{x \in \Omega} f(x)
 \]
 é o \emph{valor ótimo} do problema \eqref{problema_geral_otimizacao}.
 \end{defi}
+
+\begin{obs}
+Todo problema de maximização
+\[
+\begin{aligned}
+\max_{x} & \quad f(x) \\
+\text{s.a.} & \quad x \in \Omega \end{aligned}
+ \]
+pode ser transformado em um problema de minimização equivalente
+\[
+\begin{aligned}
+\min_{x} & \quad -f(x) \\
+\text{s.a.} & \quad x \in \Omega .\end{aligned}
+\]
+Em particular, as soluções locais e globais de ambos os problemas são as mesmas, com sinais opostos para os valores ótimos.
+\end{obs} %acrescentar imagem izmailoz&solodov
+
+%Se a função objetivo $f$ for linear, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação linear}, e se $f$ for uma função quadrática, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação quadrática}. Ademais, quando $\Omega$ é um conjunto convexo e $f$ é uma função convexa, dizemos que \eqref{problema_geral_otimizacao} é um problema de \emph{programação convexa}. 
+
+
+Quando o conjunto factível $\Omega = \RR^{n}$ dizemos o problema \eqref{problema_geral_otimizacao} é irrestrito. No caso em que $\Omega$ é definido por um sistema de igualdades e/ou desigualdades como
+\[
+\Omega = \{ x\in \RR^{n} \mid h(x)=0, g(x) \leq 0 \},
+\]
+falamos em otimização com restrições.
+
+Frequentemente, a formulação de problemas mais complexos envolve restrições à função objetivo. No entanto, veremos mais adiante que muitos desses problemas podem ser convertidos em problemas irrestritos, utilizando as restrições para estabelecer relações entre as variáveis. Em vista disso, abordaremos primeiramente a teoria de otimização para o caso irrestrito para posteriormente obter as condições de otimalidade para problemas com restrições de igualdade e desiguladade, haja vista que o problema de classificação, o qual estamos interessados em resolver, possui este formato.
+
+No estudo do problema de otimização irrestrita uma das principais questões que surge diz respeito a existência da solução. Observe que se na \Cref{defi:valor_otimo} temos $\bar{v} = - \infty$, o problema \eqref{problema_geral_otimizacao} não admite solução global, pois neste caso $f$ é ilimitada inferiormente no conjunto factível. Outro caso em que também não minimizador global ocorre quando $\bar{v}$ não é atingido em nenhum ponto factível.
+
+\begin{exem}
+Seja $f: \RR \rightarrow \RR$, $f(x) = e^{x}$, $\Omega = \RR$. Note que $\bar{v} = \inf_{x \in \RR} e^{x} = 0$, contudo, não existe $x \in \RR$ tal que $e^{x} = 0$. 
+De modo análogo, considere $f$ definida como anteriormente e $\Omega = (0,1]$. Temos que $\bar{v} = \inf_{x \in (0,1]} e^{x} = 1$ e novamente não existe $x \in (0,1]$ tal que $e^{x}=1$. Observe que a função $f$ é contínua em $\Omega$, porém no primeiro caso $\Omega$ não é limitado e no segundo, $\Omega$ não é fechado. 
+Considere agora $\Omega = [0,1]$, $f(x)=e^{x}$ para $x \in (0,1]$ e $f(0)=0$. Novamente, $\bar{v} = \inf_{x \in (0,1]} e^{x} = 1$, porém não existe $x\in \Omega$ tal que $f(x)=1$. Neste exemplo, $\Omega$ é compacto mas $f$ não é contínua.
+\end{exem}
+
+Assim, a partir desses exemplos é possível perceber que a existência de soluções está relacionada à continuidade da função objetivo e à compacidade do conjunto factível. O principal resultado que garante a existência de soluções globais é o Teorema de Weierstrass.
+
+\begin{teo}(\textbf{Weierstrass}) \label{teo:weierstrass}
+Sejam $f: \RR^{n} \rightarrow \RR$ uma função contínua e $\Omega \in \RR^{n}$ um conjunto compacto não vazio. Então existe minimizador global de $f$ em $\Omega$.
+\end{teo}
+\begin{proof}
+
+\end{proof}
+
+
+
+
 
 
 %Uma função $f:\RR^{n} \rightarrow \RR$ definida por
@@ -1110,21 +1156,6 @@ A noção geométrica da \Cref{defi:funcao_convexa} é apresentada na \Cref{fig_
 	\caption{ Função Convexa. \label{fig_funcao_convexa} \\ Fonte: \textcite{Evelin2017}}
 \end{figure}
 
-
-\begin{obs}
-Todo problema de maximização
-\[
-\begin{aligned}
-\max_{x} & \quad f(x) \\
-\text{s.a.} & \quad x \in \Omega \end{aligned}
- \]
-pode ser transformado em um problema de minimização equivalente
-\[
-\begin{aligned}
-\min_{x} & \quad -f(x) \\
-\text{s.a.} & \quad x \in \Omega .\end{aligned}
- \]
-\end{obs}
 
 
 \begin{defi}
