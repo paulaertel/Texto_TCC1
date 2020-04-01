@@ -179,14 +179,14 @@ w^{T}x+b &<0, \text{ para todo } x\in \Xset^{-}.
 \end{align}  
 
 Como $\Xset^{+}\cup \Xset^{-}$ é um conjunto finito, podemos definir
-\[ \gamma \coloneqq \min_{x\in \Xset^{+}\cup \Xset^{-}} \vert w^{T}x+b\vert  >0. \]
+\[ \boldsymbol{\gamma} \coloneqq \min_{x\in \Xset^{+}\cup \Xset^{-}} \vert w^{T}x+b\vert  >0. \]
 
-Portanto, para todo $x\in \Xset^{+}\cup \Xset^{-}$, $\gamma \leq \vert w^{T}x+b\vert$ e consequentemente, $\dfrac{\vert w^{T}x+b\vert }{\gamma} \geq 1$. Assim, para $x\in \Xset^{+}$ temos
-\[ \dfrac{w^{T}x+b}{\gamma} = \dfrac{\vert w^{T}x+b\vert }{\gamma} \geq 1, \]
+Portanto, para todo $x\in \Xset^{+}\cup \Xset^{-}$, $\boldsymbol{\gamma} \leq \vert w^{T}x+b\vert$ e consequentemente, $\dfrac{\vert w^{T}x+b\vert }{\boldsymbol{\gamma}} \geq 1$. Assim, para $x\in \Xset^{+}$ temos
+\[ \dfrac{w^{T}x+b}{\boldsymbol{\gamma}} = \dfrac{\vert w^{T}x+b\vert }{\boldsymbol{\gamma}} \geq 1, \]
 e para $x\in \Xset^{-}$, temos
-\[- \dfrac{w^{T}x+b}{\gamma} = \dfrac{\vert w^{T}x+b\vert }{\gamma} \geq 1. \]
+\[- \dfrac{w^{T}x+b}{\boldsymbol{\gamma}} = \dfrac{\vert w^{T}x+b\vert }{\boldsymbol{\gamma}} \geq 1. \]
 
-Logo, definindo $\wbar:=\dfrac{w}{\gamma}$ e $\bbar :=\dfrac{b}{\gamma}$, obtemos as desigualdades \eqref{eq1} e \eqref{eq2}. 
+Logo, definindo $\wbar:=\dfrac{w}{\boldsymbol{\gamma}}$ e $\bbar :=\dfrac{b}{\boldsymbol{\gamma}}$, obtemos as desigualdades \eqref{eq1} e \eqref{eq2}. 
 
 \end{proof}
 
@@ -566,7 +566,7 @@ Considere o problema
 \end{aligned}
 \]
 
-O ponto $x^{*} = 0$ é o minimizador deste problema, mas não cumpre as condições KKT. De fato, observe que $0\leq x_{2} \leq x_{1}^{3}$, o que implica em $f(x)= x_{1} \geq 0 = f(x^{*})$, para todo ponto viável $x$.
+O ponto $x^{*} = 0$ é o minimizador deste problema, mas não cumpre as condições KKT. De fato, observe que $0\leq x_{2} \leq x_{1}^{3}$, o que implica em $f(x)= x_{1} \geq 0 = f(x^{*})$, para todo ponto factível $x$.
 
 No entanto, 
 \[
@@ -612,15 +612,15 @@ em que $A \in \RR^{m\times n}$, $1 \leq m <n$ e posto $A=m$.
 
 O conjunto
 \[
-S := \{ x \in \RR^{n} \mid Ax=b \}
+\Omega := \{ x \in \RR^{n} \mid Ax=b \}
 \]
 é chamado \emph{conjunto de factibilidade} de \eqref{problema_geral_minimizacao_igualdade}. Este conjunto é a variedade afim de soluções do sistema linear
 \[ \label{eq:restricao_de_igualdade}
 Ax=b,
 \]
-e de modo geral, $S$ é uma reta se $m=n-1$, um plano se $m=n-2$ e uma variedade de dimensão $n-m$ para $m$ genérico. No caso em que $n>3$ e $m=1$ caracterizamos $S$ como um hiperplano. 
+e de modo geral, $\Omega$ é uma reta se $m=n-1$, um plano se $m=n-2$ e uma variedade de dimensão $n-m$ para $m$ genérico. No caso em que $n>3$ e $m=1$ caracterizamos $\Omega$ como um hiperplano. 
 
-Para definir as condições de otimalidade para o problema \eqref{problema_geral_minimizacao_igualdade}, será necessário primeiramente determinar o conjunto de direções factíveis em $S$. Para tanto, associado a $S$ temos o conjunto de soluções do sistema homogêneo $Ax=b$, que é chamado de Núcleo de $A$ e denotado por $\mathcal{N}(A)$. Este conjunto é um subespaço de $\RR^{n}$ de dimensão $n-m$, pois posto $A=m$, e é interessante observar que $\mathcal{N}(A)$ é um subespaço paralelo à variedade afim $S$ e passa pela origem. Esta noção é representada na \Cref{fig:nucleoA_paralelo_S}.
+Para definir as condições de otimalidade para o problema \eqref{problema_geral_minimizacao_igualdade}, será necessário primeiramente determinar o conjunto de direções factíveis em $\Omega$. Para tanto, associado a $\Omega$ temos o conjunto de soluções do sistema homogêneo $Ax=b$, que é chamado de Núcleo de $A$ e denotado por $\mathcal{N}(A)$. Este conjunto é um subespaço de $\RR^{n}$ de dimensão $n-m$, pois posto $A=m$, e é interessante observar que $\mathcal{N}(A)$ é um subespaço paralelo à variedade afim $\Omega$ e passa pela origem. Esta noção é representada na \Cref{fig:nucleoA_paralelo_S}.
 
 \begin{figure}[!h] 
 	\centering
@@ -653,51 +653,51 @@ A recíproca também é verdadeira, pois se a partir de uma solução factível 
 \[
 x=\tilde{x} + \alpha d \quad \text{e} \quad Ax=b ,
 \]
-então $A(\tilde{x} + \alpha d) = b$ implica em $Ad = 0$ e, portanto, $d \in \mathcal{N}(A)$. Dessa forma, concluímos que $\mathcal{N}(A)$ é o conjunto de direções factíveis em $S$.
+então $A(\tilde{x} + \alpha d) = b$ implica em $Ad = 0$ e, portanto, $d \in \mathcal{N}(A)$. Dessa forma, concluímos que $\mathcal{N}(A)$ é o conjunto de direções factíveis em $\Omega$.
 
-A partir disso, é possível construir uma parametrização que caracterize o conjunto factível. Se $\{ z^{1}, z^{2}, \ldots , z^{n-m} \}$ é uma base de $\mathcal{N}(A)$ e $Z$ a matriz de dimensão $n\times (n-m)$ cujas colunas são os vetores $z^{i}$, então para todo $d \in \mathcal{N}(A)$, existe $\gamma \in \RR^{n-m}$ tal que $d=Z\gamma$, ou seja, $d$ é escrito como combinação linear dos vetores da base do núcleo de A. Assim, se $\tilde{x}$ é uma solução de \eqref{eq:restricao_de_igualdade}, podemos caracterizar o conjunto factível da seguinte forma
+A partir disso, é possível construir uma parametrização que caracterize o conjunto factível. Se $\{ z^{1}, z^{2}, \ldots , z^{n-m} \}$ é uma base de $\mathcal{N}(A)$ e $Z$ a matriz de dimensão $n\times (n-m)$ cujas colunas são os vetores $z^{i}$, então para todo $d \in \mathcal{N}(A)$, existe $\boldsymbol{\gamma} \in \RR^{n-m}$ tal que $d=Z\boldsymbol{\gamma}$, ou seja, $d$ é escrito como combinação linear dos vetores da base do núcleo de A. Assim, se $\tilde{x}$ é uma solução de \eqref{eq:restricao_de_igualdade}, podemos caracterizar o conjunto factível da seguinte forma
 \[ \label{parametrizacao_de_S}
-S = \{ x \in \RR^{n} \mid x=\tilde{x} + Z\gamma , \gamma \in \RR^{n-m} \} .
+\Omega = \{ x \in \RR^{n} \mid x=\tilde{x} + Z\boldsymbol{\gamma} , \boldsymbol{\gamma} \in \RR^{n-m} \} .
 \]
 
 \subsubsection{Condições Necessárias de Primeira Ordem}
 
 De modo geral, se um ponto é solução de um problema de otimização então deve satisfazer determinadas propriedades, que são chamadas de condições de otimalidade. Nesta seção abordaremos a condição necessária de primeira ordem para o problema de minimização com restrições de iguladade. Para obter esta condição utilizaremos a parametrização do conjunto factível proposta em \eqref{parametrizacao_de_S}, transferindo as restrições de \eqref{problema_geral_minimizacao_igualdade} para sua função objetivo. Com isso obtemos um novo problema de minimização irrestrita, para o qual as condições necessárias de primeira e segunda ordem já são conhecidas.
 
-Assim sendo, a caracterização de $S$ dada em \eqref{parametrizacao_de_S} permite definir a seguinte função $\varphi : \RR^{n-m} \rightarrow \RR$ dada por
+Assim sendo, a caracterização de $\Omega$ dada em \eqref{parametrizacao_de_S} permite definir a seguinte função $\varphi : \RR^{n-m} \rightarrow \RR$ dada por
 \[ \label{funcao_phi_restricoes_igualdade}
-\varphi (\gamma) = f(\tilde{x} + Z\gamma),
+\varphi (\boldsymbol{\gamma}) = f(\tilde{x} + Z\boldsymbol{\gamma}),
 \]
 e a partir dela podemos considerar o seguinte problema de minimização sem restrições
 \[ \label{problema_minimizacao_irrestrita_phi}
-\min_{\gamma} \varphi (\gamma) .
+\min_{\boldsymbol{\gamma}} \varphi (\boldsymbol{\gamma}) .
 \]
 
 Primeiramente, vejamos que os problemas \eqref{problema_geral_minimizacao_igualdade} e \eqref{problema_minimizacao_irrestrita_phi} são equivalentes.
 
 \begin{prop}
-$\gamma^{*}$ é um minimizador local (global) de $\varphi$ em $\RR^{n-m}$ se, e somente se, $x^{*} := \tilde{x} + Z\gamma^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
+$\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de $\varphi$ em $\RR^{n-m}$ se, e somente se, $x^{*} := \tilde{x} + Z\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
 \end{prop}
 \begin{proof}
-Seja $\gamma^{*}$ um minimizador local (global) de $\varphi$ em $\RR^{n-m}$. Então,
+Seja $\boldsymbol{\gamma}^{*}$ um minimizador local (global) de $\varphi$ em $\RR^{n-m}$. Então,
 \[
-f(\tilde{x} + Z\gamma^{*} ) = \varphi (\gamma^{*}) \leq \varphi (\gamma) = f(\tilde{x} + Z\gamma) ,
+f(\tilde{x} + Z\boldsymbol{\gamma}^{*} ) = \varphi (\boldsymbol{\gamma}^{*}) \leq \varphi (\boldsymbol{\gamma}) = f(\tilde{x} + Z\boldsymbol{\gamma}) ,
 \]
-para todo $\gamma \in \RR^{n-m}$. Logo, chamando $x^{*}:=\tilde{x} + Z\gamma^{*}$, temos
+para todo $\boldsymbol{\gamma} \in \RR^{n-m}$. Logo, chamando $x^{*}:=\tilde{x} + Z\boldsymbol{\gamma}^{*}$, temos
 \[
 f(x^{*}) \leq f(x),
 \]
-para todo $x \in \RR^{n}$, com $x^{*} \in S$. Portanto, $x^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
+para todo $x \in \RR^{n}$, com $x^{*} \in \Omega$. Portanto, $x^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
 
-Reciprocamente, suponhamos que $x^{*}=\tilde{x} + Z\gamma^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}. Então,
+Reciprocamente, suponhamos que $x^{*}=\tilde{x} + Z\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}. Então,
 \[
-f(\tilde{x} + Z\gamma^{*}) = f(x^{*}) \leq f(x) = f(\tilde{x} + Z\gamma)
+f(\tilde{x} + Z\boldsymbol{\gamma}^{*}) = f(x^{*}) \leq f(x) = f(\tilde{x} + Z\boldsymbol{\gamma})
 \]
 para todo $x \in \RR^{n}$, o que implica em 
 \[
-\varphi(\gamma^{*}) \leq \varphi(\gamma) , 
+\varphi(\boldsymbol{\gamma}^{*}) \leq \varphi(\boldsymbol{\gamma}) , 
 \]
-para todo $\gamma \in \RR^{n-m}$. Portanto, $\gamma^{*}$ é um minimizador local (global) de $\varphi$ em $\RR^{n-m}$.
+para todo $\boldsymbol{\gamma} \in \RR^{n-m}$. Portanto, $\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de $\varphi$ em $\RR^{n-m}$.
 \end{proof}
 
 Agora, como \eqref{problema_minimizacao_irrestrita_phi} é um problema de minimização irrestrito, a condição necessária de primeira ordem para ele é
@@ -705,42 +705,42 @@ Agora, como \eqref{problema_minimizacao_irrestrita_phi} é um problema de minimi
 \nabla \varphi(x^{*}) = 0.
 \]
 
-Por \eqref{funcao_phi_restricoes_igualdade} e definindo a função $g: \RR^{n-m} \rightarrow \RR^{n}$, com $g(\gamma) = \tilde{x} + Z\gamma$, temos que $\varphi(\gamma) = f(g(\gamma))$. Aplicando a regra da cadeia para calcular sua derivada, obtemos
+Por \eqref{funcao_phi_restricoes_igualdade} e definindo a função $g: \RR^{n-m} \rightarrow \RR^{n}$, com $g(\boldsymbol{\gamma}) = \tilde{x} + Z\boldsymbol{\gamma}$, temos que $\varphi(\boldsymbol{\gamma}) = f(g(\boldsymbol{\gamma}))$. Aplicando a regra da cadeia para calcular sua derivada, obtemos
 \[
-\varphi^{'} (\gamma) = f^{'}(g(\gamma)) g^{'}(\gamma) = \nabla f(g(\gamma))Z 
+\varphi^{'} (\boldsymbol{\gamma}) = f^{'}(g(\boldsymbol{\gamma})) g^{'}(\boldsymbol{\gamma}) = \nabla f(g(\boldsymbol{\gamma}))Z 
 \]
 e, portanto
 \[
-\nabla \varphi(\gamma) = Z^{T}\nabla f(g(\gamma)) .
+\nabla \varphi(\boldsymbol{\gamma}) = Z^{T}\nabla f(g(\boldsymbol{\gamma})) .
 \]
 
 Desse modo, da condição \eqref{condicao_1_ordem_phi}, resulta que
 \[
-\nabla \varphi (\gamma^{*}) = Z^{T} \nabla f(\tilde{x} + Z\gamma^{*}) = Z^{T} \nabla f(x^{*}) = 0 .
+\nabla \varphi (\boldsymbol{\gamma}^{*}) = Z^{T} \nabla f(\tilde{x} + Z\boldsymbol{\gamma}^{*}) = Z^{T} \nabla f(x^{*}) = 0 .
 \]
 
 Portanto, uma condição necessária de primeira ordem para que $x^{*}$ seja minimizador local de \eqref{problema_geral_minimizacao_igualdade} é que
 \[ \label{condicao_1_ordem_f}
 Z^{T} \nabla f(x^{*}) = 0,
 \]
-ou seja, que $\nabla f(x^{*})$ seja ortogonal a $\mathcal{N}(A)$. Logo, pelas considerações feitas anteriormente, temos que $\nabla f(x^{*}) \in Im(A^{T})$, em outras palavras, $\nabla f(x^{*})$ deve ser uma combinação linear das linhas de $A$. Portanto, existe $\lambda^{*} \in \RR^{m}$ tal que
+ou seja, que $\nabla f(x^{*})$ seja ortogonal a $\mathcal{N}(A)$. Logo, pelas considerações feitas anteriormente, temos que $\nabla f(x^{*}) \in Im(A^{T})$, em outras palavras, $\nabla f(x^{*})$ deve ser uma combinação linear das linhas de $A$. Portanto, existe $\boldsymbol{\lambda}^{*} \in \RR^{m}$ tal que
 \[ \label{condicao_1_ordem_gradiente}
-\nabla f(x^{*}) = A^{T} \lambda^{*} .
+\nabla f(x^{*}) = A^{T} \boldsymbol{\lambda}^{*} .
 \] 
 
-Observe que as condições propostas em \eqref{condicao_1_ordem_f} e \eqref{condicao_1_ordem_gradiente} são equivalentes. Com efeito, se \eqref{condicao_1_ordem_f} se verifica, isso implica que $\nabla f(x^{*}) \in \mathcal{N}(A)^{\bot} = Im(A^{T})$ e portanto \eqref{condicao_1_ordem_gradiente} é verdadeiro. Reciprocamente, se \eqref{condicao_1_ordem_gradiente} ocorre, temos que, pela \Cref{prop:complemento_ortogonal_nucleo}, $Z^{T}\nabla f(x^{*}) = Z^{T}(A^{T} \lambda^{*}) = 0$.
+Observe que as condições propostas em \eqref{condicao_1_ordem_f} e \eqref{condicao_1_ordem_gradiente} são equivalentes. Com efeito, se \eqref{condicao_1_ordem_f} se verifica, isso implica que $\nabla f(x^{*}) \in \mathcal{N}(A)^{\bot} = Im(A^{T})$ e portanto \eqref{condicao_1_ordem_gradiente} é verdadeiro. Reciprocamente, se \eqref{condicao_1_ordem_gradiente} ocorre, temos que, pela \Cref{prop:complemento_ortogonal_nucleo}, $Z^{T}\nabla f(x^{*}) = Z^{T}(A^{T} \boldsymbol{\lambda}^{*}) = 0$.
 
-Em vista disso, se $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_igualdade}, então, por \eqref{condicao_1_ordem_gradiente}, existe $\lambda^{*} \in \RR^{m}$ tal que $(x^{*}, \lambda^{*})$ é solução do seguinte sistema de $(n+m)$ equações
+Em vista disso, se $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_igualdade}, então, por \eqref{condicao_1_ordem_gradiente}, existe $\boldsymbol{\lambda}^{*} \in \RR^{m}$ tal que $(x^{*}, \boldsymbol{\lambda}^{*})$ é solução do seguinte sistema de $(n+m)$ equações
 \[ \label{problema_restricoes_igualdade_dual}
 \begin{aligned}
-& \nabla f(x^{*}) = A^{T} \lambda^{*} \\
+& \nabla f(x^{*}) = A^{T} \boldsymbol{\lambda}^{*} \\
 & Ax^{*} = b .
 \end{aligned}
 \]
 
 A solução de \eqref{problema_geral_minimizacao_igualdade} é necessariamente solução de \eqref{problema_restricoes_igualdade_dual}, porém para a recíproca ser verdadeira é necessária a informação de segunda ordem.
 
-O vetor $\lambda^{*} \in \RR^{m}$ é chamado vetor de \emph{multiplicadores de Lagrange} associado a $x^{*}$.
+O vetor $\boldsymbol{\lambda}^{*} \in \RR^{m}$ é chamado vetor de \emph{multiplicadores de Lagrange} associado a $x^{*}$.
 
 Vejamos a seguir um exemplo em que as condições de otimalidade de primeira ordem nos permitem determinar a expressão geral para uma solução do problema de minimizar $f(x) = \Vert x \Vert$ sujeita a restrições de igualdade.
 
@@ -759,23 +759,23 @@ A\tilde{x} = b .
 \]
 Além disso, se $\tilde{x}$ é solução então,
 \[
-\nabla f(\tilde{x}) =A^{T} \tilde{\lambda},
+\nabla f(\tilde{x}) =A^{T} \tilde{\boldsymbol{\lambda}},
 \]
 e como $\nabla f(\tilde{x}) = \tilde{x}$, obtemos 
 \[ \label{exem:minimizar_norma_gradiente}
-\tilde{x} = A^{T} \tilde{\lambda} .
+\tilde{x} = A^{T} \tilde{\boldsymbol{\lambda}} .
 \]
 Substituindo \eqref{exem:minimizar_norma_gradiente} em \eqref{exem:minimizar_norma_verifica_restricao}, temos
 \[
-AA^{T} \tilde{\lambda} = b,
+AA^{T} \tilde{\boldsymbol{\lambda}} = b,
 \]
 e como por hipótese $A$ é posto completo, temos que $AA^{T}$ é não singular. Desse modo,
 \[
-(AA^{T})^{-1} AA^{T} \tilde{\lambda} = (AA^{T})^{-1} b,
+(AA^{T})^{-1} AA^{T} \tilde{\boldsymbol{\lambda}} = (AA^{T})^{-1} b,
 \]
 o que implica em 
 \[ \label{exem:minimizar_norma_lambdatil}
-\tilde{\lambda} = (AA^{T})^{-1} b.
+\tilde{\boldsymbol{\lambda}} = (AA^{T})^{-1} b.
 \]
 Agora, substituindo \eqref{exem:minimizar_norma_lambdatil} em \eqref{exem:minimizar_norma_gradiente}, concluímos que
 \[
@@ -792,12 +792,12 @@ A matriz $\tilde{A}$ é também chamada de pseudo-inversa de Moore-Penrose e ger
 
 A condição necessária de segunda ordem para uma solução do problema \eqref{problema_minimizacao_irrestrita_phi} é
 \[ \label{hessiana_phi}
-\nabla^{2} \varphi (\gamma^{*}) \succcurlyeq 0 \quad \text{(semidefinida positiva)}.
+\nabla^{2} \varphi (\boldsymbol{\gamma}^{*}) \succcurlyeq 0 \quad \text{(semidefinida positiva)}.
 \]
 
-Aplicando a regra da cadeia em $\nabla \varphi(\gamma) = Z^{T}\nabla f(\tilde{x} + Z\gamma)$, obtemos
+Aplicando a regra da cadeia em $\nabla \varphi(\boldsymbol{\gamma}) = Z^{T}\nabla f(\tilde{x} + Z\boldsymbol{\gamma})$, obtemos
 \[
-\nabla^{2} \varphi(\gamma) = Z^{T} \nabla^{2} f(\tilde{x} + Z\gamma)Z .
+\nabla^{2} \varphi(\boldsymbol{\gamma}) = Z^{T} \nabla^{2} f(\tilde{x} + Z\boldsymbol{\gamma})Z .
 \]
 Assim, por \eqref{hessiana_phi} temos que a condição necessária de segunda ordem para que $x^{*}$ seja minimizador local de \eqref{problema_geral_minimizacao_igualdade} é
 \[
@@ -820,12 +820,12 @@ então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_igua
 
 
 \begin{prop}
-Seja $f: \RR^{n} \rightarrow \RR$, $f \in \mathcal{C}^{2}$. Seja $\tilde{x} \in \RR^{n}$ tal que $A\tilde{x} = b$ ($A\in \RR^{m\times n}$, $b\in \RR^{m}$) e tal que existe $\lambda \in \RR^{m}$ com $\nabla f(\tilde{x}) = A^{T}\lambda$ e $\nabla^{2} f(\tilde{x})$ definida positiva. Então $\tilde{x}$ é um minimizador local de $f$ sujeita a $Ax=b$.
+Seja $f: \RR^{n} \rightarrow \RR$, $f \in \mathcal{C}^{2}$. Seja $\tilde{x} \in \RR^{n}$ tal que $A\tilde{x} = b$ ($A\in \RR^{m\times n}$, $b\in \RR^{m}$) e tal que existe $\boldsymbol{\lambda} \in \RR^{m}$ com $\nabla f(\tilde{x}) = A^{T}\boldsymbol{\lambda}$ e $\nabla^{2} f(\tilde{x})$ definida positiva. Então $\tilde{x}$ é um minimizador local de $f$ sujeita a $Ax=b$.
 \end{prop}
 \begin{proof}
-Para provar que $\tilde{x}$ é minimizador local de $f$ vamos verificar se ele satisfaz as condições suficientes de segunda ordem. Por hipótese temos que $\tilde{x} \in \RR^{n}$ satisfaz a restrição $A\tilde{x} = b$. Por conseguinte, existe $\lambda \in \RR^{m}$ tal que $\nabla f(\tilde{x}) = A^{T}\lambda$. Assim, seja Z a matriz cujas colunas são os vetores da base do $\mathcal{N}(A)$, sabemos que as linhas de $A$ são ortogonais a $\mathcal{N}(A)$ e portanto,
+Para provar que $\tilde{x}$ é minimizador local de $f$ vamos verificar se ele satisfaz as condições suficientes de segunda ordem. Por hipótese temos que $\tilde{x} \in \RR^{n}$ satisfaz a restrição $A\tilde{x} = b$. Por conseguinte, existe $\boldsymbol{\lambda} \in \RR^{m}$ tal que $\nabla f(\tilde{x}) = A^{T}\boldsymbol{\lambda}$. Assim, seja Z a matriz cujas colunas são os vetores da base do $\mathcal{N}(A)$, sabemos que as linhas de $A$ são ortogonais a $\mathcal{N}(A)$ e portanto,
 \[
-Z^{T}\nabla f(\tilde{x}) = Z^{T}A^{T}\lambda = 0.
+Z^{T}\nabla f(\tilde{x}) = Z^{T}A^{T}\boldsymbol{\lambda} = 0.
 \]
 Além disso, como $\nabla^{2} f(\tilde{x})$ é definida positiva, temos que 
 \[
