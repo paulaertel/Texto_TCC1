@@ -468,7 +468,7 @@ falamos em otimização com restrições.
 
 Frequentemente, a formulação de problemas mais complexos envolve restrições à função objetivo. No entanto, veremos mais adiante que muitos desses problemas podem ser convertidos em problemas irrestritos, utilizando as restrições para estabelecer relações entre as variáveis. Em vista disso, abordaremos primeiramente a teoria de otimização para o caso irrestrito para posteriormente obter as condições de otimalidade para problemas com restrições de igualdade e desiguladade, haja vista que o problema de classificação, o qual estamos interessados em resolver, possui este formato.
 
-No estudo do problema de otimização irrestrita uma das principais questões que surge diz respeito a existência da solução. Observe que se na \Cref{defi:valor_otimo} temos $\bar{v} = - \infty$, o problema \eqref{problema_geral_otimizacao} não admite solução global, pois neste caso $f$ é ilimitada inferiormente no conjunto factível. Outro caso em que também não minimizador global ocorre quando $\bar{v}$ não é atingido em nenhum ponto factível.
+No estudo do problema de otimização irrestrita uma das principais questões que surge diz respeito a existência da solução. Observe que se na \Cref{defi:valor_otimo} temos $\bar{v} = - \infty$, o problema \eqref{problema_geral_otimizacao} não admite solução global, pois neste caso $f$ é ilimitada inferiormente no conjunto factível. Outro caso em que também não existe minimizador global ocorre quando $\bar{v}$ não é atingido em nenhum ponto factível.
 
 \begin{exem}
 Seja $f: \RR \rightarrow \RR$, $f(x) = e^{x}$, $\Omega = \RR$. Note que $\bar{v} = \inf_{x \in \RR} e^{x} = 0$, contudo, não existe $x \in \RR$ tal que $e^{x} = 0$. 
@@ -538,7 +538,7 @@ com $\lim_{x \rightarrow \xbar}\dfrac{o(x)}{\Vert x - \xbar \Vert^{2}} = 0$.
 
 \begin{teo}(\textbf{Condição necessária de primeira ordem}) \label{teo:condicao_necessaria_1_ordem}
 Seja $f:\RR^{n} \rightarrow \RR$ diferenciável no ponto $x^{*} \in \RR^{n}$. Se $x^{*}$ é um minimizador local de $f$, então
-\[
+\[ \label{eq:condicao_necessaria_1_ordem}
 \nabla f(x^{*}) = 0.
 \]
 \end{teo}
@@ -570,6 +570,10 @@ Supondo que $\nabla f(x^{*})$ não fosse nulo, como $d \in \RR^{n}$ é arbitrár
 o que é uma contradição. Portanto, $\nabla f(x^{*}) =0$.
 \end{proof}
 
+
+\begin{defi}\label{defi:ponto_critico}
+Um ponto $x^{*} \in \RR^{n}$ que cumpre a condição \eqref{eq:condicao_necessaria_1_ordem} é dito ponto crítico ou estacionário da função $f$. 
+\end{defi}
 
 \begin{teo}(\textbf{Condição necessária de segunda ordem}) \label{teo:condicao_necessaria_2_ordem}
 Seja $f:\RR^{n} \rightarrow \RR$ duas vezes diferenciável no ponto $x^{*} \in \RR^{n}$. Se $x^{*}$ é um minimizador local de $f$, então a matriz Hessiana de $f$ no ponto $x^{*}$ é semidefinida positiva, isto é,
@@ -1013,8 +1017,8 @@ A \Cref{fig:conjuntos_convexos} apresenta a noção de convexidade de conjuntos,
 %criar minha própria figura
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.40\textwidth]{conjunto_convexo}
-	\caption{ Exemplo de conjunto convexo e não convexo. \label{fig:conjuntos_convexos} \\ Fonte: \textcite{Evelin2017}}
+	\includegraphics[width=0.60\textwidth]{convexidade}
+	\caption{ Conjunto convexo e não convexo. \label{fig:conjuntos_convexos} \\ Fonte: \textcite{Luenberger:2016}}
 \end{figure}
 
 
@@ -1253,14 +1257,36 @@ f((1-t)x + ty) < (1-t)f(x) + tf(y),
 \]
 dizemos que $f$ é estritamente convexa.
 
-A noção geométrica da \Cref{defi:funcao_convexa} é apresentada na \Cref{fig_funcao_convexa}, em que qualquer arco do gráfico de uma função convexa está sempre abaixo do segmento que liga as extremidades.
+
+\begin{figure}[!h] 
+\centering
+\begin{subfigure}[h]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{convex_function1}
+\caption{Função Convexa \label{fig:funcao_convexa}}
+\end{subfigure}
+\begin{subfigure}[!h]{0.43\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{convex_function2}
+	\caption{Função estrimatemente convexa. \label{fig:funcao_estritamente_convexa}}
+\end{subfigure}
+\begin{subfigure}[!h]{0.4\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{no_convex_function}
+	\caption{Função não convexa. \label{fig:funcao_nao_convexa}}
+\end{subfigure}
+\caption{Funções convexas e não convexas \label{fig:exemplos_funcao_convexa}\\ Fonte: \textcite{Luenberger:2016}}
+\end{figure}
+
+
+A noção geométrica da \Cref{defi:funcao_convexa} é apresentada na \Cref{fig:nocao_funcao_convexa}, em que qualquer arco do gráfico de uma função convexa está sempre abaixo do segmento que liga as extremidades.
 
 
 %criar minha própria imagem
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.85\textwidth]{funcao_convexa}
-	\caption{ Função Convexa. \label{fig_funcao_convexa} \\ Fonte: \textcite{Evelin2017}}
+	\includegraphics[width=0.82\textwidth]{funcao_convexa}
+	\caption{ Noção geométrica de função convexa. \label{fig:nocao_funcao_convexa} \\ Fonte: \textcite{Evelin2017}}
 \end{figure}
 
 
