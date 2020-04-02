@@ -606,7 +606,43 @@ d^{T} \nabla^{2} f(x^{*})d \geq 0.
 Seja $f:\RR^{n} \rightarrow \RR$ duas vezes diferenciável no ponto $x^{*} \in \RR^{n}$. Se $x^{*}$ é um ponto estacionário da função $f$ e $\nabla^{2} f(x^{*})$ é definida positiva, então $x^{*}$ é minimizador local estrito de $f$.
 \end{teo}
 \begin{proof}
-
+Seja $B = \{ h\in \RR^{n} \mid \Vert h \Vert =1 \}$. Consideremos a função $\phi : B \rightarrow \RR$ dada por
+\[
+\phi (h) = h^{T} \nabla^{2} f(x^{*})h.
+\]
+A função $\phi$ é contínua e $B$ é um conjunto fechado e limitado, portanto, pelo \Cref{teo:weierstrass}, $\phi$ atinge um valor máximo e um valor mínimo em $B$. Considere $a$ o valor mínimo, então
+\[
+\phi(h) \geq a >0,
+\]
+para todo $h \in B$. Agora, consideremos $d\in \RR^{n}$, arbitrário não-nulo. Como $\dfrac{d}{\Vert d \Vert} \in B$, temos que
+\[
+{\dfrac{d}{\Vert d \Vert}}^{T} \nabla^{2} f(x^{*})\dfrac{d}{\Vert d \Vert} \geq a
+\]
+implica em
+\[ \label{eq:1_condicao_suficiente_irrestrito}
+d^{T}\nabla^{2} f(x^{*})d \geq a\vert d\Vert^{2} .
+\]
+Aplicando a expansão de Taylor de segunda ordem \eqref{teo:Taylor_segunda_ordem} em torno de $x^{*}$, temos
+\[\label{eq:2_condicao_suficiente_irrestrito}
+f(x^{*}+d) - f(x^{*}) = \nabla f(x^{*})^{T}d + \dfrac{1}{2} d^{T}\nabla^{2} f(x^{*})d + o(\Vert d \Vert^{2}).
+\]
+Como, por hipótese, $\nabla f(x^{*}) = 0$, \eqref{eq:1_condicao_suficiente_irrestrito} e \eqref{eq:2_condicao_suficiente_irrestrito} implicam que
+\[ \label{eq:3_condicao_suficiente_irrestrito}
+f(x^{*}+d) - f(x^{*}) = \dfrac{1}{2} d^{T}\nabla^{2} f(x^{*})d + o(\Vert d \Vert^{2}) \geq \dfrac{a}{2}\Vert d \Vert^{2} + o(\Vert d \Vert^{2}).
+\]
+Então, para todo $d$ tal que $\Vert d \Vert$ é suficientemente pequena, o primeiro termo do membro direito da desigualdade \eqref{eq:3_condicao_suficiente_irrestrito} define o sinal deste lado. Além disso,
+\[
+\dfrac{a}{2}\Vert d \Vert^{2} >0.
+\]
+Portanto, para $\Vert d \Vert$ suficientemente pequeno não-nulo, temos que 
+\[
+f(x^{*} + d) - f(x^{*}) >0,
+\]
+e assim,
+\[
+f(x^{*}) < f(x^{*} + d).
+\]
+Portanto, para todo $x \in B(x^{*}, \varepsilon)$, $x \neq x^{*}$, temos que $f(x^{*}) < f(x)$. Logo, $x^{*}$ é um minimizador local estrito de $f$.
 \end{proof}
 
 
