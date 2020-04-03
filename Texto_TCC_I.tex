@@ -41,7 +41,7 @@
 \newtheorem{lema}{Lema}
 
 \theoremstyle{definition}%ambientes normais
-\newtheorem{exem}{Exemplo}[subsection]
+\newtheorem{exem}{Exemplo}
 \newtheorem{defi}{Definição}
 \newtheorem{obs}{Observação}	
 
@@ -69,9 +69,9 @@ style=numeric-comp, noerroretextools=true, sorting=nty,
 
 A Aprendizagem de Máquina (do inglês \textit{Machine Learning}) é o estudo do uso de técnicas computacionais para automaticamente detectar padrões em dados e usá-los para fazer predições e tomar decisões. De acordo com \textcite{Evelin2017}, existem dois tipos de Aprendizagem de Máquina, a aprendizagem supervisionada, em que a partir de um conjunto de dados de entrada e saída a máquina constrói um modelo que deduz a saída para novas entradas, e a não supervisionada, na qual a máquina cria sua própria solução. 
 
-A aprendizagem supervisionada é composta por uma etapa denominada fase de treinamento, na qual é dado um conjunto de treinamento formado por vários dados de entrada e saída que funcionam como exemplos, a partir dos quais a máquina detecta padrões e cria um modelo para deduzir a saída de novos dados. Após essa fase novas entradas são testadas, denominadas conjunto de teste, no intuito de analisar se a máquina está gerando as saídas corretas. Algumas técnicas para aprendizagem de máquina supervisionada são as Máquinas de Vetores Suporte, Regressão Linear, Regressão Logística e Redes Neurais. Enquanto que a \textit{Singular Value Decomposition} (SVD), Clusterização e Análise de Componentes Principais \cite{Evelin2017} são exemplos de técnicas para a aprendizagem não supervisionada. 
+A aprendizagem supervisionada é composta por uma etapa denominada fase de treinamento, na qual um conjunto de treinamento formado por vários dados de entrada e saída que funcionam como exemplos é dado e a partir dos quais a máquina detecta padrões e cria um modelo para deduzir a saída de novos dados. Após essa fase novas entradas são testadas, denominadas conjunto de teste, no intuito de analisar se a máquina está gerando as saídas corretas. Algumas técnicas para aprendizagem de máquina supervisionada são as Máquinas de Vetores Suporte, Regressão Linear, Regressão Logística e Redes Neurais. Enquanto que a Decomposição em Valor Singular (SVD), Clusterização e Análise de Componentes Principais \cite{Evelin2017} são exemplos de técnicas para a aprendizagem não supervisionada. 
 
-As Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}), conforme mencionado por \textcite{Evelin2017}, são indicadas nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos, além de apresentar uma boa capacidade de generalização. Esta técnica pode ser aplicada tanto para problemas de regressão como de classificação. Segundo \textcite{Evelin2017}, essa técnica foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes, com base na Teoria de Aprendizagem Estatística. Algumas aplicações de SVM em problemas práticos são o reconhecimento facial, leitura de placas automotivas e detecção de spam.
+As Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}), conforme mencionado por \textcite{Evelin2017}, são indicadas nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos, além de apresentar uma boa capacidade de generalização. Esta técnica pode ser aplicada tanto para problemas de regressão como de classificação. Tal técnica foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes, com base na Teoria de Aprendizagem Estatística. Algumas aplicações de SVM em problemas práticos são o reconhecimento facial, leitura de placas automotivas e detecção de spam.
 
 Agora, vamos formular matematicamente o problema de classificação utilizando as Máquinas de Vetores Suporte. Para tanto, considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig1}.
 
@@ -104,7 +104,7 @@ A modelagem do problema de classificação, utilizando a técnica de SVM, consis
 \min_{w,b} & \quad f(w) \\
 \text{s.a.} &  \quad g(w,b) \leq 0, \end{aligned}
 \]
-com $w\in \RR^n$ e $b\in \RR $, em que $f: \RR^n \rightarrow \RR$ é uma função quadrática e $g: \RR^{n+1} \rightarrow \RR^m$ é linear. Note também que $f$ e $g$ são continuamente diferenciáveis.
+com $w\in \RR^n$ e $b\in \RR $, em que $f: \RR^n \rightarrow \RR$ é uma função quadrática e $g: \RR^{n+1} \rightarrow \RR^m$ é linear afim. Por consequência, $f$ e $g$ são continuamente diferenciáveis.
 
 
 
@@ -114,7 +114,7 @@ Para formular matematicamente o problema de classificação, considere os conjun
 \]
 dos conjuntos formados pelos atributos pertencentes às classes positiva e negativa, respectivamente.
 
-\begin{defi} Considere um vetor não nulo $w\in \RR^n$ e um escalar $b\in \RR$. Um hiperplano com vetor normal $w$ e constante $b$ é um conjunto da forma $\Hset(w,b)=\{x\in \RR^n \mid w^{T}x+b=0\}$.
+\begin{defi} Considere um vetor não nulo $w\in \RR^n$ e um escalar $b\in \RR$. Um \emph{hiperplano com vetor normal $w$ e constante $b$} é um conjunto da forma $\Hset(w,b)=\{x\in \RR^n \mid w^{T}x+b=0\}$.
 \end{defi}
 
 O hiperplano $\Hset(w,b)$ divide o espaço $\RR^n$ em dois semiespaços, dados por
@@ -156,18 +156,19 @@ Considere dois conjuntos de dados de treinamento representados no $\RR^2$ como n
 \end{figure}
 
 
-\begin{defi} \label{def1} Os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são ditos linearmente separáveis quando existem $w\in \RR^n$ e $b\in \RR$  tais que $w^{T}x+b>0$ para todo $x\in \Xset^{+}$ e $w^{T}x+b<0$ para todo $x\in \Xset^{-}$. O hiperplano $\Hset(w,b)$ é chamado hiperplano separador dos conjuntos $\Xset^{+}$ e $\Xset^{-}$.
+\begin{defi} \label{def1} Os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são ditos \emph{linearmente separáveis} quando existem $w\in \RR^n$ e $b\in \RR$  tais que $w^{T}x+b>0$ para todo $x\in \Xset^{+}$ e $w^{T}x+b<0$ para todo $x\in \Xset^{-}$. O hiperplano $\Hset(w,b)$ é chamado hiperplano separador dos conjuntos $\Xset^{+}$ e $\Xset^{-}$.
 \end{defi}
 
 
-\begin{lema} \label{lema1} Suponha que os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são finitos e linearmente separáveis, com hiperplano separador $\Hset(w,b)$. Então, existem $\overline{w}\in \RR^n$ e $\overline{b}\in \RR$ tais que $\Hset(w,b)$ pode ser descrito por
+\begin{lema} \label{lema:hiperplanos_separadores} 
+Suponha que os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são finitos e linearmente separáveis, com hiperplano separador $\Hset(w,b)$. Então, existem $\overline{w}\in \RR^n$ e $\overline{b}\in \RR$ tais que $\Hset(w,b)$ pode ser descrito por
 \[
 \wbar^{T}x+\bbar =0,
 \]
 satisfazendo
 \begin{align}
-\wbar^{T}x+\bbar &\geq 1, \text{ para todo } x\in \Xset^{+}, \label{eq1} \\
-\wbar^{T}x+\bbar &\leq -1, \text{ para todo } x\in \Xset^{-}. \label{eq2}
+\wbar^{T}x+\bbar &\geq 1, \text{ para todo } x\in \Xset^{+}, \label{eq:1_hiperplanos_separadores} \\
+\wbar^{T}x+\bbar &\leq -1, \text{ para todo } x\in \Xset^{-}. \label{eq:2_hiperplanos_separadores}
 \end{align}
 \end{lema} 
 
@@ -186,41 +187,41 @@ Portanto, para todo $x\in \Xset^{+}\cup \Xset^{-}$, $\boldsymbol{\gamma} \leq \v
 e para $x\in \Xset^{-}$, temos
 \[- \dfrac{w^{T}x+b}{\boldsymbol{\gamma}} = \dfrac{\vert w^{T}x+b\vert }{\boldsymbol{\gamma}} \geq 1. \]
 
-Logo, definindo $\wbar:=\dfrac{w}{\boldsymbol{\gamma}}$ e $\bbar :=\dfrac{b}{\boldsymbol{\gamma}}$, obtemos as desigualdades \eqref{eq1} e \eqref{eq2}. 
+Logo, definindo $\wbar \coloneqq \dfrac{w}{\boldsymbol{\gamma}}$ e $\bbar \coloneqq \dfrac{b}{\boldsymbol{\gamma}}$, obtemos as desigualdades \eqref{eq:1_hiperplanos_separadores} e \eqref{eq:2_hiperplanos_separadores}. 
 
 \end{proof}
 
 
-A partir do \Cref{lema1} temos que $\Hset^{+}:=\{x\in \RR^n \mid w^{T}x+b= 1\}$ e $\Hset^{-}:=\{x\in \RR^n \mid w^{T}x+b= -1\}$ são os hiperplanos que definem a faixa que separa os conjuntos $\Xset^{+}$ e $\Xset^{-}$.
+A partir do \Cref{lema:hiperplanos_separadores} podemos, sem perda de generalidade, considerar o hiperplano $\Hset (w,b)$, com $w$ e $b$ satifazendo \eqref{eq:1_hiperplanos_separadores} e \eqref{eq:2_hiperplanos_separadores}. Além disso, temos que $\Hset^{+} (w,b) \coloneqq \{x\in \RR^n \mid w^{T}x+b= 1\}$ e $\Hset^{-} (w,b) \coloneqq \{x\in \RR^n \mid w^{T}x+b= -1\}$ são os hiperplanos que definem a faixa que separa os conjuntos $\Xset^{+}$ e $\Xset^{-}$.
 
-\begin{prop} \label{prop1} A projeção ortogonal de um vetor $\xbar\in \RR^n$ sobre um hiperplano afim $\Hset(w,b)$, é dada por
-\[ \proj_{\Hset}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b}{w^{T}w}w. \]
-Além disso, a $\proj_{\Hset}(\xbar)$ satisfaz a menor distância.
+\begin{prop} \label{prop:projecao_ortogonal_sobre_hiperplano} 
+A projeção ortogonal de um vetor $\xbar\in \RR^n$ sobre um hiperplano afim $\Hset(w,b)$, é dada por
+\[ \proj_{\Hset (w,b)}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b}{w^{T}w}w. \]
+Além disso, a $\proj_{\Hset (w,b)}(\xbar)$ satisfaz a menor distância.
 \end{prop}
 
 \begin{proof}
-Sejam $w\in \RR^n$ o vetor normal ao hiperplano $\Hset(w,b)$, $\bar{z}\in \Hset(w,b)$ e $x^{*}$ a projeção ortogonal de $\xbar$ sobre $\Hset(w,b)$. Assim, temos que 
-\[ \label{eq3} w^{T}(x^{*}-\bar{z})=0 \]
+Sejam $w\in \RR^n$ o vetor normal ao hiperplano $\Hset(w,b)$, $\bar{z}\in \Hset(w,b)$ e $x^{*} \coloneqq \proj_{\Hset (w,b)}(\xbar)$ a projeção ortogonal de $\xbar$ sobre $\Hset(w,b)$. Assim, temos que 
+\[ \label{eq:1_projecao_ortogonal_sobre_hiperplano} 
+w^{T}(x^{*}-\bar{z})=0 
+\]
 e
-\[ \label{eq4} \xbar-x^{*}=\lambda w \Longrightarrow x^{*}=\xbar-\lambda w. \]
-
-Substituindo \eqref{eq4} em \eqref{eq3}, obtemos
+\[ \label{eq:2_projecao_ortogonal_sobre_hiperplano} 
+\xbar-x^{*}=\lambda w \Longrightarrow x^{*}=\xbar-\lambda w. 
+\]
+Substituindo \eqref{eq:2_projecao_ortogonal_sobre_hiperplano} em \eqref{eq:1_projecao_ortogonal_sobre_hiperplano}, obtemos
 \begin{align}
 0 &= w^{T}(\xbar-\lambda w-\overline{z}) \\
 &= w^{T}\xbar-\lambda w^{T}w - w^{T}\bar{z}.
 \end{align}
-
 Resolvendo para $\lambda$ e como $w^{T}\bar{z} = -b$, temos
 \[ \lambda =\dfrac{w^{T}\xbar-w^{T}\bar{z}}{w^{T}w} =\dfrac{w^{T}\xbar+b}{w^{T}w}. \]
-
 Portanto, 
 \[ x^{*}=\xbar-\dfrac{w^{T}\xbar+b}{w^{T}w}w . \]
-
-Ademais, vamos provar que a $\proj_{\Hset}(\xbar)$ satisfaz a menor distância, isto é,
+Ademais, vamos provar que a $\proj_{\Hset (w,b)}(\xbar)$ satisfaz a menor distância, isto é,
 \[ \Vert\xbar-x^{*}\Vert_{2} \leq \Vert \xbar-x\Vert_{2}, \]
 para todo $x\in \Hset(w,b)$.
-
-De fato, tomando $u=\xbar-x^{*}$ e $v=x^{*}-x$ observe que 
+De fato, tomando $u=\xbar-x^{*}$ e $v=x^{*}-x$ observe que estes vetores são ortogonais, pois 
 \begin{align}
 u^{T}v&= (\xbar-x^{*})^{T}(x^{*}-x) \\
 &= (\xbar-\xbar+\lambda w)^{T}(x^{*}-x) \\
@@ -229,37 +230,45 @@ u^{T}v&= (\xbar-x^{*})^{T}(x^{*}-x) \\
 &= \lambda (-b-(-b)) \\
 &= 0.
 \end{align}
-
-Assim, temos
+Assim, podemos utilizar Pitágoras, isto é, obtemos
 \[ \Vert u+v\Vert^{2}=\Vert u\Vert^{2} + 2u^{T}v + \Vert v\Vert^{2}=\Vert u\Vert^{2} + \Vert v\Vert^{2} , \]
-ou seja,
-\[ \Vert \xbar-x\Vert^{2}=\Vert \xbar-x^{*}\Vert^{2} + \Vert x^{*}-x\Vert^{2}. \]
-
+e utilizamos as definições de $u$ e $v$ para obter
+\[ 
+\Vert \xbar-x\Vert^{2}=\Vert \xbar-x^{*}\Vert^{2} + \Vert x^{*}-x\Vert^{2} \geq \Vert x^{*} - x \Vert^{2} . 
+\]
 \end{proof}
 
 
-Utilizando a \Cref{prop1} podemos demonstrar o \Cref{lema2}, o qual estabelece a largura da faixa entre os hiperplanos separadores $\Hset^{+}$ e $\Hset^{-}$.
+Utilizando a \Cref{prop:projecao_ortogonal_sobre_hiperplano} podemos demonstrar o \Cref{lema:distancia_entre_hiperplanos}, o qual estabelece a largura da faixa entre os hiperplanos separadores $\Hset^{+} (w,b)$ e $\Hset^{-} (w,b)$.
 
-\begin{lema} \label{lema2} A distância entre os hiperplanos $\Hset^{+}$ e $\Hset^{-}$ é dada por $\dist(\Hset^{+}, \Hset^{-})=\dfrac{2}{\Vert w\Vert}$. 
+\begin{lema} \label{lema:distancia_entre_hiperplanos} 
+A distância entre os hiperplanos $\Hset^{+} (w,b)$ e $\Hset^{-} (w,b)$ é dada por 
+\[
+\dist(\Hset^{+}, \Hset^{-})=\dfrac{2}{\Vert w\Vert}.
+\] 
 \end{lema}
 \begin{proof}
-Considere um ponto arbitrário $\xbar\in \Hset^{+}$ e seja $x^{*}\in \Hset^{-}$ a projeção ortogonal de $\xbar$ sobre $\Hset^{-}$. Usando a \Cref{prop1}, temos
-\[ \label{eq6} x^{*}= \proj_{\Hset^{-}}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w. \] 
-
+Considere um ponto arbitrário $\xbar\in \Hset^{+} (w,b)$ e seja $x^{*}\in \Hset^{-} (w,b)$ a projeção ortogonal de $\xbar$ sobre $\Hset^{-} (w,b)$. Usando a \Cref{prop:projecao_ortogonal_sobre_hiperplano}, temos
+\[ \label{eq:1_distancia_entre_hiperplanos} 
+x^{*}= \proj_{\Hset^{-} (w,b)}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w. 
+\] 
 Além disso, a distância entre dois conjuntos é definida por
-\[ \dist(\Hset^{+}, \Hset^{-}):= \inf\{\Vert x^{+}-x^{-} \Vert : x^{+}\in \Hset^{+} \ \text{e} \ x^{-}\in \Hset^{-}\},
+\[ 
+\dist(\Hset^{+}, \Hset^{-}) \coloneqq  \inf\{\Vert x^{+}-x^{-} \Vert : x^{+}\in \Hset^{+} (w,b)\ \text{e} \ x^{-}\in \Hset^{-} (w,b) \},
 \]
-e como a $\proj_{\Hset^{-}}(\xbar)$ satisfaz a menor distância entre $\xbar$ e $\Hset^{-}$, e $\Hset^{+}$ é paralelo a $\Hset^{-}$, temos que 
-\[ \label{eq7} \dist(\Hset^{+},\Hset^{-})=\Vert \xbar-x^{*}\Vert. \]
+e como a $\proj_{\Hset^{-} (w,b)}(\xbar)$ satisfaz a menor distância entre $\xbar$ e $\Hset^{-} (w,b)$ e, $\Hset^{+} (w,b)$ é paralelo a $\Hset^{-} (w,b)$, temos que 
+\[ \label{eq:2_distancia_entre_hiperplanos} 
+\dist(\Hset^{+},\Hset^{-})=\Vert \xbar-x^{*}\Vert. 
+\]
 
-Substituindo \eqref{eq6} em \eqref{eq7} obtemos
+Substituindo \eqref{eq:1_distancia_entre_hiperplanos} em \eqref{eq:2_distancia_entre_hiperplanos} obtemos
 \begin{align} 
 \dist(\Hset^{+},\Hset^{-}) &= \Vert \xbar-x^{*}\Vert \\
 &= \left\Vert \xbar -\xbar +\dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w \right\Vert \\
 &=  \dfrac{\vert w^{T}\xbar+b+1 \vert}{\Vert w\Vert^{2}} \Vert w\Vert \\
 &= \dfrac{\vert w^{T}\xbar+b+1 \vert}{\Vert w\Vert},
 \end{align}
-e como $\xbar\in \Hset^{+}$,  $ w^{T}\xbar+b=1$ implica
+e como $\xbar\in \Hset^{+} (w,b)$,  $ w^{T}\xbar+b=1$ implica
 \[  w^{T}\xbar =1-b, \]
 concluindo que 
 \begin{align} 
@@ -268,17 +277,24 @@ concluindo que
 \end{align}
 \end{proof}
 
+
 %--------------------------------------------------------------------------------------------------------------------------
+
 
 \subsection{Formulação Matemática do Problema de Classificação - Margem Rígida}
 
 Encontrar o hiperplano que melhor separa os dados implica maximizar a largura da margem, isto é, maximizar $\dist(\Hset^{+} , \Hset^{-}) =\dfrac{2}{\Vert w\Vert }$. Isso equivale a minimizar seu inverso $\dfrac{1}{2}\Vert w\Vert $ ou ainda minimizar $\dfrac{1}{2}\Vert w\Vert^{2}$. De fato, seja $w^{*}=\argmax\dfrac{2}{\Vert w\Vert}$. Então, para todo $w\in \RR^n$,
-\[ \dfrac{2}{\Vert w^{*}\Vert} \geq \dfrac{2}{\Vert w\Vert} \]
+\[ 
+\dfrac{2}{\Vert w^{*}\Vert} \geq \dfrac{2}{\Vert w\Vert} 
+\]
 implica
-\[ \label{eq8} \Vert w\Vert \geq \Vert w^{*}\Vert. \]
-Logo, $w^{*}=\argmin\Vert w\Vert$. Além disso, como $\Vert \cdot \Vert$ é não negativa, elevando ao quadrado ambos os lados da desigualdade \eqref{eq8} temos que  $\Vert w\Vert^{2} \geq \Vert w^{*}\Vert^{2}$ implica
-\[ \dfrac{1}{2}\Vert w\Vert^{2} \geq \dfrac{1}{2}\Vert w^{*}\Vert^{2}. \]
-
+\[ \label{eq:maximizar_distancia_equivalente_minimizar} 
+\Vert w\Vert \geq \Vert w^{*}\Vert. 
+\]
+Logo, $w^{*} \in \argmin\Vert w\Vert$. Além disso, como $\Vert \cdot \Vert$ é não negativa, elevando ao quadrado ambos os lados da desigualdade \eqref{eq:maximizar_distancia_equivalente_minimizar} temos que  $\Vert w\Vert^{2} \geq \Vert w^{*}\Vert^{2}$ implica
+\[ 
+\dfrac{1}{2}\Vert w\Vert^{2} \geq \dfrac{1}{2}\Vert w^{*}\Vert^{2}. 
+\]
 Portanto, 
 \[ \argmax\dfrac{2}{\Vert w\Vert} = \argmin\dfrac{1}{2}\Vert w\Vert^2. \]
 
@@ -301,7 +317,7 @@ em que $w\in \RR^{n}$ e $b\in \RR$.
 
 O problema \eqref{eq:problemageralSVM} possui função objetivo 
 \[ f(w,b)=\dfrac{1}{2}\Vert w\Vert^{2} \]
-convexa, e restrições lineares
+convexa, e restrições lineares (DEMONSTRAR)
 \[ g_i(w,b)=1-y_i(w^{T}x^{i}+b) \leq 0, \quad i=1, \ldots, m, \]
 em que a função $g:\RR^{n+1} \rightarrow \RR^{m}$ pode ser escrita da forma 
 \[ g(w,b)= e - (YX^{T}w+by) \leq 0, \]
@@ -312,7 +328,7 @@ com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_
 
 \subsection{Formulação Matemática do Problema de Classificação - Margem Flexível (CSVM)}
 
-Situações reias dificilmente envolvem problemas cujos dados são linearmente separáveis. Em vista disso, faz-se necessário estender os conceitos e resultados estudados nas SVMs lineares de margem rígida para o caso de SVM com margem flexível, quando os dados não são linearmente separáveis. Para tanto, considere um conjunto de dados não linearmente sepavável como da \Cref{fig4:b}, isto é, não existe um hiperplano separador. 
+Situações reias dificilmente envolvem problemas cujos dados são linearmente separáveis. Em vista disso, faz-se necessário estender os conceitos e resultados estudados nas SVMs lineares de margem rígida para o caso de SVM com margem flexível, quando os dados não são linearmente separáveis. Para tanto, considere um conjunto de dados não linearmente sepavável como da \Cref{fig:dados_linearmente_separaveis_e_nao_separaveis:b}, isto é, não existe um hiperplano separador. 
 
 
 \begin{figure}[htbp] 
@@ -320,14 +336,14 @@ Situações reias dificilmente envolvem problemas cujos dados são linearmente s
 	\begin{subfigure}[h]{0.32\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{dados_linearmenteseparaveismmll}
-		\caption{Dados linearmente separáveis. \label{fig4:a}}
+		\caption{Dados linearmente separáveis. \label{fig:dados_linearmente_separaveis_e_nao_separaveis:a}}
 	\end{subfigure}
 	\begin{subfigure}[h]{0.31\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{dados_nlinearmenteseparaveismml}
-		\caption{Dados não linearmente separáveis. \label{fig4:b}}
+		\caption{Dados não linearmente separáveis. \label{fig:dados_linearmente_separaveis_e_nao_separaveis:b}}
 	\end{subfigure}
-\caption{Fonte: \textcite{Faisal2019} \label{fig4}}
+\caption{Conjunto de dados. \label{fig:dados_linearmente_separaveis_e_nao_separaveis} \\ Fonte: \textcite{Faisal2019} }
 \end{figure}
 
 
@@ -343,10 +359,10 @@ Assim, no intuito de contornar esse problema utilizamos regularização para sua
 \begin{figure}[!h] 
 	\centering
 	\includegraphics[width=0.40\textwidth]{mmlinterpretacao_variavel_xi}
-	\caption{Variáveis de folga \label{fig5} \\ Fonte: \textcite{Faisal2019}}
+	\caption{Variáveis de folga. \label{fig:variaveis_de_folga} \\ Fonte: \textcite{Faisal2019}}
 \end{figure}
 
-Tal procedimento permite que pontos da classe positiva permaneçam fora do semiespaço $\mathcal{S}^{+}=\{x\in \RR^n \mid w^{T}x+b\geq 1\}$ e/ou pontos da classe negativa fora do semiespaço $\mathcal{S}^{-}=\{x\in \RR^n \mid w^{T}x+b\leq -1\}$. 
+Tal procedimento permite que pontos da classe positiva permaneçam fora do semiespaço $\mathcal{S}^{+}=\{x\in \RR^n \mid w^{T}x+b\geq 1\}$ ou pontos da classe negativa fora do semiespaço $\mathcal{S}^{-}=\{x\in \RR^n \mid w^{T}x+b\leq -1\}$. 
 
 Nesta formulação o hiperplano separador é denominado hiperplano de margem flexível e as restrições dos hiperplanos separadores são reformuladas da seguinte maneira 
 \begin{align}
@@ -362,12 +378,12 @@ Agora nosso objetivo é encontrar $w$ e $b$ ótimos de modo a obter um bom class
 \end{array} \right .
 \]
  
-Desse modo, para obter um bom classificador não basta apenas maximizar a margem definida pelos hiperplanos $\Hset^{+}$ e $\Hset^{-}$ e introduzir as variáveis de folga nas restrições, mantendo a mesma função objetivo, pois, como exemplificado por \textcite{Evelin2017}, a \Cref{fig6} ilustra o hiperplano dado por $w_{0}^{T}x+b = 0$, que não poder ser usado para classificar os dados, mas satisfaz as restrições \eqref{restricoesCSVM+} e \eqref{restricoesCSVM-}. 
+Desse modo, para obter um bom classificador não basta apenas maximizar a margem definida pelos hiperplanos $\Hset^{+} (w,b)$ e $\Hset^{-} (w,b)$ e introduzir as variáveis de folga nas restrições, mantendo a mesma função objetivo, pois, como exemplificado por \textcite{Evelin2017}, a \Cref{fig:hiperplano_nao_classificador} ilustra o hiperplano dado por $w_{0}^{T}x+b = 0$, que não poder ser usado para classificar os dados, mas satisfaz as restrições \eqref{restricoesCSVM+} e \eqref{restricoesCSVM-}. 
 
 \begin{figure}[!h] 
 	\centering
 	\includegraphics[width=0.40\textwidth]{restricoes_maximizacaomargem}
-	\caption{Pensar. \label{fig6} \\ Fonte: \textcite{Evelin2017}}
+	\caption{Exemplo de hiperplano que não classifica os dados. \label{fig:hiperplano_nao_classificador} \\ Fonte: \textcite{Evelin2017}}
 \end{figure}
  
 
@@ -400,7 +416,9 @@ Ademais, a função objetivo $f$ é quadrática e limitada inferiormente em $\Om
 \[
 f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m} \underbrace{\xi_{i}}_{\geq 0} \geq 0.
 \]
+
 %Assim o Teorema de Programação Quadrática (1.34) garante a existência de um minimizador global para o problema \eqref{eq:problemaCSVM}.
+
 
 %-------------------------------------------------------------------------------------------------------------------------
 
@@ -408,8 +426,7 @@ f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m}
 \section{Conceitos de Otimização}
 
 
-Tendo em vista que o problema de clasificação trata-se de um problema de Otimização, neste capítulo pretendemos discutir alguns conceitos e resultados de otimização para o problema 
-
+Tendo em vista que o problema de clasificação trata-se de um problema de Otimização, neste capítulo pretendemos discutir alguns conceitos e resultados para o problema 
 \[ \label{problema_geral_otimizacao}
 \begin{aligned}
 \min_{x} & \quad f(x) \\
@@ -431,7 +448,7 @@ Dizemos que um ponto $x^{*} \in \Omega$ é
 
 Quando as desigualdades na \Cref{defi:minimizador_local_global} forem estritas para $x \neq x^{*}$, diremos que $x^{*}$ é minimizador estrito.
 
-Pela \Cref{defi:minimizador_local_global}, todo minimizador global é também minimizador local, porém a recíproca não é verdadeira. É interessante salientar que ná prática, do ponto de vista teórico e computacional, em muitas circunstâncias iremos nos contentar com um ponto de mínimo local. Haja vista que em geral, condições globais e soluções globais só podem ser encontradas se o problema possuir certas propriedades de convexidade que garantem, essencialmente, que qualquer mínimo local é mínimo global.
+Pela \Cref{defi:minimizador_local_global}, todo minimizador global é também minimizador local, porém a recíproca não é verdadeira. É interessante salientar que em muitas circunstâncias iremos nos contentar com um ponto de mínimo local, pois de modo geral, condições globais e soluções globais só podem ser encontradas se o problema possuir certas propriedades de convexidade que garantem, essencialmente, que qualquer mínimo local é global.
 
 \begin{defi} \label{defi:valor_otimo}
 Dizemos que $\bar{v} \in [-\infty, +\infty )$ definido por
@@ -446,13 +463,13 @@ Todo problema de maximização
 \[
 \begin{aligned}
 \max_{x} & \quad f(x) \\
-\text{s.a.} & \quad x \in \Omega \end{aligned}
+\text{s.a} & \quad x \in \Omega \end{aligned}
  \]
 pode ser transformado em um problema de minimização equivalente
 \[
 \begin{aligned}
 \min_{x} & \quad -f(x) \\
-\text{s.a.} & \quad x \in \Omega .\end{aligned}
+\text{s.a} & \quad x \in \Omega .\end{aligned}
 \]
 Em particular, as soluções locais e globais de ambos os problemas são as mesmas, com sinais opostos para os valores ótimos.
 \end{obs} %acrescentar imagem izmailoz&solodov
@@ -460,7 +477,7 @@ Em particular, as soluções locais e globais de ambos os problemas são as mesm
 %Se a função objetivo $f$ for linear, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação linear}, e se $f$ for uma função quadrática, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação quadrática}. Ademais, quando $\Omega$ é um conjunto convexo e $f$ é uma função convexa, dizemos que \eqref{problema_geral_otimizacao} é um problema de \emph{programação convexa}. 
 
 
-Quando o conjunto factível $\Omega = \RR^{n}$ dizemos o problema \eqref{problema_geral_otimizacao} é irrestrito. No caso em que $\Omega$ é definido por um sistema de igualdades e/ou desigualdades como
+Ademias, quando o conjunto factível $\Omega = \RR^{n}$ dizemos que o problema \eqref{problema_geral_otimizacao} é irrestrito. No caso em que $\Omega$ é definido por um sistema de igualdades e/ou desigualdades como
 \[
 \Omega = \{ x\in \RR^{n} \mid h(x)=0, g(x) \leq 0 \},
 \]
@@ -468,10 +485,10 @@ falamos em otimização com restrições.
 
 Frequentemente, a formulação de problemas mais complexos envolve restrições à função objetivo. No entanto, veremos mais adiante que muitos desses problemas podem ser convertidos em problemas irrestritos, utilizando as restrições para estabelecer relações entre as variáveis. Em vista disso, abordaremos primeiramente a teoria de otimização para o caso irrestrito para posteriormente obter as condições de otimalidade para problemas com restrições de igualdade e desiguladade, haja vista que o problema de classificação, o qual estamos interessados em resolver, possui este formato.
 
-No estudo do problema de otimização irrestrita uma das principais questões que surge diz respeito a existência da solução. Observe que se na \Cref{defi:valor_otimo} temos $\bar{v} = - \infty$, o problema \eqref{problema_geral_otimizacao} não admite solução global, pois neste caso $f$ é ilimitada inferiormente no conjunto factível. Outro caso em que também não existe minimizador global ocorre quando $\bar{v}$ não é atingido em nenhum ponto factível.
+No estudo do problema de otimização irrestrita uma das principais questões que surge diz respeito a existência da solução. Observe que se na \Cref{defi:valor_otimo} temos $\bar{v} = - \infty$, o problema \eqref{problema_geral_otimizacao} não admite solução global, pois neste caso $f$ é ilimitada inferiormente no conjunto factível. Outro caso em que também não existe minimizador global ocorre quando $\bar{v}$ não é atingido em nenhum ponto factível. Vejamos um exemplo.
 
 \begin{exem}
-Seja $f: \RR \rightarrow \RR$, $f(x) = e^{x}$, $\Omega = \RR$. Note que $\bar{v} = \inf_{x \in \RR} e^{x} = 0$, contudo, não existe $x \in \RR$ tal que $e^{x} = 0$. 
+Seja $f: \RR \rightarrow \RR$, definida por $f(x) = e^{x}$, $\Omega = \RR$. Note que $\bar{v} = \inf_{x \in \RR} e^{x} = 0$, contudo, não existe $x \in \RR$ tal que $e^{x} = 0$. 
 De modo análogo, considere $f$ definida como anteriormente e $\Omega = (0,1]$. Temos que $\bar{v} = \inf_{x \in (0,1]} e^{x} = 1$ e novamente não existe $x \in (0,1]$ tal que $e^{x}=1$. Observe que a função $f$ é contínua em $\Omega$, porém no primeiro caso $\Omega$ não é limitado e no segundo, $\Omega$ não é fechado. 
 Considere agora $\Omega = [0,1]$, $f(x)=e^{x}$ para $x \in (0,1]$ e $f(0)=0$. Novamente, $\bar{v} = \inf_{x \in (0,1]} e^{x} = 1$, porém não existe $x\in \Omega$ tal que $f(x)=1$. Neste exemplo, $\Omega$ é compacto mas $f$ não é contínua.
 \end{exem}
@@ -494,11 +511,11 @@ Passando ao limite quando $k \rightarrow \infty $, conluímos que
 \[\label{eq:teo_weierstrass}
 \lim_{k \rightarrow \infty} f(x^{k}) = \bar{v}.
 \]
-Como $\{ x^{k} \} \in \Omega$ e $\Omega$ é compacto, temos que $\{ x^{k} \}$ é uma sequência limitada. Logo, ela possui uma subsequência convergente em $\Omega$, isto é, existe uma subsequência $x^{k_{j}}$ que converge para um ponto $\bar{x} \in \Omega$,
+Como $\{ x^{k} \} \in \Omega$ e $\Omega$ é compacto, temos que $\{ x^{k} \}$ é uma sequência limitada. Logo, ela possui uma subsequência convergente em $\Omega$, isto é, existe uma subsequência $\{ x^{k_{j}} \}$ que converge para um ponto $\bar{x} \in \Omega$,
 \[
 \lim_{j \rightarrow \infty} x^{k_{j}} = \bar{x} \in \Omega .
 \]
-Como $f$ é contínua,
+Como $f$ é contínua, temos que
 \[
 \lim_{j \rightarrow \infty} f(x^{k_{j}}) = f(\bar{x}).
 \]
@@ -517,7 +534,8 @@ Considere o problema \eqref{problema_geral_otimizacao} com $\Omega = \RR^{n}$, i
 \]
 em que $f:\RR^{n} \rightarrow \RR$. Neste caso, o problema \eqref{problema_otimizacao_irrestrita} é chamado problema de minimização irrestrita. Nesta seção serão determinadas as condições que devem ser satisfeitas quando um ponto $x^{*} \in \RR^{n}$ é minimizador local do problema \eqref{problema_otimizacao_irrestrita}. Condições desse tipo são chamadas de \emph{condições necessárias de otimalidade}. Determinaremos também as condições que garantem que um ponto dado é minimizador local do problema, que são denominadas \emph{condições suficientes de otimalidade}. 
 
-Para demonstrar as condições necessárias utilizaremos a expansão de Taylor de primeira e segunda ordem.
+Para demonstrar as condições de otimalidade será necessário utilizar os teoremas \eqref{teo:Taylor_primeira_ordem} e \eqref{teo:Taylor_segunda_ordem} a seguir, que fornecem a expansão de Taylor de primeira e segunda ordem.
+
 
 %determinar bibliografia em que estão demonstrados para citar.
 \begin{teo}(\textbf{Taylor de Primeira Ordem}) {\cite[p.25]{Ademir2013}} \label{teo:Taylor_primeira_ordem}
@@ -547,7 +565,7 @@ Considere $d \in \RR^{n}$ arbitrário, porém fixo. Pela definição de minimiza
 \[ \label{eq:1_condicao_1_ordem_irrestrito}
 f(x^{*}) \leq f(x^{*}+td),
 \]
-para todo $t\in (0,\varepsilon ]$. Pela diferenciabilidade de $f$ em $x^{*}$, aplicando a expansão de Taylor \eqref{teo:Taylor_primeira_ordem}, 
+para todo $t\in (0,\varepsilon ]$. Pela diferenciabilidade de $f$ em $x^{*}$, aplicando o \Cref{teo:Taylor_primeira_ordem}, 
 \[
 f(x^{*}+td) = f(x^{*}) + t\nabla f(x^{*})^{T}d + o(t),
 \] 
@@ -583,22 +601,23 @@ d^{T} \nabla^{2} f(x^{*})d \geq 0,
 para todo $d \in \RR^{n}$.
 \end{teo}
 \begin{proof}
-Seja $d\in \RR^{n}$ arbitrário, porém fixo. Se $x^{*}$ é minimizador local de $f$, então para todo $t>0$ suficientemente pequeno,
+Seja $d\in \RR^{n}$ arbitrário, porém fixo. Se $x^{*}$ é minimizador local de $f$, então para todo $t>0$ suficientemente pequeno, temos que
 \[\label{eq:1_condicao_2_ordem_irrestrito}
 0 \leq f(x^{*}+td) - f(x^{*}).
 \]
-Aplicando a expansão de Taylor de segunda ordem \eqref{teo:Taylor_segunda_ordem},
+Aplicando o \Cref{teo:Taylor_segunda_ordem},
 \[
 f(x^{*}+td) = f(x^{*}) + t\nabla f(x^{*})^{T}d + \dfrac{t^{2}}{2} d^{T}\nabla^{2} f(x^{*})d + o(t^{2}),
 \]
-que por \eqref{eq:1_condicao_2_ordem_irrestrito} implica em
+com $\lim_{t\rightarrow 0} \dfrac{o(t^{2})}{t^{2}} =0$, e  \eqref{eq:1_condicao_2_ordem_irrestrito} implica em
 \[ \label{eq:2_condicao_2_ordem_irrestrito}
 0 \leq \dfrac{t^{2}}{2} d^{T}\nabla^{2} f(x^{*})d + o(t^{2}),
 \]
-com $\lim_{t\rightarrow 0} \dfrac{o(t^{2})}{t^{2}} =0$, pois como $x^{*}$ é minimizador local, o \Cref{teo:condicao_necessaria_1_ordem} garante que $\nabla f(x^{*}) =0$. Dividindo ambos os lados da desigualdade \eqref{eq:2_condicao_2_ordem_irrestrito} por $t^{2}$ e tomando o limite quando $t\rightarrow 0$, obtemos
+ pois como $x^{*}$ é minimizador local, o \Cref{teo:condicao_necessaria_1_ordem} garante que $\nabla f(x^{*}) =0$. Dividindo ambos os lados da desigualdade \eqref{eq:2_condicao_2_ordem_irrestrito} por $t^{2}$ e tomando o limite quando $t\rightarrow 0$, obtemos
 \[
-d^{T} \nabla^{2} f(x^{*})d \geq 0.
+d^{T} \nabla^{2} f(x^{*})d \geq 0,
 \]
+para todo $d \in \RR^{n}$.
 \end{proof}
 
 
@@ -610,7 +629,7 @@ Seja $B = \{ h\in \RR^{n} \mid \Vert h \Vert =1 \}$. Consideremos a função $\p
 \[
 \phi (h) = h^{T} \nabla^{2} f(x^{*})h.
 \]
-A função $\phi$ é contínua e $B$ é um conjunto fechado e limitado, portanto, pelo \Cref{teo:weierstrass}, $\phi$ atinge um valor máximo e um valor mínimo em $B$. Considere $a$ o valor mínimo, então
+A função $\phi$ é contínua e $B$ é um conjunto compacto, portanto, pelo \Cref{teo:weierstrass}, $\phi$ atinge um valor máximo e um valor mínimo em $B$. Considere $a$ o valor mínimo, então
 \[
 \phi(h) \geq a >0,
 \]
@@ -622,13 +641,17 @@ implica em
 \[ \label{eq:1_condicao_suficiente_irrestrito}
 d^{T}\nabla^{2} f(x^{*})d \geq a\vert d\Vert^{2} .
 \]
-Aplicando a expansão de Taylor de segunda ordem \eqref{teo:Taylor_segunda_ordem} em torno de $x^{*}$, temos
+Aplicando o \Cref{teo:Taylor_segunda_ordem} em torno de $x^{*}$, temos
 \[\label{eq:2_condicao_suficiente_irrestrito}
 f(x^{*}+d) - f(x^{*}) = \nabla f(x^{*})^{T}d + \dfrac{1}{2} d^{T}\nabla^{2} f(x^{*})d + o(\Vert d \Vert^{2}).
 \]
 Como, por hipótese, $\nabla f(x^{*}) = 0$, \eqref{eq:1_condicao_suficiente_irrestrito} e \eqref{eq:2_condicao_suficiente_irrestrito} implicam que
+\[ 
+f(x^{*}+d) - f(x^{*}) = \dfrac{1}{2} d^{T}\nabla^{2} f(x^{*})d + o(\Vert d \Vert^{2}) ,
+\]
+e assim, 
 \[ \label{eq:3_condicao_suficiente_irrestrito}
-f(x^{*}+d) - f(x^{*}) = \dfrac{1}{2} d^{T}\nabla^{2} f(x^{*})d + o(\Vert d \Vert^{2}) \geq \dfrac{a}{2}\Vert d \Vert^{2} + o(\Vert d \Vert^{2}).
+f(x^{*}+d) - f(x^{*}) \geq \dfrac{a}{2}\Vert d \Vert^{2} + o(\Vert d \Vert^{2})
 \]
 Então, para todo $d$ tal que $\Vert d \Vert$ é suficientemente pequena, o primeiro termo do membro direito da desigualdade \eqref{eq:3_condicao_suficiente_irrestrito} define o sinal deste lado. Além disso,
 \[
@@ -666,7 +689,7 @@ em que $A \in \RR^{m\times n}$, $1 \leq m <n$ e posto $A=m$.
 
 O conjunto
 \[
-\Omega := \{ x \in \RR^{n} \mid Ax=b \}
+\Omega \coloneqq  \{ x \in \RR^{n} \mid Ax=b \}
 \]
 é chamado \emph{conjunto de factibilidade} de \eqref{problema_geral_minimizacao_igualdade}. Este conjunto é a variedade afim de soluções do sistema linear
 \[ \label{eq:restricao_de_igualdade}
@@ -696,7 +719,7 @@ Assim, $\mathcal{N}(A)$ e $Im(A^{T})$ são subespaços vetoriais ortogonais e ve
 \[ \mathcal{N}(A) \cap Im(A^{T}) = \{ 0 \} \quad \text{e} \quad \RR^{n} = \mathcal{N}(A) \oplus Im(A^{T}) .\]
 
 
-A partir disso, se $d \in \mathcal{N}(A)$ e $\tilde{x}$ é uma solução da restrição \eqref{eq:restricao_de_igualdade}, então $x:= \tilde{x} + \alpha d$ também é solução de \eqref{eq:restricao_de_igualdade}, pois
+A partir disso, se $d \in \mathcal{N}(A)$ e $\tilde{x}$ é uma solução da restrição \eqref{eq:restricao_de_igualdade}, então $x\coloneqq  \tilde{x} + \alpha d$ também é solução de \eqref{eq:restricao_de_igualdade}, pois
 \[
 A(\tilde{x} + \alpha d) = A\tilde{x}
  + \alpha Ad = A\tilde{x} = b
@@ -730,14 +753,14 @@ e a partir dela podemos considerar o seguinte problema de minimização sem rest
 Primeiramente, vejamos que os problemas \eqref{problema_geral_minimizacao_igualdade} e \eqref{problema_minimizacao_irrestrita_phi} são equivalentes.
 
 \begin{prop}
-$\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de $\varphi$ em $\RR^{n-m}$ se, e somente se, $x^{*} := \tilde{x} + Z\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
+$\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de $\varphi$ em $\RR^{n-m}$ se, e somente se, $x^{*} \coloneqq  \tilde{x} + Z\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
 \end{prop}
 \begin{proof}
 Seja $\boldsymbol{\gamma}^{*}$ um minimizador local (global) de $\varphi$ em $\RR^{n-m}$. Então,
 \[
 f(\tilde{x} + Z\boldsymbol{\gamma}^{*} ) = \varphi (\boldsymbol{\gamma}^{*}) \leq \varphi (\boldsymbol{\gamma}) = f(\tilde{x} + Z\boldsymbol{\gamma}) ,
 \]
-para todo $\boldsymbol{\gamma} \in \RR^{n-m}$. Logo, chamando $x^{*}:=\tilde{x} + Z\boldsymbol{\gamma}^{*}$, temos
+para todo $\boldsymbol{\gamma} \in \RR^{n-m}$. Logo, chamando $x^{*}\coloneqq \tilde{x} + Z\boldsymbol{\gamma}^{*}$, temos
 \[
 f(x^{*}) \leq f(x),
 \]
@@ -930,6 +953,9 @@ Portanto, $\tilde{x}$ é solução do problema \eqref{exem:minimizar_quadratica_
 Veremos mais a frente que no caso em que $Q$ é uma matriz semidefinida positiva, os problemas quadráticos são convexos.
 \end{obs}
 
+
+
+\subsection{Minimização com Restrições Lineares de Desiguladade}
 
 
 \begin{defi}
