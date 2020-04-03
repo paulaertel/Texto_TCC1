@@ -426,8 +426,7 @@ f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m}
 \section{Conceitos de Otimização}
 
 
-Tendo em vista que o problema de clasificação trata-se de um problema de Otimização, neste capítulo pretendemos discutir alguns conceitos e resultados de otimização para o problema 
-
+Tendo em vista que o problema de clasificação trata-se de um problema de Otimização, neste capítulo pretendemos discutir alguns conceitos e resultados para o problema 
 \[ \label{problema_geral_otimizacao}
 \begin{aligned}
 \min_{x} & \quad f(x) \\
@@ -449,7 +448,7 @@ Dizemos que um ponto $x^{*} \in \Omega$ é
 
 Quando as desigualdades na \Cref{defi:minimizador_local_global} forem estritas para $x \neq x^{*}$, diremos que $x^{*}$ é minimizador estrito.
 
-Pela \Cref{defi:minimizador_local_global}, todo minimizador global é também minimizador local, porém a recíproca não é verdadeira. É interessante salientar que ná prática, do ponto de vista teórico e computacional, em muitas circunstâncias iremos nos contentar com um ponto de mínimo local. Haja vista que em geral, condições globais e soluções globais só podem ser encontradas se o problema possuir certas propriedades de convexidade que garantem, essencialmente, que qualquer mínimo local é mínimo global.
+Pela \Cref{defi:minimizador_local_global}, todo minimizador global é também minimizador local, porém a recíproca não é verdadeira. É interessante salientar que em muitas circunstâncias iremos nos contentar com um ponto de mínimo local, pois de modo geral, condições globais e soluções globais só podem ser encontradas se o problema possuir certas propriedades de convexidade que garantem, essencialmente, que qualquer mínimo local é global.
 
 \begin{defi} \label{defi:valor_otimo}
 Dizemos que $\bar{v} \in [-\infty, +\infty )$ definido por
@@ -464,13 +463,13 @@ Todo problema de maximização
 \[
 \begin{aligned}
 \max_{x} & \quad f(x) \\
-\text{s.a.} & \quad x \in \Omega \end{aligned}
+\text{s.a} & \quad x \in \Omega \end{aligned}
  \]
 pode ser transformado em um problema de minimização equivalente
 \[
 \begin{aligned}
 \min_{x} & \quad -f(x) \\
-\text{s.a.} & \quad x \in \Omega .\end{aligned}
+\text{s.a} & \quad x \in \Omega .\end{aligned}
 \]
 Em particular, as soluções locais e globais de ambos os problemas são as mesmas, com sinais opostos para os valores ótimos.
 \end{obs} %acrescentar imagem izmailoz&solodov
@@ -478,7 +477,7 @@ Em particular, as soluções locais e globais de ambos os problemas são as mesm
 %Se a função objetivo $f$ for linear, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação linear}, e se $f$ for uma função quadrática, \eqref{problema_geral_otimizacao} é chamado de problema de \emph{programação quadrática}. Ademais, quando $\Omega$ é um conjunto convexo e $f$ é uma função convexa, dizemos que \eqref{problema_geral_otimizacao} é um problema de \emph{programação convexa}. 
 
 
-Quando o conjunto factível $\Omega = \RR^{n}$ dizemos o problema \eqref{problema_geral_otimizacao} é irrestrito. No caso em que $\Omega$ é definido por um sistema de igualdades e/ou desigualdades como
+Ademias, quando o conjunto factível $\Omega = \RR^{n}$ dizemos que o problema \eqref{problema_geral_otimizacao} é irrestrito. No caso em que $\Omega$ é definido por um sistema de igualdades e/ou desigualdades como
 \[
 \Omega = \{ x\in \RR^{n} \mid h(x)=0, g(x) \leq 0 \},
 \]
@@ -486,10 +485,10 @@ falamos em otimização com restrições.
 
 Frequentemente, a formulação de problemas mais complexos envolve restrições à função objetivo. No entanto, veremos mais adiante que muitos desses problemas podem ser convertidos em problemas irrestritos, utilizando as restrições para estabelecer relações entre as variáveis. Em vista disso, abordaremos primeiramente a teoria de otimização para o caso irrestrito para posteriormente obter as condições de otimalidade para problemas com restrições de igualdade e desiguladade, haja vista que o problema de classificação, o qual estamos interessados em resolver, possui este formato.
 
-No estudo do problema de otimização irrestrita uma das principais questões que surge diz respeito a existência da solução. Observe que se na \Cref{defi:valor_otimo} temos $\bar{v} = - \infty$, o problema \eqref{problema_geral_otimizacao} não admite solução global, pois neste caso $f$ é ilimitada inferiormente no conjunto factível. Outro caso em que também não existe minimizador global ocorre quando $\bar{v}$ não é atingido em nenhum ponto factível.
+No estudo do problema de otimização irrestrita uma das principais questões que surge diz respeito a existência da solução. Observe que se na \Cref{defi:valor_otimo} temos $\bar{v} = - \infty$, o problema \eqref{problema_geral_otimizacao} não admite solução global, pois neste caso $f$ é ilimitada inferiormente no conjunto factível. Outro caso em que também não existe minimizador global ocorre quando $\bar{v}$ não é atingido em nenhum ponto factível. Vejamos um exemplo.
 
 \begin{exem}
-Seja $f: \RR \rightarrow \RR$, $f(x) = e^{x}$, $\Omega = \RR$. Note que $\bar{v} = \inf_{x \in \RR} e^{x} = 0$, contudo, não existe $x \in \RR$ tal que $e^{x} = 0$. 
+Seja $f: \RR \rightarrow \RR$, definida por $f(x) = e^{x}$, $\Omega = \RR$. Note que $\bar{v} = \inf_{x \in \RR} e^{x} = 0$, contudo, não existe $x \in \RR$ tal que $e^{x} = 0$. 
 De modo análogo, considere $f$ definida como anteriormente e $\Omega = (0,1]$. Temos que $\bar{v} = \inf_{x \in (0,1]} e^{x} = 1$ e novamente não existe $x \in (0,1]$ tal que $e^{x}=1$. Observe que a função $f$ é contínua em $\Omega$, porém no primeiro caso $\Omega$ não é limitado e no segundo, $\Omega$ não é fechado. 
 Considere agora $\Omega = [0,1]$, $f(x)=e^{x}$ para $x \in (0,1]$ e $f(0)=0$. Novamente, $\bar{v} = \inf_{x \in (0,1]} e^{x} = 1$, porém não existe $x\in \Omega$ tal que $f(x)=1$. Neste exemplo, $\Omega$ é compacto mas $f$ não é contínua.
 \end{exem}
@@ -512,11 +511,11 @@ Passando ao limite quando $k \rightarrow \infty $, conluímos que
 \[\label{eq:teo_weierstrass}
 \lim_{k \rightarrow \infty} f(x^{k}) = \bar{v}.
 \]
-Como $\{ x^{k} \} \in \Omega$ e $\Omega$ é compacto, temos que $\{ x^{k} \}$ é uma sequência limitada. Logo, ela possui uma subsequência convergente em $\Omega$, isto é, existe uma subsequência $x^{k_{j}}$ que converge para um ponto $\bar{x} \in \Omega$,
+Como $\{ x^{k} \} \in \Omega$ e $\Omega$ é compacto, temos que $\{ x^{k} \}$ é uma sequência limitada. Logo, ela possui uma subsequência convergente em $\Omega$, isto é, existe uma subsequência $\{ x^{k_{j}} \}$ que converge para um ponto $\bar{x} \in \Omega$,
 \[
 \lim_{j \rightarrow \infty} x^{k_{j}} = \bar{x} \in \Omega .
 \]
-Como $f$ é contínua,
+Como $f$ é contínua, temos que
 \[
 \lim_{j \rightarrow \infty} f(x^{k_{j}}) = f(\bar{x}).
 \]
@@ -535,7 +534,8 @@ Considere o problema \eqref{problema_geral_otimizacao} com $\Omega = \RR^{n}$, i
 \]
 em que $f:\RR^{n} \rightarrow \RR$. Neste caso, o problema \eqref{problema_otimizacao_irrestrita} é chamado problema de minimização irrestrita. Nesta seção serão determinadas as condições que devem ser satisfeitas quando um ponto $x^{*} \in \RR^{n}$ é minimizador local do problema \eqref{problema_otimizacao_irrestrita}. Condições desse tipo são chamadas de \emph{condições necessárias de otimalidade}. Determinaremos também as condições que garantem que um ponto dado é minimizador local do problema, que são denominadas \emph{condições suficientes de otimalidade}. 
 
-Para demonstrar as condições necessárias utilizaremos a expansão de Taylor de primeira e segunda ordem.
+Para demonstrar as condições de otimalidade será necessário utilizar os teoremas \eqref{teo:Taylor_primeira_ordem} e \eqref{teo:Taylor_segunda_ordem} a seguir, que fornecem a expansão de Taylor de primeira e segunda ordem.
+
 
 %determinar bibliografia em que estão demonstrados para citar.
 \begin{teo}(\textbf{Taylor de Primeira Ordem}) {\cite[p.25]{Ademir2013}} \label{teo:Taylor_primeira_ordem}
@@ -565,7 +565,7 @@ Considere $d \in \RR^{n}$ arbitrário, porém fixo. Pela definição de minimiza
 \[ \label{eq:1_condicao_1_ordem_irrestrito}
 f(x^{*}) \leq f(x^{*}+td),
 \]
-para todo $t\in (0,\varepsilon ]$. Pela diferenciabilidade de $f$ em $x^{*}$, aplicando a expansão de Taylor \eqref{teo:Taylor_primeira_ordem}, 
+para todo $t\in (0,\varepsilon ]$. Pela diferenciabilidade de $f$ em $x^{*}$, aplicando o \Cref{teo:Taylor_primeira_ordem}, 
 \[
 f(x^{*}+td) = f(x^{*}) + t\nabla f(x^{*})^{T}d + o(t),
 \] 
@@ -601,22 +601,23 @@ d^{T} \nabla^{2} f(x^{*})d \geq 0,
 para todo $d \in \RR^{n}$.
 \end{teo}
 \begin{proof}
-Seja $d\in \RR^{n}$ arbitrário, porém fixo. Se $x^{*}$ é minimizador local de $f$, então para todo $t>0$ suficientemente pequeno,
+Seja $d\in \RR^{n}$ arbitrário, porém fixo. Se $x^{*}$ é minimizador local de $f$, então para todo $t>0$ suficientemente pequeno, temos que
 \[\label{eq:1_condicao_2_ordem_irrestrito}
 0 \leq f(x^{*}+td) - f(x^{*}).
 \]
-Aplicando a expansão de Taylor de segunda ordem \eqref{teo:Taylor_segunda_ordem},
+Aplicando o \Cref{teo:Taylor_segunda_ordem},
 \[
 f(x^{*}+td) = f(x^{*}) + t\nabla f(x^{*})^{T}d + \dfrac{t^{2}}{2} d^{T}\nabla^{2} f(x^{*})d + o(t^{2}),
 \]
-que por \eqref{eq:1_condicao_2_ordem_irrestrito} implica em
+com $\lim_{t\rightarrow 0} \dfrac{o(t^{2})}{t^{2}} =0$, e  \eqref{eq:1_condicao_2_ordem_irrestrito} implica em
 \[ \label{eq:2_condicao_2_ordem_irrestrito}
 0 \leq \dfrac{t^{2}}{2} d^{T}\nabla^{2} f(x^{*})d + o(t^{2}),
 \]
-com $\lim_{t\rightarrow 0} \dfrac{o(t^{2})}{t^{2}} =0$, pois como $x^{*}$ é minimizador local, o \Cref{teo:condicao_necessaria_1_ordem} garante que $\nabla f(x^{*}) =0$. Dividindo ambos os lados da desigualdade \eqref{eq:2_condicao_2_ordem_irrestrito} por $t^{2}$ e tomando o limite quando $t\rightarrow 0$, obtemos
+ pois como $x^{*}$ é minimizador local, o \Cref{teo:condicao_necessaria_1_ordem} garante que $\nabla f(x^{*}) =0$. Dividindo ambos os lados da desigualdade \eqref{eq:2_condicao_2_ordem_irrestrito} por $t^{2}$ e tomando o limite quando $t\rightarrow 0$, obtemos
 \[
-d^{T} \nabla^{2} f(x^{*})d \geq 0.
+d^{T} \nabla^{2} f(x^{*})d \geq 0,
 \]
+para todo $d \in \RR^{n}$.
 \end{proof}
 
 
@@ -628,7 +629,7 @@ Seja $B = \{ h\in \RR^{n} \mid \Vert h \Vert =1 \}$. Consideremos a função $\p
 \[
 \phi (h) = h^{T} \nabla^{2} f(x^{*})h.
 \]
-A função $\phi$ é contínua e $B$ é um conjunto fechado e limitado, portanto, pelo \Cref{teo:weierstrass}, $\phi$ atinge um valor máximo e um valor mínimo em $B$. Considere $a$ o valor mínimo, então
+A função $\phi$ é contínua e $B$ é um conjunto compacto, portanto, pelo \Cref{teo:weierstrass}, $\phi$ atinge um valor máximo e um valor mínimo em $B$. Considere $a$ o valor mínimo, então
 \[
 \phi(h) \geq a >0,
 \]
@@ -640,13 +641,17 @@ implica em
 \[ \label{eq:1_condicao_suficiente_irrestrito}
 d^{T}\nabla^{2} f(x^{*})d \geq a\vert d\Vert^{2} .
 \]
-Aplicando a expansão de Taylor de segunda ordem \eqref{teo:Taylor_segunda_ordem} em torno de $x^{*}$, temos
+Aplicando o \Cref{teo:Taylor_segunda_ordem} em torno de $x^{*}$, temos
 \[\label{eq:2_condicao_suficiente_irrestrito}
 f(x^{*}+d) - f(x^{*}) = \nabla f(x^{*})^{T}d + \dfrac{1}{2} d^{T}\nabla^{2} f(x^{*})d + o(\Vert d \Vert^{2}).
 \]
 Como, por hipótese, $\nabla f(x^{*}) = 0$, \eqref{eq:1_condicao_suficiente_irrestrito} e \eqref{eq:2_condicao_suficiente_irrestrito} implicam que
+\[ 
+f(x^{*}+d) - f(x^{*}) = \dfrac{1}{2} d^{T}\nabla^{2} f(x^{*})d + o(\Vert d \Vert^{2}) ,
+\]
+e assim, 
 \[ \label{eq:3_condicao_suficiente_irrestrito}
-f(x^{*}+d) - f(x^{*}) = \dfrac{1}{2} d^{T}\nabla^{2} f(x^{*})d + o(\Vert d \Vert^{2}) \geq \dfrac{a}{2}\Vert d \Vert^{2} + o(\Vert d \Vert^{2}).
+f(x^{*}+d) - f(x^{*}) \geq \dfrac{a}{2}\Vert d \Vert^{2} + o(\Vert d \Vert^{2})
 \]
 Então, para todo $d$ tal que $\Vert d \Vert$ é suficientemente pequena, o primeiro termo do membro direito da desigualdade \eqref{eq:3_condicao_suficiente_irrestrito} define o sinal deste lado. Além disso,
 \[
@@ -948,6 +953,9 @@ Portanto, $\tilde{x}$ é solução do problema \eqref{exem:minimizar_quadratica_
 Veremos mais a frente que no caso em que $Q$ é uma matriz semidefinida positiva, os problemas quadráticos são convexos.
 \end{obs}
 
+
+
+\subsection{Minimização com Restrições Lineares de Desiguladade}
 
 
 \begin{defi}
