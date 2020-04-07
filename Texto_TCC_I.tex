@@ -422,7 +422,7 @@ f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m}
 
 %-------------------------------------------------------------------------------------------------------------------------
 
-
+\newpage
 \section{Conceitos de Otimização}
 
 
@@ -621,7 +621,7 @@ para todo $d \in \RR^{n}$.
 \end{proof}
 
 
-\begin{teo}(\textbf{Condição suficiente de segunda ordem}) \label{tep:condicao_suficiente_irrestrito}
+\begin{teo}(\textbf{Condição suficiente de segunda ordem}) \label{teo:condicao_suficiente_irrestrito}
 Seja $f:\RR^{n} \rightarrow \RR$ duas vezes diferenciável no ponto $x^{*} \in \RR^{n}$. Se $x^{*}$ é um ponto estacionário da função $f$ e $\nabla^{2} f(x^{*})$ é definida positiva, então $x^{*}$ é minimizador local estrito de $f$.
 \end{teo}
 \begin{proof}
@@ -668,14 +668,41 @@ f(x^{*}) < f(x^{*} + d).
 Portanto, para todo $x \in B(x^{*}, \varepsilon)$, $x \neq x^{*}$, temos que $f(x^{*}) < f(x)$. Logo, $x^{*}$ é um minimizador local estrito de $f$.
 \end{proof}
 
+\begin{exem}
+Considere o problema irrestrito
+\[\begin{aligned} \label{exem:verificar_condicao_suficiente_irrestrito}
+\min_{x} & \quad f(x) = x_{1}^{2} - x_{1} x_{2} + 2x_{2}^{2} - 2x_{1} + \dfrac{2}{3}x_{2} + e^{x_{1}+x_{2}}  \\
+\text{s.a} & \quad x\in \RR^{2} .
+\end{aligned} 
+\]
+\end{exem}
+Para um ponto $x^{*}$ ser minimizador estrito de \eqref{exem:verificar_condicao_suficiente_irrestrito} ele deve satisfazer as condições suficientes de segunda ordem do \Cref{teo:condicao_suficiente_irrestrito}, que são
+\[ \label{eq:1_exem_verificar_condicao_suficiente_irrestrito}
+\nabla f(x^{*}) = \left( \begin{array}{cc} 2x_{1}^{*} - x_{2}^{*} - 2 + e^{x_{1}^{*} +x_{2}^{*} } \\ -x_{1}^{*} + 4x_{2}^{*} + \dfrac{2}{3} + e^{x_{1}^{*} +x_{2}^{*} } \end{array} \right) = \left( \begin{array}{cc} 0 \\ 0 \end{array} \right) ,
+\]
+e
+\[ \label{eq:2_exem_verificar_condicao_suficiente_irrestrito}
+\nabla^{2} f(x^{*}) = \left( \begin{array}{cc} 2 + e^{x_{1}^{*} +x_{2}^{*} } & -1 + e^{x_{1}^{*} +x_{2}^{*} } \\ -1 + e^{x_{1}^{*} +x_{2}^{*} } & 4 + e^{x_{1}^{*} +x_{2}^{*} } \end{array} \right) \succ 0 .
+\]
+Assim, o ponto $\bar{x} = (1/3\quad -1/3 )^{T}$ satisfaz \eqref{eq:1_exem_verificar_condicao_suficiente_irrestrito}, pois
+\[
+\nabla f(\bar{x}) = \left( \begin{array}{cc} 0 \\ 0 \end{array} \right) .
+\]
+No entanto, $\bar{x}$ não é minimizador estrito do problema \eqref{exem:verificar_condicao_suficiente_irrestrito}, pois $\nabla^{2} f(\bar{x})$ não é definida positiva. De fato,
+\[
+\nabla^{2} f(\bar{x}) = \left( \begin{array}{cc} 3 & 0 \\ 0 & 5 \end{array} \right) ,
+\]
+logo, para todo $x \in \RR^{2}$ temos que
+\[
+\left( \begin{array}{cc} x_{1} & x_{2} \end{array} \right)^{T} \left( \begin{array}{cc} 3 & 0 \\ 0 & 5 \end{array} \right) \left( \begin{array}{cc} x_{1} \\ x_{2} \end{array} \right) = 3x_{1}^{2} + 5x_{2}^{2} ,
+\]
+em particular para $x= (0 \quad 0)^{T}$ temos que $x^{T} \nabla^{2} f(\bar{x}) x = 0$.
 
 
+Tendo em vista que nosso problema apresenta restrições e o conjunto factível é poliedral, abordaremos nas seções seguintes o problema de minimização com restrições nesse contexto. Para tanto, iniciamos analisando o problema de minimização com restrições lineares de igualdade.
 
 
-
-%Tendo em vista que em nosso problema o conjunto factível é poliedral, abordaremos nas seções seguintes como resolver o problema de minimização com restrições nesse contexto. Para tanto, começaremos analisando o problema de minimização com restrições lineares de igualdade.
-
-\newpage
+%-----------------------------------------------------------------------------------------------------------------------------
 \subsection{Minimização com Restrições Lineares de Igualdade}
 
 Nosso objetivo nesta seção será analisar o seguinte problema de minimização com restrições lineares de igualdade
@@ -953,9 +980,9 @@ Portanto, $\tilde{x}$ é solução do problema \eqref{exem:minimizar_quadratica_
 Veremos mais a frente que no caso em que $Q$ é uma matriz semidefinida positiva, os problemas quadráticos são convexos.
 \end{obs}
 
-teste
 
-\subsection{Minimização com Restrições Lineares de Desiguladade}
+%-------------------------------------------------------------------------------------------------------------------
+\subsection{Minimização com Restrições Lineares de Desigualdade}
 
 
 \begin{defi}
@@ -966,6 +993,11 @@ O conjunto dos índices das restrições de desigualdade ativas é denotado por
 I(\xbar) = \{ i \mid g_{i}(\xbar)=0 \} .
 \]
 \end{defi}
+
+
+
+%------------------------------------------------------------------------------------------------------------------------
+\subsection{Minimização com Restrições Lineares de Igualdade e Desigualdade}
 
 
 \begin{defi} 
@@ -1054,6 +1086,7 @@ ou seja, os gradientes das restrições não são LI e, portanto, $x^{*}$ não �
 %\end{defi}
 
 %Portanto, se $x^{*}$ é um minimizador local do problema \eqref{eq:conjunto_viavel_poliedral}, então $x^{*}$ satisfaz as condições KKT.
+
 
 
 
