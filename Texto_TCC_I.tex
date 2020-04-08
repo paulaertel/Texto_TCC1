@@ -1019,7 +1019,7 @@ E seja $\mathcal{M} \coloneqq \{ 1,2, \ldots , m \} $, o conjunto dos índices d
 \]
 
 Além disso, a cada $x\in \Omega$ podemos associar um número $r(x)$, com $0\leq r(x) \leq m$, que representa a quantidade de restrições ativas em $x$. É importante salientar que o conjunto das direções factíveis a partir de $x$ depende das restrições ativas nesse ponto.
-Assim, considere $x\in \Omega$ tal que $r(x) = p$ com $0<p \leq m$. O \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos dá uma caracterização das direções factíveis em $x$.
+Assim, considere $x\in \Omega$ tal que $r(x) = p$ com $0<p \leq m$. O \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos fornece uma caracterização das direções factíveis em $x$.
 
 \begin{teo} \label{teo:direcoes_factiveis_restricao_desigualdade}
 $d \in \RR^{n}$ é factível em $x$ se, e somente se, $a_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$.
@@ -1064,6 +1064,159 @@ Ademais, interessados em saber quanto podemos andar sobre uma direção factíve
 
 
 \subsubsection{Condições necessárias de primeira ordem}
+
+
+Desenvolver a noção de direções factíveis para avaliar a estrutura do conjunto factível na vizinhança de uma solução é fundamental para determinar as condições de otimalidade no caso de problemas com restrições de desigualdade. Tendo feito isso, é necessário agora definir o conceito de direção de descida.
+
+
+\begin{defi} \label{defi:direcao_de_descida}
+Dizemos que $d\in \RR^{n}$ é uma \emph{direção de descida} de $f:\RR^{n} \rightarrow \RR$ no ponto $\xbar \in \RR^{n}$, se existe $\varepsilon >0$ tal que
+\[
+f(\xbar + td) <f(\xbar)
+\]
+para todo $t \in (0,\varepsilon ]$.
+\end{defi}
+Denotamos por $\mathcal{D}_{f}(\xbar)$ o conjunto de todas as direções de descida da função $f$ no ponto $\xbar$.
+
+
+\begin{lema} \label{lema:direcao_de_descida}
+Seja $f:\RR^{n} \rightarrow \RR$ uma função diferenciável no ponto $\xbar \in \RR^{n}$. Então
+\begin{enumerate}
+	\item[(i)] Para todo $d \in \mathcal{D}_{f}(\xbar)$, tem-se que $\nabla f(\xbar)^{T}d \leq 0$.
+
+	\item[(ii)] Se $d\in \RR^{n}$ satisfaz $\nabla f(\xbar)^{T}d < 0$, tem-se que $d \in \mathcal{D}_{f}(\xbar)$.
+\end{enumerate}	
+\end{lema}
+\begin{proof}
+Seja $d \in \mathcal{D}_{f}(\xbar)$. Para todo $t>0$ suficientemente pequeno, 
+\[ \label{eq:1_lema_direcao_de_descida}
+f(\xbar + td) < f(\xbar).
+\]
+Pelo \Cref{teo:Taylor_primeira_ordem}, temos
+\[ \label{eq:2_lema_direcao_de_descida}
+f(\xbar + td) - f(\xbar) = t\nabla f(\xbar)^{T} d + o(t),
+\] 
+e de \eqref{eq:1_lema_direcao_de_descida} e \eqref{eq:2_lema_direcao_de_descida}, obtemos
+\[ \label{eq:3_lema_direcao_de_descida}
+t\nabla f(\xbar)^{T}d + o(t) < 0.
+\]
+Dividindo ambos os lados da desigualdade \eqref{eq:3_lema_direcao_de_descida} por $t>0$ e passando o limite quando $t \rightarrow 0^{+}$, obtemos
+\[
+\nabla f(\xbar)^{T}d \leq 0,
+\]
+provando o item $(i)$.
+
+Suponhamos agora que $\nabla f(\xbar)^{T}d <0$. Temos que, pelo \Cref{teo:Taylor_primeira_ordem},
+\[
+f(\xbar + td) - f(\xbar) = t\left( \nabla f(\xbar)^{T}d + \dfrac{o(t)}{t} \right) .
+\]
+Em particular, para todo $t>0$ suficientemente pequeno, temos
+\[
+\nabla f(\xbar)^{T}d + \dfrac{o(t)}{t} \leq \dfrac{1}{2} \nabla f(\xbar)^{T}d <0,
+\]
+o que implica que
+\[
+f(\xbar + td) - f(\xbar) <0,
+\]
+e portanto, $d \in \mathcal{D}_{f}(\xbar)$.
+\end{proof}
+
+A partir de um ponto $x\in \Omega$, estamos interessados em saber se existem direções de descida factíveis, isto é, direções factíveis tais que
+\[ \label{eq:caracterizacao_direcao_descida}
+\nabla f(\xbar)^{T}d < 0.
+\]
+Se existe uma direção $d$ que satisfaz \eqref{eq:caracterizacao_direcao_descida}, decorre do \Cref{lema:direcao_de_descida} e da \Cref{defi:direcao_de_descida} que $x$ não é minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}.
+
+\begin{obs}
+Novamente, a análise dependerá das restrição ativas em $x$. Se $r(x) =0$, o ponto está no interior de $\Omega$ e as condições necessárias e suficientes são as mesmas do caso em que o problema é irrestrito.
+\end{obs}
+
+Agora, já possuímos os ferramentais necessários para determinar a condição necessária de primeira ordem a ser satisfeita por uma solução do problema \eqref{problema_geral_minimizacao_desigualdade}.
+
+\begin{teo} \label{teo:condicao_necessaria_1ordem_restricao_desigualdade}
+Consideremos o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{1}$ e $x^{*} \in \Omega$ tal que $1 \leq r(x^{*}) \leq n$. Seja $\mathcal{I} \subset \mathcal{M}$, $\mathcal{I} = \{ i_{1}, i_{2}, \ldots , i_{r(x^{*})} \}$ tal que $a_{i}^{T}x = b_{i}$ se, e somente se, $i\in \mathcal{I}$. Seja $A_{\mathcal{I}} \in \RR^{r(x^{*})\times n}$ a submatriz de $A$ cujas linhas são as que tem índices em $\mathcal{I}$ e 
+\[
+b_{\mathcal{I}} = \left( \begin{array}{cc} b_{i_{1}} \\ b_{i_{2}} \\ \vdots \\ b_{i_{r(x^{*})}} \end{array} \right) .
+\]
+Supomos que posto $A_{\mathcal{I}} = r(x^{*})$.
+
+Se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então existe $\boldsymbol{\lambda} \in \RR^{r(x^{*})}$ tal que 
+\[
+\nabla f(x^{*}) = \sum_{k=1}^{r(x^{*})} \lambda_{k} a_{i_{k}} \quad \text{e} \quad \lambda_{k} \leq 0, \ 1\leq k\leq r(x^{*}),
+\]
+ou, equivalentemente
+\[ \label{eq:condicao_necessaria_1ordem_restricao_desigualdade}
+\nabla f(x^{*}) = A_{\mathcal{I}}^{T} \boldsymbol{\lambda}, \quad \boldsymbol{\lambda} \in \RR^{r(x^{*})}
+\]
+e
+\[
+\lambda_{k} \leq 0, \ 1\leq k\leq r(x^{*}).
+\]
+\end{teo}
+\begin{proof}
+Suponhamos que \eqref{eq:condicao_necessaria_1ordem_restricao_desigualdade} não ocorre. Isso pode acontecer por dois motivos:
+\begin{enumerate}
+\item[(i)] $\nabla f(x^{*}) \neq A_{\mathcal{I}}^{T} \boldsymbol{\lambda} \ \text{para todo} \ \boldsymbol{\lambda} \in \RR^{r(x^{*})}$.
+
+Em outras palavras, temos que $\nabla f(x^{*})$ não pode ser escrito como combinação linear das linhas de $A_{\mathcal{I}}$. Assim, $x^{*}$ não é minimizador local do problema com restrições de igualdade definido por 
+\[ \label{eq:1_condicao_necessaria_1ordem_restricao_desigualdade}
+\begin{aligned}
+\min_{x} & \quad f(x) \\
+\text{s.a} & \quad A_{\mathcal{I}}x=b_{\mathcal{I}} ,
+\end{aligned}
+\]
+pois $x^{*}$ não satisfaz a condição necessária de primeira ordem para o problema \eqref{eq:1_condicao_necessaria_1ordem_restricao_desigualdade}. Logo, $x^{*}$ também não pode ser minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}, o que é uma contradição.
+
+\item[(ii)] $\nabla f(x^{*}) = A_{\mathcal{I}}^{T} \boldsymbol{\lambda}$, mas existe $j$ tal que $\lambda_{j} >0$.
+
+Se $r(x^{*}) = 1$ e $\mathcal{I} = \{ i_{1} \}$, então $\nabla f(x^{*}) = \lambda_{1} a_{i_{1}}$ e $\lambda_{1} >0$. Tomando $d=-\nabla f(x^{*})$ temos que
+\[
+a_{i_{1}}^{T}d = -\lambda_{1} a_{i_{1}}^{T}a_{i_{1}} = -\lambda_{1} \Vert a_{i_{1}} \Vert^{2} < 0.
+\]
+Assim, $d$ é uma direção de descida factível no ponto $x^{*}$, e portanto, $x^{*}$ não pode ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, contradizendo a hipótese.
+
+Se $2\leq r(x^{*}) \leq n$, denotamos por $\tilde{A_{\mathcal{I}}}$ a matriz obtida retirando a linha $a_{i_{j}}$ correspondente ao multiplicador $\lambda_{j} >0$. Consideramos $d=P_{\mathcal{N}(\tilde{A_{\mathcal{I}}})} (-\nabla f(x^{*}))$, em que $P_{\mathcal{N}(\tilde{A_{\mathcal{I}}})}$ é o operador projeção ortogonal sobre $\mathcal{N}(\tilde{A_{\mathcal{I}}})$. Então, temos que
+\[
+(-\nabla f(x^{*}) -d)^{T}d =0,
+\]
+implicando em
+\[ \label{eq:2_condicao_necessaria_1ordem_restricao_desigualdade}
+\nabla f(x^{*})^{T}d = -d^{T}d = -\Vert d \Vert^{2} <0,
+\]
+e portanto, $d$ é uma direção de descida. Veja \Cref{fig:projecao_sobre_nucleo_teo_condicao_1ordem_desigualdade}.
+
+\begin{figure}[!h] 
+	\centering
+	\includegraphics[width=0.60\textwidth]{projecao_sobre_nucleo_teo_condicao_1ordem_desigualdade}
+	\caption{Fonte: \textcite{Ana1994} \label{fig:projecao_sobre_nucleo_teo_condicao_1ordem_desigualdade}}
+\end{figure}
+Agora, vejamos que $d$ também é uma direção factível. Com efeito,
+\[
+\nabla f(x^{*}) = \lambda_{1} a_{i_{1}} + \lambda_{2} a_{i_{2}} + \ldots + \lambda_{j} a_{i_{j}} + \ldots + \lambda_{r(x^{*})} a_{i_{r(x^{*})}}
+\]
+e, por construção, como tomamos $d \in \mathcal{N}(\tilde{A_{\mathcal{I}}})$ e posto $A_{\mathcal{I}} = r(x^{*})$, temos que
+\[
+a_{i_{k}}^{T}d =0 \ \text{para todo} \ k \neq j.
+\]
+Então,
+\[
+\nabla f(x^{*})^{T}d = \lambda_{j} a_{i_{j}}^{T} d.
+\]
+Usando \eqref{eq:2_condicao_necessaria_1ordem_restricao_desigualdade} e como $\lambda_{j} >0$, obtemos que
+\[
+a_{i_{j}}^{T} d <0.
+\]
+Portanto, $a_{i_{k}}^{T} d \leq 0$ para todo $k$ tal que $1 \leq k \leq r(x^{*})$, ou seja, $d$ é uma direção factível e de descida, contradizendo o fato de $x^{*}$ ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
+\end{enumerate}
+\end{proof}
+
+
+
+\subsubsection{Condições necessárias e suficientes de segunda ordem}
+
+
+
+
 
 %------------------------------------------------------------------------------------------------------------------------
 \subsection{Minimização com Restrições Lineares de Igualdade e Desigualdade}
