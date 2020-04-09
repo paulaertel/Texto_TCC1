@@ -912,18 +912,19 @@ Z^{T} \nabla^{2} f(x^{*})Z \succcurlyeq 0.
 
 Ademais, observe que $Z^{T}\nabla^{2} f(x^{*})Z$ é uma matriz de ordem $(n-m)\times (n-m)$, e o fato de ser semidefinida positiva significa que
 \[
-y^{T}\nabla f(x^{*})y \succcurlyeq 0 \quad \text{para todo} \quad y \in \mathcal{N}(A) .
+y^{T}\nabla^{2} f(x^{*})y \succcurlyeq 0 \ \text{para todo} \ y \in \mathcal{N}(A) .
 \]
 
-Analogamente, a partir das condições suficientes para o problema \eqref{problema_minimizacao_irrestrita_phi}, podemos determinar as seguintes condições suficientes de segunda ordem para \eqref{problema_geral_minimizacao_igualdade}:
+Analogamente, a partir das condições suficientes para o problema \eqref{problema_minimizacao_irrestrita_phi}, podemos determinar as seguintes condições suficientes de segunda ordem para \eqref{problema_geral_minimizacao_igualdade}.
 
+\begin{teo} \label{teo:condicao_suficiente_2ordem_igualdade}
 Se $x^{*} \in \RR^{n}$ verifica $Ax^{*}=b$ e 
 \begin{enumerate}
 	\item[(i)] $Z^{T}\nabla f(x^{*}) =0$,
 	\item[(ii)] $Z^{T}\nabla^{2} f(x^{*})Z \succ 0$ (definida positiva),
 \end{enumerate}	
 então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_igualdade}.
-
+\end{teo}
 
 \begin{prop}
 Seja $f: \RR^{n} \rightarrow \RR$, $f \in \mathcal{C}^{2}$. Seja $\tilde{x} \in \RR^{n}$ tal que $A\tilde{x} = b$ ($A\in \RR^{m\times n}$, $b\in \RR^{m}$) e tal que existe $\boldsymbol{\lambda} \in \RR^{m}$ com $\nabla f(\tilde{x}) = A^{T}\boldsymbol{\lambda}$ e $\nabla^{2} f(\tilde{x})$ definida positiva. Então $\tilde{x}$ é um minimizador local de $f$ sujeita a $Ax=b$.
@@ -1214,6 +1215,39 @@ Portanto, $a_{i_{k}}^{T} d \leq 0$ para todo $k$ tal que $1 \leq k \leq r(x^{*})
 
 \subsubsection{Condições necessárias e suficientes de segunda ordem}
 
+
+Desenvolveremos agora as condições necessárias e condições suficientes de segunda ordem para o problema \eqref{problema_geral_minimizacao_desigualdade}.
+
+\begin{teo} \label{teo:condicao_necessaria_2ordem_desigualdade}
+Sejam $f \in \mathcal{C}^{2}$, $x^{*}$ um minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}, e $r(x^{*})$ e $\mathcal{I}$ definidos como anteriormente. Então
+\begin{enumerate}
+	\item[(i)] Existe $\boldsymbol{\lambda} \in \RR^{r(x^{*})}$ tal que $\nabla f(x^{*}) = A_{\mathcal{I}}^{T} \boldsymbol{\lambda}$ e $\lambda_{i} \leq 0$ para todo $i \in \mathcal{I}(x^{*})$;
+
+	\item[(ii)] Para todo $y \in \mathcal{N}(A_{\mathcal{I}})$ temos que $y^{T} \nabla^{2} f(x^{*})y \succcurlyeq 0$.
+\end{enumerate}
+\end{teo}
+\begin{proof}
+A prova do item $(i)$ é análoga a demonstração do \Cref{teo:condicao_necessaria_1ordem_restricao_desigualdade}.
+Por conseguinte, se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, em particular ele é solução do seguinte problema com restrições de igualdade
+\[ 
+\begin{aligned}
+\min_{x} & \quad f(x) \\
+\text{s.a} & \quad A_{\mathcal{I}}x=b_{\mathcal{I}} ,
+\end{aligned}
+\]
+em que $A_{\mathcal{I}}$ é a submatriz de $A$ cujas linhas correspondem às restrições ativas em $x^{*}$. Então, a condição necessária de segunda ordem para problemas com restrições de igualdade nos garante que
+\[
+y^{T}\nabla^{2} f(x^{*})y \succcurlyeq 0 \ \text{para todo} \ y \in \mathcal{N}(A_{\mathcal{I}}) .
+\]
+\end{proof}
+
+
+\begin{teo} \label{teo:condicao_suficiente_2ordem_desigualdade}
+Sejam $f \in \mathcal{C}^{2}$, $x^{*} \in \Omega$, e $r(x^{*})$ e $\mathcal{I}$ definidos como anteriormente. Se $\nabla f(x^{*}) = A_{\mathcal{I}}^{T} \boldsymbol{\lambda}$ com $\lambda_{i} \leq 0$ para todo $i \in \mathcal{I}(x^{*})$, e $y^{T} \nabla^{2} f(x^{*})y \succ 0$ para todo $y \in \mathcal{N}(A_{\mathcal{J}})$, $y\neq 0$, em que $\mathcal{J} = \{ i\in \{ 1,2, \ldots , r(x^{*}) \} \mid \lambda_{i} <0 \}$, então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
+\end{teo}
+\begin{proof}
+
+\end{proof}
 
 
 
