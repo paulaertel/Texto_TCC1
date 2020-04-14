@@ -523,7 +523,7 @@ Usando \eqref{eq:teo_weierstrass}, temos que $f(\bar{x}) = \bar{v}$ e portanto, 
 \end{proof}
 
 
-\subsection{Condições de otimalidade para problemas sem restrições}
+\subsection{Condições de Otimalidade para Problemas sem Restrições} \label{subsection:irrestrito}
 
 Considere o problema \eqref{problema_geral_otimizacao} com $\Omega = \RR^{n}$, isto é,
 \[ \label{problema_otimizacao_irrestrita}
@@ -703,7 +703,7 @@ Tendo em vista que nosso problema apresenta restrições e o conjunto factível 
 
 
 %-----------------------------------------------------------------------------------------------------------------------------
-\subsection{Minimização com Restrições Lineares de Igualdade}
+\subsection{Minimização com Restrições Lineares de Igualdade} \label{section:restricoes_igualdade}
 
 Nosso objetivo nesta seção será analisar o seguinte problema de minimização com restrições lineares de igualdade
 \[ \label{problema_geral_minimizacao_igualdade}
@@ -985,7 +985,7 @@ Veremos mais a frente que no caso em que $Q$ é uma matriz semidefinida positiva
 
 
 %-------------------------------------------------------------------------------------------------------------------
-\subsection{Minimização com Restrições Lineares de Desigualdade}
+\subsection{Minimização com Restrições Lineares de Desigualdade} \label{section:restricoes_desigualdade}
 
 Vamos considerar agora problemas da forma
 \[ \label{problema_geral_minimizacao_desigualdade}
@@ -1010,20 +1010,32 @@ Desse modo, cada uma das $m$ desigualdades $a_{i}^{T}x \leq b_{i}$ define em $\R
 	\caption{Região de factibilidade. \\ Fonte: \textcite{Ana1994} \label{fig:regiao_factivel_poliedro}}
 \end{figure}
 
+Um conceito fundamental que fornece uma grande quantidade de informações é o de uma \emph{restrição ativa}.
 
 \begin{defi}
-Dado $\xbar \in \Omega$, dizemos que uma restrição de desigualdade $a_{i}^{T}\bar{x} \leq b_{i}$ é \emph{ativa} em $\xbar$ quando $a_{i}^{T}\bar{x} = b_{i}$. Caso $a_{i}^{T}\bar{x} < b_{i}$, dizemos que a restrição é inativa em $\xbar$. 
-\end{defi}
-E seja $\mathcal{M} \coloneqq \{ 1,2, \ldots , m \} $, o conjunto dos índices das restrições de desigualdade ativas é denotado por
+Dado $\xbar \in \Omega$, dizemos que a restrição de desigualdade $a_{i}^{T}\bar{x} \leq b_{i}$ que corresponde ao índice $i\in \{ 1,2, \ldots , m\}$ é \emph{ativa} no ponto $\xbar$ quando $a_{i}^{T}\bar{x} = b_{i}$. Caso $a_{i}^{T}\bar{x} < b_{i}$ dizemos que a restrição é \emph{inativa} em $\xbar$. 
+\end{defi} 
+O conjunto dos índices das restrições de desigualdade ativas no ponto $\xbar \in \Omega$ é denotado por
 \[
-\mathcal{I} (\xbar) = \{ i \in \mathcal{M} \mid a_{i}^{T}\bar{x} = b_{i} \} .
+\mathcal{I} (\xbar) = \{ i = 1,2, \ldots , m \mid a_{i}^{T}\bar{x} = b_{i} \} .
 \]
 
-Além disso, a cada $x\in \Omega$ podemos associar um número $r(x)$, com $0\leq r(x) \leq m$, que representa a quantidade de restrições ativas em $x$. É importante salientar que o conjunto das direções factíveis a partir de $x$ depende das restrições ativas nesse ponto.
-Assim, considere $x\in \Omega$ tal que $r(x) = p$ com $0<p \leq m$. O \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos fornece uma caracterização das direções factíveis em $x$.
+\begin{obs}
+Por convenção, qualquer restrição de igualdade é considerada ativa em todo ponto factível.
+\end{obs}
+
+O conjunto das direções factíveis a partir de $x$ depende das restrições ativas nesse ponto, pois são elas que restringem o domínio de factibilidade na vizinhança de $x$, enquanto que as restrições inativas não possuem influência na vizinhança de $x$. Um exemplo é representado na \Cref{fig:restricoes_inativas}, em que é possível perceber que a solução $x^{*}$ não depende das restrições inativas $g_{2}, g_{3}$.
+
+\begin{figure}[!h] 
+	\centering
+	\includegraphics[width=0.45\textwidth]{restricoes_inativas}
+	\caption{Restrições inativas. \\ Fonte: \textcite{Luenberger:2016} \label{fig:restricoes_inativas}}
+\end{figure}
+
+Ademais, a cada $x\in \Omega$ podemos associar um número $r(x)$, com $0\leq r(x) \leq m$, que representa a quantidade de restrições ativas em $x$. Assim, considere $x\in \Omega$ tal que $r(x) = p$ com $0<p \leq m$. O \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos fornece uma caracterização das direções factíveis em $x$.
 
 \begin{teo} \label{teo:direcoes_factiveis_restricao_desigualdade}
-$d \in \RR^{n}$ é factível em $x$ se, e somente se, $a_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$.
+A direção $d \in \RR^{n}$ é factível em $x$ se, e somente se, $a_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$.
 \end{teo}
 \begin{proof}
 Seja $\alpha >0$ e suponhamos que $d\in \RR^{n}$ é uma direção factível em $x$. Então, $x+\alpha d \in \Omega$, o que ocorre se, e somente se, $A(x+\alpha d) \leq b$, ou seja, $a_{i}^{T}(x+\alpha d) \leq b_{i}$, para todo $i \in \mathcal{M}$. 
@@ -1064,7 +1076,7 @@ Ademais, interessados em saber quanto podemos andar sobre uma direção factíve
 \]
 
 
-\subsubsection{Condições necessárias de primeira ordem}
+\subsubsection{Condições Necessárias de Primeira Ordem}
 
 
 Desenvolver a noção de direções factíveis para avaliar a estrutura do conjunto factível na vizinhança de uma solução é fundamental para determinar as condições de otimalidade no caso de problemas com restrições de desigualdade. Tendo feito isso, é necessário agora definir o conceito de direção de descida.
@@ -1213,7 +1225,7 @@ Portanto, $a_{i_{k}}^{T} d \leq 0$ para todo $k$ tal que $1 \leq k \leq r(x^{*})
 
 
 
-\subsubsection{Condições necessárias e suficientes de segunda ordem}
+\subsubsection{Condições Necessárias e Suficientes de Segunda Ordem}
 
 
 Desenvolveremos agora as condições necessárias e condições suficientes de segunda ordem para o problema \eqref{problema_geral_minimizacao_desigualdade}.
@@ -1254,6 +1266,36 @@ Sejam $f \in \mathcal{C}^{2}$, $x^{*} \in \Omega$, e $r(x^{*})$ e $\mathcal{I}$ 
 
 %------------------------------------------------------------------------------------------------------------------------
 \subsection{Minimização com Restrições Lineares de Igualdade e Desigualdade}
+
+Finalmente, trataremos do caso mais geral do problema de minimização de funções sujeitas a rstrições lineares, isto é, com restrições de igualdade e desigualdade. Nesta seção, utilizando os argumentos das \Cref{section:restricoes_igualdade} e \Cref{section:restricoes_desigualdade} desenvolveremos as condições necessárias e suficientes para o problema
+\[ \label{problema_geral_minimizacao_igualdade_desigualdade}
+\begin{aligned}
+\min_{x} & \quad f(x) \\
+\text{s.a} & \quad Ax = b, \ Wx \leq c,
+\end{aligned}
+\]
+em que $A\in \RR^{m\times n}$ com $m<n$ e posto $A = m$, $W\in \RR^{p\times n}$, $b\in \RR^{m}$ e $c\in \RR^{p}$. Neste caso, o conjunto de factibilidade $\Omega$ é um poliedro em $\RR^{n}$ definido por 
+\[
+\Omega = \{ x\in \RR^{n} \mid Ax =b \ \text{e} \ Wx \leq c \}.
+\]
+
+Como já mencionado, as restrições de igualdade correspondentes às linhas de $A$ são sempre ativas e assim, dado $x\in \Omega$, o conjunto das restrições ativas em $x$ é
+\[
+\mathcal{I}(x) = \{ 1,2, \ldots ,m,i_{1} , i_{2} , \ldots , i_{s(x)} \} ,
+\]
+em que $\mathcal{J}(x) \coloneqq \{ i_{1} , i_{2} , \ldots , i_{s(x)} \}$ é o conjunto de índices que correspondem às restrições de desigualdade, isto é, linhas de $W$, que são ativas em $x$. Ademais, temos que $0\leq s(x) \leq p$, e se $r(x)$ é o número total de restrições ativas em $x$, temos que $m \leq r(x) \leq m+p$.
+
+Por conseguinte, a partir das caracterizações das direções factíveis propostas na \Cref{section:restricoes_igualdade} e \Cref{section:restricoes_desigualdade}, concluímos que, dado um ponto factível $x$, $d\in \RR^{n}$ é uma direção factível em $x$ se, e somente se, $Ad =0$ e $w_{j}^{T}d \leq 0$ para todo $j\in \mathcal{J}(x)$.
+
+
+\subsubsection{Condições Necessárias de Primeira Ordem}
+
+\begin{teo} \label{teo:condicao_necessaria_1ordem_igualdade_desigualdade}
+Consideremos o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} com $f\in \mathcal{C}^{1}$
+\end{teo}
+
+
+\subsubsection{Condições de Segunda Ordem}
 
 
 \begin{defi} 
