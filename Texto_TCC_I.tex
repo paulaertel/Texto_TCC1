@@ -590,7 +590,7 @@ o que é uma contradição. Portanto, $\nabla f(x^{*}) =0$.
 
 
 \begin{defi}\label{defi:ponto_critico}
-Um ponto $x^{*} \in \RR^{n}$ que cumpre a condição \eqref{eq:condicao_necessaria_1_ordem} é dito ponto crítico ou estacionário da função $f$. 
+Um ponto $x^{*} \in \RR^{n}$ que cumpre a condição \eqref{eq:condicao_necessaria_1_ordem} é dito \emph{ponto crítico} ou \emph{estacionário} da função $f$. 
 \end{defi}
 
 \begin{teo}(\textbf{Condição necessária de segunda ordem}) \label{teo:condicao_necessaria_2_ordem}
@@ -1291,12 +1291,68 @@ Por conseguinte, a partir das caracterizações das direções factíveis propos
 \subsubsection{Condições Necessárias de Primeira Ordem}
 
 \begin{teo} \label{teo:condicao_necessaria_1ordem_igualdade_desigualdade}
-Consideremos o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} com $f\in \mathcal{C}^{1}$
+Consideremos o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} com $f\in \mathcal{C}^{1}$ e $x^{*} \in \Omega$ tal que $m\leq r(x^{*}) \leq n$ e $s(x^{*}) \geq 1$. Sejam $\mathcal{I} = \{ 1,2, \ldots ,m, i_{1} , i_{2} , \ldots , i_{s(x^{*})} \}$, $\mathcal{J} = \{ i_{1} , i_{2} , \ldots , i_{s(x^{*})} \}$ tal que $w_{j}^{T}x = c_{j}$ se, e somente se, $j\in \mathcal{J}$, $W_{\mathcal{J}}$ a submatriz de $W$ cujas linhas são as que têm os índices em $\mathcal{J}$, e $c_{\mathcal{J}} \in \RR^{s(x^{*})}$ formado pelas componentes de $c$ correspondentes a $\mathcal{J}$. Seja $B \in \RR^{[m+s(x^{*})]\times n}$ dada por
+\[
+B = \left( \begin{array}{cc} A \\ W_{\mathcal{J}} \end{array} \right) ,
+\]
+e posto $B= r(x^{*})$.
+
+Se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_igualdade_desigualdade}, então existe $\boldsymbol{\lambda} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que
+\[
+\nabla f(x^{*}) = A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu}
+\]
+e
+\[
+\mu_{k} \leq 0 \ \text{para todo} \ k \ \text{tal que} \ 1 \leq k \leq s(x^{*}).
+\]
 \end{teo}
+\begin{proof}
+Por demonstrar.
+\end{proof}
 
 
-\subsubsection{Condições de Segunda Ordem}
+\subsubsection{Condições Necessárias e Suficientes de Segunda Ordem}
 
+
+\begin{teo} \label{teo:condicao_necessaria_2ordem_igualdade_desigualdade}
+Sejam $f \in \mathcal{C}^{2}$, $x^{*}$ um minimizador local do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade}, $r(x^{*})$, $s(x^{*})$, $\mathcal{J}$ e $B$ definidos como anteriormente. Então
+\begin{enumerate}
+	\item[(i)] Existem $\boldsymbol{\gamma} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que 
+	\[
+	\nabla f(x^{*}) = A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu}, \ \mu_{k} \leq 0 \ \text{para todo} \ k\in \{ 1,2, \ldots , s(x^{*}) \} ;
+	\]
+	\item[(ii)] $y^{T}\nabla^{2} f(x^{*})y \succcurlyeq 0$ para todo $y\in \mathcal{N}(B)$.
+\end{enumerate}	
+\end{teo}
+\begin{proof}
+Por demonstrar.
+\end{proof}
+
+
+\begin{teo} \label{teo:condicao_suficiente_igualdade_desigualdade}
+Sejam $f\in \mathcal{C}^{2}$, $x^{*} \in \Omega$, $r(x^{*})$, $s(x^{*})$ e $\mathcal{J}$ definidos como anteriormente. Então, se $x^{*}$ verifica
+\begin{enumerate}
+	\item[(i)] Existem $\boldsymbol{\gamma} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que 
+	\[
+	\nabla f(x^{*}) = A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu}, \ \mu_{k} \leq 0 \ \text{para todo} \ k\in \{ 1,2, \ldots , s(x^{*}) \} ;
+	\]
+	\item[(ii)] Se $y^{T}\nabla^{2} f(x^{*})y \succ 0$ para todo $y\in \mathcal{N}(\tilde{B})$, em que
+	\[
+	\tilde{B} = \left( \begin{array}{cc} A \\ W_{\mathcal{K}} \end{array} \right) 
+	\]
+	e
+	\[
+	\mathcal{K} = \{ j\in \mathcal{J} \mid \mu_{j} <0 \};
+	\]
+\end{enumerate}
+Então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_igualdade_desigualdade}.
+\end{teo}
+\begin{proof}
+Por demonstrar.
+\end{proof}
+
+
+--------------------------------------
 
 \begin{defi} 
 Um ponto $x^{*} \in \RR^{n} $ é dito \emph{estacionário} para o problema \eqref{problema_geral_otimizacao} quando existirem $\mu^{*} \in \RR^{m} $, $\lambda^{*} \in \RR^{p} $ (\emph{multiplicadores de Lagrange}) tais que
