@@ -446,7 +446,13 @@ Dizemos que um ponto $x^{*} \in \Omega$ é
 \end{enumerate} 
 \end{defi}
 
-Quando as desigualdades na \Cref{defi:minimizador_local_global} forem estritas para $x \neq x^{*}$, diremos que $x^{*}$ é minimizador estrito.
+Quando as desigualdades na \Cref{defi:minimizador_local_global} forem estritas para $x \neq x^{*}$, diremos que $x^{*}$ é minimizador estrito. Essas definições são representadas na \Cref{fig:grafico_minimo_local_global}.
+
+\begin{figure}[!h] 
+	\centering
+	\includegraphics[width=0.80\textwidth]{minimo_local_global_grafico}
+	\caption{ Mínimo local e mínimo global em uma dimensão. \\ Fonte: \textcite{Bertsekas:1999ua} \label{fig:grafico_minimo_local_global}}
+\end{figure}
 
 Pela \Cref{defi:minimizador_local_global}, todo minimizador global é também minimizador local, porém a recíproca não é verdadeira. É interessante salientar que em muitas circunstâncias iremos nos contentar com um ponto de mínimo local, pois de modo geral, condições globais e soluções globais só podem ser encontradas se o problema possuir certas propriedades de convexidade que garantem, essencialmente, que qualquer mínimo local é global.
 
@@ -1451,7 +1457,7 @@ ou seja, os gradientes das restrições não são LI e, portanto, $x^{*}$ não �
 \section{Otimização Convexa}
 
 
-Neste capítulo o objetivo principal é apresentar alguns resultados e definições relacionados aos problemas de otimização convexa, isto é, quando a função objetivo e o conjunto factível são convexos. A noção de convexidade é muito importante na teoria de otimização, pois ela garante que pontos estacionários são minimizadores e permite concluir que minimizadores locais são globais. A partir disso, os problemas de classificação podem ser formulados em termos de otimização convexa. Os conceitos e resultados abordados neste capítulo foram desenvolvidos, principalmente, com base nas seguintes referências: \textcite{Evelin2017,Ademir2013,Izmailov2014ac}.
+Neste capítulo o objetivo principal é apresentar alguns resultados e definições relacionados aos problemas de otimização convexa, isto é, quando a função objetivo e o conjunto factível são convexos. A noção de convexidade é muito importante na teoria de otimização, pois ela garante que pontos estacionários são minimizadores e permite concluir que minimizadores locais são globais. Além disso, as condições necessárias de otimalidade tornam-se suficientes sob a hipótese de convexidade. A partir disso, os problemas de classificação podem ser formulados em termos de otimização convexa. Os conceitos e resultados abordados neste capítulo foram desenvolvidos, principalmente, com base nas seguintes referências: \textcite{Evelin2017,Ademir2013,Izmailov2014ac}.
 
 \subsection{Conjuntos Convexos}
 
@@ -1863,14 +1869,14 @@ f(x+d) \geq f(x) + \nabla f(x)^{T}d .
 Logo, pelo \Cref{teo:diferenciabilidade_e_convexidade}, $f$ é convexa.
 \end{proof}
 
-Em geral, a função objetivo dos problemas de SVM serão funções quadráticas. Assim, faz-se necessário mostrar que a função quadrática é convexa. Tal resultado é apresentado a seguir.
+Tendo em vista que a função objetivo dos problemas de SVM são funções quadráticas, é necessário avaliar se a função quadrática é convexa. Tal resultado é apresentado a seguir.
 
 %\cite{Gondzio2018}
 \begin{teo}
-Seja $C \in \RR^{n}$ um conjunto convexo e $Q$ uma matriz quadrada. Seja $f:C \rightarrow \RR$ tal que $f(x) = x^{T}Qx$ é uma função quadrática. Então, $f$ é convexa se, e somente se, $Q$ é semidefinida positiva.
+Seja $C \in \RR^{n}$ um conjunto convexo e $Q$ uma matriz quadrada. Seja $f:C \rightarrow \RR$ tal que $f(x) = x^{T}Qx + b^{T}x$ é uma função quadrática. Então, $f$ é convexa se, e somente se, $Q$ é semidefinida positiva.
 \end{teo}
 \begin{proof}
-Por demonstrar.
+O resultado decorre imediatamente do \Cref{teo:hessiana_convexidade}, pois a Hessiana $\nabla^{2} f(x) = Q$.
 \end{proof}
 
 
