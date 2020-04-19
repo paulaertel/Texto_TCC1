@@ -41,10 +41,12 @@
 \newtheorem{teo}{Teorema}
 \newtheorem{lema}{Lema}
 
+
 \theoremstyle{definition}%ambientes normais
 \newtheorem{exem}{Exemplo}
 \newtheorem{defi}{Definição}
-\newtheorem{obs}{Observação}	
+\newtheorem{obs}{Observação}
+\newtheorem{fato}{Fato}	
 
 \crefname{exem}{exemplo}{exemplos}
 \Crefname{exem}{Exemplo}{Exemplos}
@@ -56,6 +58,8 @@
 \Crefname{defi}{Definição}{Definições}
 \crefname{obs}{observação}{observações}
 \Crefname{obs}{Observação}{Observações}
+\Crefname{fato}{fato}{fatos}
+\Crefname{fato}{Fato}{Fatos}
 
 \usepackage{csquotes}
 \usepackage[
@@ -552,24 +556,24 @@ Considere o problema \eqref{problema_geral_otimizacao} irrestrito , isto é, com
 \]
 em que $f:\RR^{n} \rightarrow \RR$. Nesta seção serão determinadas as condições que um ponto $x^{*} \in \RR^{n}$ deve satisfazer quando é minimizador local do problema \eqref{problema_otimizacao_irrestrita}. Condições desse tipo são chamadas de \emph{condições necessárias de otimalidade}. Determinaremos também as condições que garantem que um ponto dado é minimizador local do problema, que são denominadas \emph{condições suficientes de otimalidade}. 
 
-Para os resultados que vem a seguir vamos utilizar os \Cref{teo:Taylor_primeira_ordem,teo:Taylor_segunda_ordem}, que fornecem a expansão de Taylor de primeira e segunda ordem.
+Para os resultados que vem a seguir vamos utilizar os \Cref{fato:Taylor_primeira_ordem,fato:Taylor_segunda_ordem}, que fornecem a Fórmula de Taylor de primeira e segunda ordem. As demonstrações destes fatos podem ser encontradas em \textcite[p.194]{Elon2019}.
 
-%determinar bibliografia em que estão demonstrados para citar.
-\begin{teo}(\textbf{Taylor de Primeira Ordem}) {\cite[p.25]{Ademir2013}} \label{teo:Taylor_primeira_ordem}
-Considere $f:\RR^{n} \rightarrow \RR$ uma função diferenciável e $\xbar \in \RR^{n}$. Então podemos escrever
+
+\begin{fato}(\textbf{Taylor de Primeira Ordem}) \label{fato:Taylor_primeira_ordem}
+Seja $f:\RR^{n} \rightarrow \RR$ uma função diferenciável e $\xbar \in \RR^{n}$. Então podemos escrever
 \[
 f(x) = f(\xbar) + \nabla f(\xbar)^{T}(x-\xbar) + o(x),
 \]
 com $\lim_{x \rightarrow \xbar}\dfrac{o(x)}{\Vert x-\xbar \Vert} = 0$.
-\end{teo}
+\end{fato}
 
-\begin{teo}(\textbf{Taylor de Segunda Ordem}) {\cite[p.26]{Ademir2013}} \label{teo:Taylor_segunda_ordem}
-Se $f:\RR^{n} \rightarrow \RR$ é uma função duas vezes diferenciável e $\xbar \in \RR^{n}$, então
+\begin{fato}(\textbf{Taylor de Segunda Ordem}) \label{fato:Taylor_segunda_ordem}
+Seja $f:\RR^{n} \rightarrow \RR$ uma função duas vezes diferenciável e $\xbar \in \RR^{n}$. Então
 \[
 f(x) = f(\xbar) + \nabla f(\xbar)^{T}(x-\xbar) + \dfrac{1}{2}(x-\xbar)^{T}\nabla^{2} f(\xbar)(x-\xbar) + o(x),
 \] 
 com $\lim_{x \rightarrow \xbar}\dfrac{o(x)}{\Vert x - \xbar \Vert^{2}} = 0$.
-\end{teo}
+\end{fato}
 
 Agora, nos teoremas que seguem, mostraremos as condições de otimalidade de primeira e de segunda ordem para o problema irrestrito.
 
@@ -584,7 +588,7 @@ Considere $d \in \RR^{n}$ arbitrário, porém fixo. Pela definição de minimiza
 \[ \label{eq:1_condicao_1_ordem_irrestrito}
 f(x^{*}) \leq f(x^{*}+td),
 \]
-para todo $t\in (0,\varepsilon ]$. Pela diferenciabilidade de $f$ em $x^{*}$, aplicando o \Cref{teo:Taylor_primeira_ordem}, podemos escrever 
+para todo $t\in (0,\varepsilon ]$. Pela diferenciabilidade de $f$ em $x^{*}$, aplicando o \Cref{fato:Taylor_primeira_ordem}, podemos escrever 
 \[
 f(x^{*}+td) = f(x^{*}) + t\nabla f(x^{*})^{T}d + o(t),
 \] 
@@ -626,7 +630,7 @@ Seja novamente $d\in \RR^{n}$ arbitrário, porém fixo. Se $x^{*}$ é minimizado
 \[\label{eq:1_condicao_2_ordem_irrestrito}
 0 \leq f(x^{*}+td) - f(x^{*}).
 \]
-Aplicando o \Cref{teo:Taylor_segunda_ordem},
+Aplicando o \Cref{fato:Taylor_segunda_ordem},
 \[
 f(x^{*}+td) = f(x^{*}) + t\nabla f(x^{*})^{T}d + \dfrac{t^{2}}{2} d^{T}\nabla^{2} f(x^{*})d + o(t^{2}),
 \]
@@ -641,7 +645,12 @@ d^{T} \nabla^{2} f(x^{*})d \geq 0,
 para todo $d \in \RR^{n}$.
 \end{proof}
 
-AQUI ACRESCENTAR DEFINIÇÃO DE DEFINIDA POSITIVA E SEMIDEFINIDA POSITIVA.
+\begin{defi} \label{defi:definida_positiva}
+Seja $A \in \RR^{n\times n}$ uma matriz simétrica. Dizemos que $A$ é \emph{definida positiva} quando $x^{T}Ax >0$, para todo $x\in \RR^{n}$. Tal propriedade é denotada por $A \succ 0$. Se $x^{T}Ax \geq 0$, para todo $x\in \RR^{n}\backslash\{ 0 \}$, $A$ é dita \emph{semidefinida positiva}, fato este denotado por $A \succcurlyeq 0$.
+
+\end{defi}
+
+Assim, de acordo com a \Cref{defi:definida_positiva}, o \Cref{teo:condicao_necessaria_2_ordem} nos diz que se um ponto $x^{*}$ é minimizador local de $f$, então a matriz Hessiana $\nabla^{2} f(x^{*})$ é semidefinida positiva.
 
 É possível obter, a partir condição necessária de segunda ordem, a condição suficiente de segunda ordem, isto é, condição que implica que $x^{*}$ é minimizador local estrito, bastando para isso pedir a definição positiva da Hessiana.
 
@@ -665,7 +674,7 @@ implica em
 \[ \label{eq:1_condicao_suficiente_irrestrito}
 d^{T}\nabla^{2} f(x^{*})d \geq a\vert d\Vert^{2} .
 \]
-Aplicando o \Cref{teo:Taylor_segunda_ordem} em torno de $x^{*}$, temos
+Aplicando o \Cref{fato:Taylor_segunda_ordem} em torno de $x^{*}$, temos
 \[\label{eq:2_condicao_suficiente_irrestrito}
 f(x^{*}+d) - f(x^{*}) = \nabla f(x^{*})^{T}d + \dfrac{1}{2} d^{T}\nabla^{2} f(x^{*})d + o(\Vert d \Vert^{2}).
 \]
@@ -692,6 +701,8 @@ f(x^{*}) < f(x^{*} + d).
 Portanto, para todo $x = x^{*} + d$, com $d$ suficientemente pequeno não-nulo, temos que $f(x^{*}) < f(x)$. Logo, $x^{*}$ é um minimizador local estrito de $f$.
 \end{proof}
 
+Vejamos um exemplo em que a condição suficiente de segunda ordem nos permite determinar uma solução para um problema de minimização irrestrito.
+
 \begin{exem}
 Considere o problema irrestrito
 \[\begin{aligned} \label{exem:verificar_condicao_suficiente_irrestrito}
@@ -699,7 +710,7 @@ Considere o problema irrestrito
 \text{s.a} & \quad x\in \RR^{2} .
 \end{aligned} \]
 \end{exem}
-Para um ponto $x^{*}$ ser minimizador estrito de \eqref{exem:verificar_condicao_suficiente_irrestrito} ele deve satisfazer as condições suficientes de segunda ordem do \Cref{teo:condicao_suficiente_irrestrito}, que são
+Para um ponto $x^{*}$ ser minimizador local estrito de \eqref{exem:verificar_condicao_suficiente_irrestrito} ele deve satisfazer as condições suficientes de segunda ordem do \Cref{teo:condicao_suficiente_irrestrito}, que são
 \[ \label{eq:1_exem_verificar_condicao_suficiente_irrestrito}
 \nabla f(x^{*}) = \begin{bmatrix*}
 2x_{1}^{*} - x_{2}^{*} - 2 + e^{x_{1}^{*} +x_{2}^{*} } \\ -x_{1}^{*} + 4x_{2}^{*} + \dfrac{2}{3} + e^{x_{1}^{*} +x_{2}^{*} } 
@@ -722,11 +733,11 @@ Além disso, $\nabla^{2} f(\bar{x})$ é definida positiva, pois
 \[
 \nabla^{2} f(\bar{x}) = \begin{bmatrix*} 3 & 0 \\ 0 & 5 \end{bmatrix*},
 \]
-e, para todo $x \in \RR^{2}-\{ 0\}$, temos que
+e, para todo $x \in \RR^{2}\backslash\{ 0\}$, temos que
 \[
 \begin{bmatrix*} x_{1} & x_{2} \end{bmatrix*}^{T} \begin{bmatrix*} 3 & 0 \\ 0 & 5 \end{bmatrix*} \begin{bmatrix*} x_{1} \\ x_{2} \end{bmatrix*} = 3x_{1}^{2} + 5x_{2}^{2} >0.
 \]
-Portanto, $\bar{x} = (1/3, -1/3 )$ é minimizador estrito do problema \eqref{exem:verificar_condicao_suficiente_irrestrito}.
+Portanto, $\bar{x} = (1/3, -1/3 )$ é minimizador local estrito do problema \eqref{exem:verificar_condicao_suficiente_irrestrito}.
 
 
 Tendo em vista que o problema de classificação \eqref{eq:problemageralSVM} que estamos interessados em resolver apresenta restrições e seu conjunto factível é poliedral, abordaremos nas seções seguintes o problema de minimização com restrições nesse contexto. Para tanto, iniciamos analisando o problema de minimização com restrições lineares de igualdade.
@@ -1136,7 +1147,7 @@ Seja $d \in \mathcal{D}_{f}(\xbar)$. Para todo $t>0$ suficientemente pequeno,
 \[ \label{eq:1_lema_direcao_de_descida}
 f(\xbar + td) < f(\xbar).
 \]
-Pelo \Cref{teo:Taylor_primeira_ordem}, temos
+Pelo \Cref{fato:Taylor_primeira_ordem}, temos
 \[ \label{eq:2_lema_direcao_de_descida}
 f(\xbar + td) - f(\xbar) = t\nabla f(\xbar)^{T} d + o(t),
 \] 
@@ -1150,7 +1161,7 @@ Dividindo ambos os lados da desigualdade \eqref{eq:3_lema_direcao_de_descida} po
 \]
 provando o item $(i)$.
 
-Suponhamos agora que $\nabla f(\xbar)^{T}d <0$. Temos que, pelo \Cref{teo:Taylor_primeira_ordem},
+Suponhamos agora que $\nabla f(\xbar)^{T}d <0$. Temos que, pelo \Cref{fato:Taylor_primeira_ordem},
 \[
 f(\xbar + td) - f(\xbar) = t\left( \nabla f(\xbar)^{T}d + \dfrac{o(t)}{t} \right) .
 \]
@@ -1672,7 +1683,7 @@ Seja $x^{*} \in C$ minimizador local de $f$ em $C$. Fixando $x\in C$, como $C$ �
 \[ \label{eq:1_lema_associa_projecao_minimizador}
 f(x^{*}) \leq f((1-t)x^{*} + tx),
 \]
-para todo $t\geq 0$ suficientemente pequeno. Pelo \Cref{teo:Taylor_primeira_ordem}, 
+para todo $t\geq 0$ suficientemente pequeno. Pelo \Cref{fato:Taylor_primeira_ordem}, 
 \[ \label{eq:2_lema_associa_projecao_minimizador}
 f(x^{*}+t(x-x^{*})) = f(x^{*}) + t\nabla f(x^{*})^{T}(x-x^{*}) + o(t) ,
 \]
@@ -1830,14 +1841,14 @@ Agora, multiplicando a primeira desigualdade por $(1-t)$ e a segunda por $t$, ob
 Portanto, a função $f$ é convexa em $C$.
 \end{proof}
 
-A seguir, apresentamos alguns resultados necessários para demonstrar o \Cref{teo:hessiana_convexidade}.
+Para os resultados que vem a seguir vamos utilizar o \Cref{fato:Taylor_com_resto_lagrange}, que fornece a fórmula de Taylor com resto de Lagrange. Sua demonstração pode ser encontrada em \textcite[p.196]{Elon2019}.
 
-\begin{teo}(\textbf{Taylor com Resto de Lagrange}) {\cite[p.26]{Ademir2013}} \label{teo:Taylor_com_resto_lagrange}
+\begin{fato}(\textbf{Taylor com Resto de Lagrange}) \label{fato:Taylor_com_resto_lagrange}
 Considere $f: \RR^{n} \rightarrow \RR$ uma função de classe $\mathcal{C}^{1}$ e $\xbar, d \in \RR^{n}$. Se $f$ é duas vezes diferenciável no segmento $(\xbar , \xbar + d)$, então existe $t \in (0,1)$ tal que
 \[
 f(\xbar + d) = f(\xbar) + \nabla f(\xbar)^{T} d + \dfrac{1}{2}d^{T}\nabla^{2} f(\xbar + td)d .
 \]
-\end{teo}
+\end{fato}
 
 
 \begin{lema} \label{lema:auxiliar_para_teo_hessiana_convexidade}
@@ -1860,7 +1871,7 @@ e assim,
 \[ \label{eq:1_teo_hessiana_convexidade}
 f(x+td) -f(x) - t\nabla f(x)^{T} d \geq 0 . 
 \]
-Aplicando o \Cref{teo:Taylor_segunda_ordem} para $f(x+td)$, temos
+Aplicando o \Cref{fato:Taylor_segunda_ordem} para $f(x+td)$, temos
 \[
 f(x+td) = f(x) + t\nabla f(x)^{T}d + \dfrac{t^{2}}{2}d^{T} \nabla^{2} f(x)d + o(t^{2}) ,
 \]
@@ -1883,7 +1894,7 @@ d^{T} \nabla^{2} f(x)d \geq 0,
 \]
 para todo $x \in C$.
 
-Reciprocamente, dados $x \in C$ e $d \in \RR^{n}$ tal que $x+d \in C$, pelo \Cref{teo:Taylor_com_resto_lagrange},
+Reciprocamente, dados $x \in C$ e $d \in \RR^{n}$ tal que $x+d \in C$, pelo \Cref{fato:Taylor_com_resto_lagrange},
 \[
 f(x+d) = f(x) + \nabla f(x)^{T}d + \dfrac{1}{2}d^{T} \nabla^{2} f(x+td)d,
 \]
