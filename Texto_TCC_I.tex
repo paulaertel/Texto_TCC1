@@ -89,30 +89,30 @@ A aprendizagem supervisionada é composta por uma etapa denominada fase de trein
 
 As Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}), conforme mencionado por \textcite{Evelin2017}, são indicadas nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos, além de apresentar uma boa capacidade de generalização. Esta técnica pode ser aplicada tanto para problemas de regressão como de classificação. Tal técnica foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes, com base na Teoria de Aprendizagem Estatística. Algumas aplicações de SVM em problemas práticos são o reconhecimento facial, leitura de placas automotivas e detecção de spam.
 
-Agora, vamos formular matematicamente o problema de classificação utilizando as Máquinas de Vetores Suporte. Para tanto, considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig1}.
+Agora, vamos formular matematicamente o problema de classificação utilizando as Máquinas de Vetores Suporte. Para tanto, considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig:classificacao_dados}.
 
 
 \begin{figure}[!h] 
 \centering
 \begin{subfigure}[h]{0.3\textwidth}
 \centering
-\includegraphics[width=\textwidth]{SVM_linear}
-\caption{Linear. \label{fig1:a}}
+\includegraphics[width=\textwidth]{hiperplano_SVM_linear}
+\caption{Linear. \label{fig:classificacao_dados:hiperplano_SVM_linear}}
 \end{subfigure}
 \begin{subfigure}[!h]{0.3\textwidth}
 	\centering
-	\includegraphics[width=\textwidth]{SVM_flexivel}
-	\caption{Flexível. \label{fig1:b}}
+	\includegraphics[width=\textwidth]{hiperplano_SVM_flexivel}
+	\caption{Flexível. \label{fig:classificacao_dados:hiperplano_SVM_flexivel}}
 \end{subfigure}
 \begin{subfigure}[!h]{0.3\textwidth}
 	\centering
-	\includegraphics[width=\textwidth]{SVM_naolinear}
-	\caption{Não Linear. \label{fig1:c}}
+	\includegraphics[width=\textwidth]{hiperplano_SVM_nao_linear}
+	\caption{Não Linear. \label{fig:classificacao_dados:hiperplano_SVM_nao_linear}}
 \end{subfigure}
-\caption{Dados lineares, com margem flexível e não lineares. \label{fig1}\\ Fonte: \textcite{Evelin2017}}
+\caption{Dados lineares, com margem flexível e não lineares. \label{fig:classificacao_dados}}
 \end{figure}
 
-Observe que na \Cref{fig1:a} os dados podem ser classificados corretamente através de uma reta. Já na \Cref{fig1:b} é possível encontrar uma reta que separa alguns poucos dados, porém incorretamente. E na \Cref{fig1:c} não é possível classificar os dados como nos casos anteriores. Nestes exemplos temos representados os três casos de SVM: o linear com margem rígida, o linear com margem flexível e o não linear, respectivamente.
+Observe que na \Cref{fig:classificacao_dados:hiperplano_SVM_linear} os dados podem ser classificados corretamente através de uma reta. Já na \Cref{fig:classificacao_dados:hiperplano_SVM_flexivel} é possível encontrar uma reta que separa alguns poucos dados, porém incorretamente. E na \Cref{fig:classificacao_dados:hiperplano_SVM_nao_linear} não é possível classificar os dados como nos casos anteriores. Nestes exemplos temos representados os três casos de SVM: o linear com margem rígida, o linear com margem flexível e o não linear, respectivamente.
 
 A modelagem do problema de classificação, utilizando a técnica de SVM, consiste em encontrar um hiperplano ótimo que melhor separe os dados de entrada $x^i$ em duas saídas $y_i$ através de uma função de decisão. Matematicamente, mostraremos que trata-se um problema de programação quadrática convexa com restrições lineares, que pode ser formulado como
 \[
@@ -139,40 +139,38 @@ O hiperplano $\Hset(w,b)$ divide o espaço $\RR^n$ em dois semiespaços, dados p
 \]
 
 
-Considere dois conjuntos de dados de treinamento representados no $\RR^2$ como na \Cref{fig2:a}, em que os pontos em azul representam a classe positiva, e os pontos em vermelho a classe negativa. Perceba na \Cref{fig2:b} que todos os hiperplanos representados separam corretamente os dados, porém nosso objetivo será encontrar o hiperplano que melhor separa esses dados, o qual está representado na \Cref{fig3:a} pela cor violeta. Logo, desejamos encontrar o hiperplano que possibilita a maior faixa que não contém nenhum dado, pois caso a faixa seja muito estreita pequenas perturbações no hiperplano ou no conjunto de dados podem resultar uma classificação incorreta. 
+Considere dois conjuntos de dados de treinamento representados no $\RR^2$ como na \Cref{fig:dados_e_hiperplanos:dados_treinamento}, em que os pontos em azul representam a classe positiva, e os pontos em vermelho a classe negativa. Perceba na \Cref{fig:dados_e_hiperplanos:hiperplanos_separadores} que todos os hiperplanos representados separam corretamente os dados, porém nosso objetivo será encontrar o hiperplano que melhor separa esses dados, o qual está representado na \Cref{fig:dados_e_hiperplano_otimo:hiperplano_otimo} pela cor violeta. Logo, desejamos encontrar o hiperplano que possibilita a maior faixa que não contém nenhum dado, pois caso a faixa seja muito estreita pequenas perturbações no hiperplano ou no conjunto de dados podem resultar uma classificação incorreta. 
 \begin{figure}[htbp] 
 	\centering
-	\begin{subfigure}[h]{0.4\textwidth}
+	\begin{subfigure}[h]{0.38\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{dados_treinamento}
-		\caption{Dados de treinamento. \label{fig2:a}}
+		\caption{Dados de treinamento. \label{fig:dados_e_hiperplanos:dados_treinamento}}
 	\end{subfigure}
 	\begin{subfigure}[h]{0.38\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{hiperplanos_separadores}
-		\caption{Hiperplanos separadores. \label{fig2:b}}
+		\caption{Hiperplanos separadores. \label{fig:dados_e_hiperplanos:hiperplanos_separadores}}
 	\end{subfigure}
-\caption{Conjunto de Dados e Hiperplanos. \label{fig2}
-	\\ Fonte: \textcite{Evelin2017}}
+\caption{Conjunto de Dados e Hiperplanos. \label{fig:dados_e_hiperplanos}}
 \end{figure}
 \begin{figure}[hbtp] 
 	\centering
 	\begin{subfigure}[h]{0.38\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{hiperplano_otimo}
-		\caption{Hiperplano ótimo. \label{fig3:a}}
+		\caption{Hiperplano ótimo. \label{fig:dados_e_hiperplano_otimo:hiperplano_otimo}}
 	\end{subfigure}
-	\begin{subfigure}[h]{0.38\textwidth}
+	\begin{subfigure}[h]{0.40\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{maxima_margem}
-		\caption{Máxima margem. \label{fig3:b}}	
+		\includegraphics[width=\textwidth]{hiperplano_maxima_margem}
+		\caption{Máxima margem. \label{fig:dados_e_hiperplano_otimo:hiperplano_maxima_margem}}	
 	\end{subfigure}
-\caption{Hiperplano Ótimo. \label{fig3}
-\\ Fonte: \textcite{Evelin2017}}
+\caption{Hiperplano Ótimo. \label{fig:dados_e_hiperplano_otimo}}
 \end{figure}
 
 
-\begin{defi} \label{def1} Os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são ditos \emph{linearmente separáveis} quando existem $w\in \RR^n$ e $b\in \RR$  tais que $w^{T}x+b>0$ para todo $x\in \Xset^{+}$ e $w^{T}x+b<0$ para todo $x\in \Xset^{-}$. O hiperplano $\Hset(w,b)$ é chamado hiperplano separador dos conjuntos $\Xset^{+}$ e $\Xset^{-}$.
+\begin{defi} \label{def:dados_linearmente_separaveis} Os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são ditos \emph{linearmente separáveis} quando existem $w\in \RR^n$ e $b\in \RR$  tais que $w^{T}x+b>0$ para todo $x\in \Xset^{+}$ e $w^{T}x+b<0$ para todo $x\in \Xset^{-}$. O hiperplano $\Hset(w,b)$ é chamado hiperplano separador dos conjuntos $\Xset^{+}$ e $\Xset^{-}$.
 \end{defi}
 
 
@@ -189,7 +187,7 @@ satisfazendo
 \end{lema} 
 
 \begin{proof}
-Pela  \Cref{def1}, temos que existem $w\in \RR^n$ e $b\in \RR$ tais que
+Pela  \Cref{def:dados_linearmente_separaveis}, temos que existem $w\in \RR^n$ e $b\in \RR$ tais que
 \begin{align}
 w^{T}x+b &>0, \text{ para todo } x\in \Xset^{+}, \\
 w^{T}x+b &<0, \text{ para todo } x\in \Xset^{-}.
@@ -349,15 +347,15 @@ Situações reais dificilmente envolvem problemas cujos dados são linearmente s
 
 \begin{figure}[htbp] 
 	\centering
-	\begin{subfigure}[h]{0.32\textwidth}
+	\begin{subfigure}[h]{0.30\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{dados_linearmenteseparaveismmll}
+		\includegraphics[width=\textwidth]{dados_linearmente_separaveis}
 		\caption{Dados linearmente separáveis. \label{fig:dados_linearmente_separaveis_e_nao_separaveis:a}}
 	\end{subfigure}
-	\begin{subfigure}[h]{0.31\textwidth}
+	\begin{subfigure}[h]{0.30\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{dados_nlinearmenteseparaveismml}
-		\caption{Dados não linearmente separáveis. \label{fig:dados_linearmente_separaveis_e_nao_separaveis:b}}
+		\includegraphics[width=\textwidth]{dados_nao_linearmente_separaveis}
+		\caption{Dados não-linearmente separáveis. \label{fig:dados_linearmente_separaveis_e_nao_separaveis:b}}
 	\end{subfigure}
 \caption{Conjunto de dados. \label{fig:dados_linearmente_separaveis_e_nao_separaveis} \\ Fonte: \textcite{Faisal2019} }
 \end{figure}
@@ -398,8 +396,8 @@ Desse modo, para obter um bom classificador não basta apenas maximizar a margem
 
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.40\textwidth]{restricoes_maximizacaomargem}
-	\caption{Exemplo de hiperplano que não classifica os dados. \label{fig:hiperplano_nao_classificador} \\ Fonte: \textcite{Evelin2017}}
+	\includegraphics[width=0.38\textwidth]{hiperplano_nao_classifica_dados}
+	\caption{Exemplo de hiperplano que não classifica os dados. \label{fig:hiperplano_nao_classificador}}
 \end{figure}
  
 
@@ -466,8 +464,8 @@ Quando as desigualdades na \Cref{defi:minimizador_local_global} forem estritas p
 
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.80\textwidth]{minimo_local_global_grafico}
-	\caption{ Mínimo local e mínimo global em uma dimensão. \\ Fonte: \textcite{Bertsekas:1999ua} \label{fig:grafico_minimo_local_global}}
+	\includegraphics[width=0.80\textwidth]{grafico_minimo_local_global}
+	\caption{ Mínimo local e mínimo global em uma dimensão. \label{fig:grafico_minimo_local_global}}
 \end{figure}
 
 Pela \Cref{defi:minimizador_local_global}, todo minimizador global é também minimizador local, porém a recíproca não é verdadeira. É interessante salientar que em muitas circunstâncias iremos nos contentar com um ponto de mínimo local pois, de modo geral, condições globais e soluções globais só podem ser encontradas se o problema possuir certas propriedades que garantem, essencialmente, que qualquer mínimo local é global. Uma destas propriedades é a convexidade, a qual abordaremos mais adiante (veja \Cref{chap:otimizacao_convexa}).
@@ -773,7 +771,7 @@ Para tanto, associado a $\Omega$ temos o conjunto de soluções do sistema homog
 
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.70\textwidth]{nucleoA_paralelo_S}
+	\includegraphics[width=0.60\textwidth]{nucleoA_paralelo_S}
 	\caption{Fonte: \textcite{Ana1994} \label{fig:nucleoA_paralelo_S}}
 \end{figure}
 
@@ -1051,7 +1049,7 @@ Desse modo, cada uma das $m$ desigualdades $a_{i}^{T}x \leq b_{i}$ define em $\R
 
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.45\textwidth]{regiao_factivel_poliedro}
+	\includegraphics[width=0.45\textwidth]{conjunto_factivel_poliedral}
 	\caption{Região de factibilidade. \\ Fonte: \textcite{Ana1994} \label{fig:regiao_factivel_poliedro}}
 \end{figure}
 
@@ -1073,7 +1071,7 @@ O conjunto das direções factíveis a partir de $x$ depende das restrições at
 
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.45\textwidth]{restricoes_inativas}
+	\includegraphics[width=0.45\textwidth]{restricoes_ativas}
 	\caption{Restrições ativas e inativas. \\ Fonte: \textcite{luenberger2008linear} \label{fig:restricoes_inativas}}
 \end{figure}
 
