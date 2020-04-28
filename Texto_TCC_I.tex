@@ -357,7 +357,7 @@ Situações reais dificilmente envolvem problemas cujos dados são linearmente s
 		\includegraphics[width=\textwidth]{dados_nao_linearmente_separaveis}
 		\caption{Dados não-linearmente separáveis. \label{fig:dados_linearmente_separaveis_e_nao_separaveis:b}}
 	\end{subfigure}
-\caption{Conjunto de dados. \label{fig:dados_linearmente_separaveis_e_nao_separaveis} \\ Fonte: \textcite{Faisal2019} }
+\caption{Conjunto de dados. \label{fig:dados_linearmente_separaveis_e_nao_separaveis} }
 \end{figure}
 
 
@@ -1515,14 +1515,14 @@ Neste capítulo o objetivo principal é apresentar alguns resultados e definiç�
 Um \emph{conjunto} $C \subset \RR^{n}$ é dito \emph{convexo} quando dados $x,y \in C$, o segmento $[x,y] = \{ (1-t)x + ty \mid t\in [0,1] \}$ estiver inteiramente contido em $C$.
 \end{defi}
 
-Esta definição pode ser interpretada geometricamente afirmando que um conjunto é convexo se, dados dois pontos no conjunto, cada ponto no segmento de linha que une esses dois pontos também for um membro do conjunto. A \Cref{fig:conjuntos_convexos} ilustra a noção de convexidade de conjuntos.
+Esta definição pode ser interpretada geometricamente afirmando que um conjunto é convexo se, dados dois pontos no conjunto, cada ponto no segmento de linha que une esses dois pontos também for um membro do conjunto. A \Cref{fig:conjuntos_convexos} ilustra a noção de convexidade de conjuntos, em que o conjunto $C_{1}$ representa um conjunto convexo e o conjunto $C_{2}$ não é convexo.
 
 
 %criar minha própria figura
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.60\textwidth]{convexidade}
-	\caption{ Conjunto convexo e não convexo. \label{fig:conjuntos_convexos} \\ Fonte: \textcite{Luenberger:2016}}
+	\includegraphics[width=0.60\textwidth]{conjuntos_convexo_naoconvexo}
+	\caption{ Conjunto convexo e não-convexo. \label{fig:conjuntos_convexos}}
 \end{figure}
 
 
@@ -1742,22 +1742,17 @@ dizemos que $f$ é \emph{estritamente convexa}.
 
 \begin{figure}[!h] 
 \centering
-\begin{subfigure}[h]{0.45\textwidth}
+\begin{subfigure}[h]{0.42\textwidth}
 \centering
-\includegraphics[width=\textwidth]{convex_function1}
+\includegraphics[width=\textwidth]{funcao_convexa_1}
 \caption{Função Convexa \label{fig:funcao_convexa}}
 \end{subfigure}
-\begin{subfigure}[!h]{0.43\textwidth}
+\begin{subfigure}[!h]{0.40\textwidth}
 	\centering
-	\includegraphics[width=\textwidth]{convex_function2}
-	\caption{Função estritamente convexa. \label{fig:funcao_estritamente_convexa}}
-\end{subfigure}
-\begin{subfigure}[!h]{0.4\textwidth}
-	\centering
-	\includegraphics[width=\textwidth]{no_convex_function}
+	\includegraphics[width=\textwidth]{funcao_nao_convexa}
 	\caption{Função não convexa. \label{fig:funcao_nao_convexa}}
 \end{subfigure}
-\caption{Funções convexas e não convexas \label{fig:exemplos_funcao_convexa}\\ Fonte: \textcite{Luenberger:2016}}
+\caption{Funções convexas e não-convexas \label{fig:exemplos_funcao_convexa}}
 \end{figure}
 
 
