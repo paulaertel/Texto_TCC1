@@ -464,7 +464,7 @@ Quando as desigualdades na \Cref{defi:minimizador_local_global} forem estritas p
 
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.80\textwidth]{grafico_minimo_local_global}
+	\includegraphics[width=0.86\textwidth]{grafico_minimo_local_global}
 	\caption{ Mínimo local e mínimo global em uma dimensão. \label{fig:grafico_minimo_local_global}}
 \end{figure}
 
@@ -772,7 +772,7 @@ Para tanto, associado a $\Omega$ temos o conjunto de soluções do sistema homog
 \begin{figure}[!h] 
 	\centering
 	\includegraphics[width=0.60\textwidth]{nucleoA_paralelo_S}
-	\caption{Fonte: \textcite{Ana1994} \label{fig:nucleoA_paralelo_S}}
+	\caption{ Núcleo de uma matriz. \\ Fonte: \textcite{Ana1994} \label{fig:nucleoA_paralelo_S}}
 \end{figure}
 
 
@@ -1039,21 +1039,30 @@ Vamos considerar agora problemas da forma
 \]
 em que $x \in \RR^{n}$ e $A \in \RR^{m\times n}$. Como na seção anterior, estamos interessados nesse primeiro momento em analisar a região de factibilidade e determinar as direções factíveis, que são aquelas em que há espaço para se movimentar dentro da região $\Omega$. 
 
-Denotando cada linha da matriz $A$ da forma $a_{i}^{T} = (a_{i1} , a_{i2} , \ldots , a_{in})$, podemos caracterizar o conjunto factível da seguinte forma
+Denotando cada linha da matriz $A$ da forma $a_{i\cdot}^{T} = (a_{i1} , a_{i2} , \ldots , a_{in})$, podemos caracterizar o conjunto factível da seguinte forma
 \[
-\Omega = \{ x\in \RR^{n} \mid a_{i}^{T}x \leq b_{i} \ \text{para todo} \ i \in \{ 1,2, \ldots , m \} \} .
+\Omega = \{ x\in \RR^{n} \mid a_{i\cdot}^{T}x \leq b_{i} \ \text{para todo} \ i \in \{ 1,2, \ldots , m \} \} .
 \]
 
-Desse modo, cada uma das $m$ desigualdades $a_{i}^{T}x \leq b_{i}$ define em $\RR^{n}$ um semiespaço. O hiperplano divisor é $a_{i}^{T}x = b_{i}$ e o semiespaço definido é aquele que está do lado contrário à direção apontada pelo vetor $a_{i}$. Assim, a região $\Omega$ consiste na instersecção dos $m$ semiespaços. Em alguns casos, como representado na \Cref{fig:regiao_factivel_poliedro}, $\Omega$ é um poliedro em $\RR^{n}$.
+Desse modo, cada uma das $m$ desigualdades $a_{i\cdot}^{T}x \leq b_{i}$ define em $\RR^{n}$ um semiespaço. O hiperplano divisor é $a_{i\cdot}^{T}x = b_{i}$ e o semiespaço definido é aquele que está do lado contrário à direção apontada pelo vetor $a_{i}$. Assim, a região $\Omega$ consiste na instersecção dos $m$ semiespaços. Em alguns casos, como representado na \Cref{fig:regiao_factivel_poliedro}, $\Omega$ é um conjunto \emph{poliedral} em $\RR^{n}$.
 
 
 \begin{figure}[!h] 
 	\centering
 	\includegraphics[width=0.45\textwidth]{conjunto_factivel_poliedral}
-	\caption{Região de factibilidade. \\ Fonte: \textcite{Ana1994} \label{fig:regiao_factivel_poliedro}}
+	\caption{Conjunto factível poliedral. \\ Fonte: \textcite{Ana1994} \label{fig:regiao_factivel_poliedro}}
 \end{figure}
 
-Um conceito fundamental para formular as condições de otimalidade e que fornece uma grande quantidade de informações é o de \emph{restrição ativa}.
+\begin{defi} \label{defi:conjunto_poliedral}
+Dizemos que um conjunto é \emph{poliedral} quando ele pode ser representado como o conjunto de soluções de um sistema finito de equações e inequações lineares. Por exemplo:
+\[
+D = \{ x\in \RR^{n} \mid Ax=b, \ Wx \leq c \} ,
+\] 
+em que $A\in \RR^{m\times n}$, $W\in \RR^{p\times n}$, $b\in \RR^{m}$ e $c\in \RR^{p}$. Neste contexto, dizemos que $h:\RR^{n} \rightarrow \RR^{m}$, $h(x) = Ax-b$, é uma \emph{função afim}. Assim como $g:\RR^{n} \rightarrow \RR^{p}$, dada por $g(x)=Wx-c$.
+\end{defi}
+
+
+Por conseguinte, um conceito fundamental para formular as condições de otimalidade e que fornece uma grande quantidade de informações é o de \emph{restrição ativa}.
 
 \begin{defi}
 Dado $\xbar \in \Omega$, dizemos que a restrição de desigualdade $a_{i}^{T}\bar{x} \leq b_{i}$ que corresponde ao índice $i\in \{ 1,2, \ldots , m\}$ é \emph{ativa} no ponto $\xbar$ quando $a_{i}^{T}\bar{x} = b_{i}$. Caso $a_{i}^{T}\bar{x} < b_{i}$ dizemos que a restrição é \emph{inativa} em $\xbar$. 
@@ -1067,15 +1076,16 @@ O conjunto dos índices das restrições de desigualdade ativas no ponto $\xbar 
 Por convenção, qualquer restrição de igualdade é considerada ativa em todo ponto factível.
 \end{obs}
 
-O conjunto das direções factíveis a partir de $x$ depende das restrições ativas nesse ponto, pois são elas que restringem o domínio de factibilidade na vizinhança de $x$, enquanto que as restrições inativas não possuem influência na vizinhança de $x$. Um exemplo é representado na \Cref{fig:restricoes_inativas}, em que é possível perceber que a solução $x^{*}$ não depende das restrições inativas $g_{2}, g_{3}$.
+A cada $x\in \Omega$ podemos associar um número $r(x)$, com $0\leq r(x) \leq m$, que representa a quantidade de restrições ativas em $x$. Assim, na \Cref{fig:restricoes_ativas} temos que $r(x^{1}) = 1$, $r(x^{2}) = 2$, $r(x^{3}) = 1$, $r(x^{4}) = 0$ e $r(x^{5}) = 2$.
 
 \begin{figure}[!h] 
 	\centering
 	\includegraphics[width=0.45\textwidth]{restricoes_ativas}
-	\caption{Restrições ativas e inativas. \\ Fonte: \textcite{luenberger2008linear} \label{fig:restricoes_inativas}}
+	\caption{Restrições ativas e inativas. \label{fig:restricoes_ativas}}
 \end{figure}
 
-Ademais, a cada $x\in \Omega$ podemos associar um número $r(x)$, com $0\leq r(x) \leq m$, que representa a quantidade de restrições ativas em $x$. O \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos fornece uma caracterização das direções factíveis em $x$.
+Ademais, o conjunto das direções factíveis a partir de $x$ depende das restrições ativas nesse ponto, pois são elas que restringem o domínio de factibilidade na vizinhança de $x$, enquanto que as restrições inativas não possuem influência na vizinhança de $x$.
+O \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos fornece uma caracterização das direções factíveis em $x$.
 
 \begin{teo} \label{teo:direcoes_factiveis_restricao_desigualdade}
 Considere $x\in \Omega$ tal que $r(x) = p$ com $0<p \leq m$. Um vetor $d \in \RR^{n}$ é uma direção factível em $x$ se, e somente se, $a_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$.
@@ -1101,10 +1111,10 @@ Por outro lado, se $i \notin \mathcal{I}(x)$, temos que $a_{i}^{T} x < b_{i}$. N
 	a_{i}^{T}x + \alpha a_{i}^{T}d = b_{i} ,
 	\]
 	e resolvendo para $\alpha$,
-	\[
+	\[ \label{eq:1_teo_direcoes_factiveis_restricao_desigualdade}
 	\alpha = \dfrac{b_{i} - a_{i}^{T}x}{a_{i}^{T}d}.
 	\]
-	Então, para $\alpha$ satisfazer todas as restrições $i \in \mathcal{M}-\mathcal{I}(x)$, é preciso tomar o mínimo. Assim, se definimos
+	Então, para $\alpha$ satisfazer todas as restrições $i \in \mathcal{M}-\mathcal{I}(x)$, é preciso tomar o mínimo de \eqref{eq:1_teo_direcoes_factiveis_restricao_desigualdade}. Assim, se definimos
 	\[
 	\tilde{\alpha} = \min_{i \in \mathcal{M}-\mathcal{I}(x) } \left( \dfrac{b_{i} - a_{i}^{T}x}{a_{i}^{T}d} \right) ,
 	\]
@@ -1113,7 +1123,7 @@ Por outro lado, se $i \notin \mathcal{I}(x)$, temos que $a_{i}^{T} x < b_{i}$. N
 Portanto, $d$ será uma direção factível em $x$.
 \end{proof}
 
-Ademais, interessados em saber quanto podemos andar sobre uma direção factível $d$ a partir de $x \in \Omega$, precisamos determinar o maior valor de $\alpha$ tal que $a_{i}^{T}(x + \alpha d) \leq b_{i}$, para todo $i\in \mathcal{M}$, o que equivale a determinar o menor valor de $\alpha$ para o qual $a_{i}^{T}(x+\alpha d) = b_{i}$, para algum $i\in \mathcal{M}$. Este valor é dado na demonstração do \Cref{teo:direcoes_factiveis_restricao_desigualdade}, em que se $i$ é tal que $a_{i}^{T}d \leq 0$, $\alpha$ pode ser arbitrariamente grande. E no caso em que $i$ é tal que $a_{i}^{T}d >0$, o valor procurado é
+Além disso, interessados em saber quanto podemos andar sobre uma direção factível $d$ a partir de $x \in \Omega$, precisamos determinar o maior valor de $\alpha$ tal que $a_{i}^{T}(x + \alpha d) \leq b_{i}$, para todo $i\in \mathcal{M}$, o que equivale a determinar o menor valor de $\alpha$ para o qual $a_{i}^{T}(x+\alpha d) = b_{i}$, para algum $i\in \mathcal{M}$. Este valor é dado na demonstração do \Cref{teo:direcoes_factiveis_restricao_desigualdade}, em que se $i$ é tal que $a_{i}^{T}d \leq 0$, $\alpha$ pode ser arbitrariamente grande. E no caso em que $i$ é tal que $a_{i}^{T}d >0$, o valor procurado é
 \[
 \tilde{\alpha} = \min_{i \in \mathcal{M}-\mathcal{I}(x) } \left( \dfrac{b_{i} - a_{i}^{T}x}{a_{i}^{T}d} \right) .
 \]
@@ -1121,9 +1131,7 @@ Ademais, interessados em saber quanto podemos andar sobre uma direção factíve
 
 \subsubsection{Condições Necessárias de Primeira Ordem}
 
-
-Desenvolver a noção de direções factíveis para avaliar a estrutura do conjunto factível na vizinhança de uma solução é fundamental para determinar as condições de otimalidade no caso de problemas com restrições de desigualdade. Tendo feito isso, é necessário agora definir o conceito de direção de descida.
-
+No intuito de determinar as condições de otimalidade no caso de problemas com restrições de desigualdade, acabamos de desenvolver a noção de direções factíveis para avaliar a estrutura do conjunto factível na vizinhança de uma solução. Agora, é necessário definir o conceito de direção de descida.
 
 \begin{defi} \label{defi:direcao_de_descida}
 Dizemos que $d\in \RR^{n}$ é uma \emph{direção de descida} de $f:\RR^{n} \rightarrow \RR$ no ponto $\xbar \in \RR^{n}$, se existe $\varepsilon >0$ tal que
@@ -1239,12 +1247,12 @@ implicando em
 \[ \label{eq:2_condicao_necessaria_1ordem_restricao_desigualdade}
 \nabla f(x^{*})^{T}d = -d^{T}d = -\Vert d \Vert^{2} <0,
 \]
-e portanto, $d$ é uma direção de descida. Veja \Cref{fig:projecao_sobre_nucleo_teo_condicao_1ordem_desigualdade}.
+e portanto, $d$ é uma direção de descida. Veja \Cref{fig:projecao_gradiente_sobre_nucleoA}.
 
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.60\textwidth]{projecao_sobre_nucleo_teo_condicao_1ordem_desigualdade}
-	\caption{Fonte: \textcite{Ana1994} \label{fig:projecao_sobre_nucleo_teo_condicao_1ordem_desigualdade}}
+	\includegraphics[width=0.55\textwidth]{projecao_gradiente_sobre_nucleoA}
+	\caption{Projeção de $-\nabla f(x)$ sobre o $\mathcal{N}(\tilde{A_{\mathcal{I}}})$. \\ Fonte: \textcite{Ana1994}. \label{fig:projecao_gradiente_sobre_nucleoA}}
 \end{figure}
 Ademais, vejamos que $d$ também é uma direção factível. Com efeito,
 \[
@@ -1258,7 +1266,7 @@ Então,
 \[
 \nabla f(x^{*})^{T}d = \lambda_{j} a_{i_{j}}^{T} d.
 \]
-Usando \eqref{eq:2_condicao_necessaria_1ordem_restricao_desigualdade} e como $\lambda_{j} >0$, obtemos
+Usando \eqref{eq:2_condicao_necessaria_1ordem_restricao_desigualdade} e o fato de $\lambda_{j} >0$, obtemos
 \[
 a_{i_{j}}^{T} d <0.
 \]
@@ -1282,13 +1290,13 @@ Sejam $f \in \mathcal{C}^{2}$, $x^{*}$ um minimizador local do problema \eqref{p
 \end{enumerate}
 \end{teo}
 \begin{proof}
-Perceba que se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então pelo \Cref{teo:condicao_necessaria_1ordem_restricao_desigualdade} existe $\boldsymbol{\lambda} \in \RR^{r(x^{*})}$ tal que 
+Perceba que se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então pelo \Cref{teo:condicao_necessaria_1ordem_restricao_desigualdade}, existe $\boldsymbol{\lambda} \in \RR^{r(x^{*})}$ tal que 
 \[
-\nabla f(x^{*}) = A_{\mathcal{I}}^{T} \boldsymbol{\lambda} \ \text{e} \ \lambda_{i} \leq 0
+\nabla f(x^{*}) = A_{\mathcal{I}}^{T} \boldsymbol{\lambda} \ \text{e} \ \lambda_{i} \leq 0,
 \] 
 para todo $i \in \mathcal{I}(x^{*})$.
 
-Por conseguinte, se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, em particular ele é solução do seguinte problema com restrições de igualdade
+Por conseguinte, se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, em particular, ele é solução do seguinte problema com restrições de igualdade
 \[ 
 \begin{aligned}
 \min_{x} & \quad f(x) \\
