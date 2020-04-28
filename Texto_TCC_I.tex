@@ -1752,29 +1752,23 @@ dizemos que $f$ é \emph{estritamente convexa}.
 	\includegraphics[width=\textwidth]{funcao_nao_convexa}
 	\caption{Função não convexa. \label{fig:funcao_nao_convexa}}
 \end{subfigure}
-\caption{Funções convexas e não-convexas \label{fig:exemplos_funcao_convexa}}
+\caption{Funções convexas e não-convexas. \label{fig:exemplos_funcao_convexa}}
 \end{figure}
 
 
 A noção geométrica da \Cref{defi:funcao_convexa} é apresentada na \Cref{fig:nocao_funcao_convexa}, em que qualquer arco do gráfico de uma função convexa está sempre abaixo do segmento que liga as extremidades.
 
-
-%criar minha própria imagem
 \begin{figure}[!h] 
 	\centering
 	\includegraphics[width=0.82\textwidth]{funcao_convexa}
 	\caption{ Noção geométrica de função convexa. \label{fig:nocao_funcao_convexa} \\ Fonte: \textcite{Evelin2017}}
 \end{figure}
 
-
-
 \begin{defi}
 Se $C \subset \RR^{n}$ é um conjunto convexo, dizemos que $f: C \rightarrow \RR $ é uma \emph{função côncava} em $C$, quando a função $(-f)$ é convexa em $C$.
 \end{defi}
 
-
 Assim, maximizar uma função côncava num conjunto convexo equivale a minimizar uma função convexa num conjunto convexo.
-
 
 O \Cref{teo:convexidade_e_minimizador} justifica o fato da convexidade ser uma propriedade tão importante em otimização.
 
@@ -1849,6 +1843,13 @@ Agora, multiplicando a primeira desigualdade por $(1-t)$ e a segunda por $t$, ob
 \end{align}
 Portanto, a função $f$ é convexa em $C$.
 \end{proof}
+
+O \Cref{teo:diferenciabilidade_e_convexidade} afirma que a aproximação linear baseada na derivada local subestima a função convexa. Este resultado é ilustrado na \Cref{fig:funcao_convexa_aproximacao_linear_derivada} a seguir. 
+\begin{figure}[!h] 
+	\centering
+	\includegraphics[width=0.55\textwidth]{funcao_convexa_aproximacao_linear_derivada}
+	\caption{Ilustração da \Cref{teo:diferenciabilidade_e_convexidade}. \label{fig:funcao_convexa_aproximacao_linear_derivada} \\ Fonte: \textcite{luenberger2008linear}}
+\end{figure}
 
 Para os resultados que vem a seguir vamos utilizar o \Cref{fato:Taylor_com_resto_lagrange}, que fornece a fórmula de Taylor com resto de Lagrange. Sua demonstração pode ser encontrada em \textcite[p.196]{Elon2019}.
 
