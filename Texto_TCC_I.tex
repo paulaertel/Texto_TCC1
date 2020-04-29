@@ -89,30 +89,30 @@ A aprendizagem supervisionada é composta por uma etapa denominada fase de trein
 
 As Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}), conforme mencionado por \textcite{Evelin2017}, são indicadas nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos, além de apresentar uma boa capacidade de generalização. Esta técnica pode ser aplicada tanto para problemas de regressão como de classificação. Tal técnica foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes, com base na Teoria de Aprendizagem Estatística. Algumas aplicações de SVM em problemas práticos são o reconhecimento facial, leitura de placas automotivas e detecção de spam.
 
-Agora, vamos formular matematicamente o problema de classificação utilizando as Máquinas de Vetores Suporte. Para tanto, considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig1}.
+Agora, vamos formular matematicamente o problema de classificação utilizando as Máquinas de Vetores Suporte. Para tanto, considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig:classificacao_dados}.
 
 
 \begin{figure}[!h] 
 \centering
 \begin{subfigure}[h]{0.3\textwidth}
 \centering
-\includegraphics[width=\textwidth]{SVM_linear}
-\caption{Linear. \label{fig1:a}}
+\includegraphics[width=\textwidth]{hiperplano_SVM_linear}
+\caption{Linear. \label{fig:classificacao_dados:hiperplano_SVM_linear}}
 \end{subfigure}
 \begin{subfigure}[!h]{0.3\textwidth}
 	\centering
-	\includegraphics[width=\textwidth]{SVM_flexivel}
-	\caption{Flexível. \label{fig1:b}}
+	\includegraphics[width=\textwidth]{hiperplano_SVM_flexivel}
+	\caption{Flexível. \label{fig:classificacao_dados:hiperplano_SVM_flexivel}}
 \end{subfigure}
 \begin{subfigure}[!h]{0.3\textwidth}
 	\centering
-	\includegraphics[width=\textwidth]{SVM_naolinear}
-	\caption{Não Linear. \label{fig1:c}}
+	\includegraphics[width=\textwidth]{hiperplano_SVM_nao_linear}
+	\caption{Não Linear. \label{fig:classificacao_dados:hiperplano_SVM_nao_linear}}
 \end{subfigure}
-\caption{Dados lineares, com margem flexível e não lineares. \label{fig1}\\ Fonte: \textcite{Evelin2017}}
+\caption{Dados lineares, com margem flexível e não lineares. \label{fig:classificacao_dados}}
 \end{figure}
 
-Observe que na \Cref{fig1:a} os dados podem ser classificados corretamente através de uma reta. Já na \Cref{fig1:b} é possível encontrar uma reta que separa alguns poucos dados, porém incorretamente. E na \Cref{fig1:c} não é possível classificar os dados como nos casos anteriores. Nestes exemplos temos representados os três casos de SVM: o linear com margem rígida, o linear com margem flexível e o não linear, respectivamente.
+Observe que na \Cref{fig:classificacao_dados:hiperplano_SVM_linear} os dados podem ser classificados corretamente através de uma reta. Já na \Cref{fig:classificacao_dados:hiperplano_SVM_flexivel} é possível encontrar uma reta que separa alguns poucos dados, porém incorretamente. E na \Cref{fig:classificacao_dados:hiperplano_SVM_nao_linear} não é possível classificar os dados como nos casos anteriores. Nestes exemplos temos representados os três casos de SVM: o linear com margem rígida, o linear com margem flexível e o não linear, respectivamente.
 
 A modelagem do problema de classificação, utilizando a técnica de SVM, consiste em encontrar um hiperplano ótimo que melhor separe os dados de entrada $x^i$ em duas saídas $y_i$ através de uma função de decisão. Matematicamente, mostraremos que trata-se um problema de programação quadrática convexa com restrições lineares, que pode ser formulado como
 \[
@@ -139,40 +139,38 @@ O hiperplano $\Hset(w,b)$ divide o espaço $\RR^n$ em dois semiespaços, dados p
 \]
 
 
-Considere dois conjuntos de dados de treinamento representados no $\RR^2$ como na \Cref{fig2:a}, em que os pontos em azul representam a classe positiva, e os pontos em vermelho a classe negativa. Perceba na \Cref{fig2:b} que todos os hiperplanos representados separam corretamente os dados, porém nosso objetivo será encontrar o hiperplano que melhor separa esses dados, o qual está representado na \Cref{fig3:a} pela cor violeta. Logo, desejamos encontrar o hiperplano que possibilita a maior faixa que não contém nenhum dado, pois caso a faixa seja muito estreita pequenas perturbações no hiperplano ou no conjunto de dados podem resultar uma classificação incorreta. 
+Considere dois conjuntos de dados de treinamento representados no $\RR^2$ como na \Cref{fig:dados_e_hiperplanos:dados_treinamento}, em que os pontos em azul representam a classe positiva, e os pontos em vermelho a classe negativa. Perceba na \Cref{fig:dados_e_hiperplanos:hiperplanos_separadores} que todos os hiperplanos representados separam corretamente os dados, porém nosso objetivo será encontrar o hiperplano que melhor separa esses dados, o qual está representado na \Cref{fig:dados_e_hiperplano_otimo:hiperplano_otimo} pela cor violeta. Logo, desejamos encontrar o hiperplano que possibilita a maior faixa que não contém nenhum dado, pois caso a faixa seja muito estreita pequenas perturbações no hiperplano ou no conjunto de dados podem resultar uma classificação incorreta. 
 \begin{figure}[htbp] 
 	\centering
-	\begin{subfigure}[h]{0.4\textwidth}
+	\begin{subfigure}[h]{0.38\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{dados_treinamento}
-		\caption{Dados de treinamento. \label{fig2:a}}
+		\caption{Dados de treinamento. \label{fig:dados_e_hiperplanos:dados_treinamento}}
 	\end{subfigure}
 	\begin{subfigure}[h]{0.38\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{hiperplanos_separadores}
-		\caption{Hiperplanos separadores. \label{fig2:b}}
+		\caption{Hiperplanos separadores. \label{fig:dados_e_hiperplanos:hiperplanos_separadores}}
 	\end{subfigure}
-\caption{Conjunto de Dados e Hiperplanos. \label{fig2}
-	\\ Fonte: \textcite{Evelin2017}}
+\caption{Conjunto de Dados e Hiperplanos. \label{fig:dados_e_hiperplanos}}
 \end{figure}
 \begin{figure}[hbtp] 
 	\centering
 	\begin{subfigure}[h]{0.38\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{hiperplano_otimo}
-		\caption{Hiperplano ótimo. \label{fig3:a}}
+		\caption{Hiperplano ótimo. \label{fig:dados_e_hiperplano_otimo:hiperplano_otimo}}
 	\end{subfigure}
-	\begin{subfigure}[h]{0.38\textwidth}
+	\begin{subfigure}[h]{0.40\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{maxima_margem}
-		\caption{Máxima margem. \label{fig3:b}}	
+		\includegraphics[width=\textwidth]{hiperplano_maxima_margem}
+		\caption{Máxima margem. \label{fig:dados_e_hiperplano_otimo:hiperplano_maxima_margem}}	
 	\end{subfigure}
-\caption{Hiperplano Ótimo. \label{fig3}
-\\ Fonte: \textcite{Evelin2017}}
+\caption{Hiperplano Ótimo. \label{fig:dados_e_hiperplano_otimo}}
 \end{figure}
 
 
-\begin{defi} \label{def1} Os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são ditos \emph{linearmente separáveis} quando existem $w\in \RR^n$ e $b\in \RR$  tais que $w^{T}x+b>0$ para todo $x\in \Xset^{+}$ e $w^{T}x+b<0$ para todo $x\in \Xset^{-}$. O hiperplano $\Hset(w,b)$ é chamado hiperplano separador dos conjuntos $\Xset^{+}$ e $\Xset^{-}$.
+\begin{defi} \label{def:dados_linearmente_separaveis} Os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são ditos \emph{linearmente separáveis} quando existem $w\in \RR^n$ e $b\in \RR$  tais que $w^{T}x+b>0$ para todo $x\in \Xset^{+}$ e $w^{T}x+b<0$ para todo $x\in \Xset^{-}$. O hiperplano $\Hset(w,b)$ é chamado hiperplano separador dos conjuntos $\Xset^{+}$ e $\Xset^{-}$.
 \end{defi}
 
 
@@ -189,7 +187,7 @@ satisfazendo
 \end{lema} 
 
 \begin{proof}
-Pela  \Cref{def1}, temos que existem $w\in \RR^n$ e $b\in \RR$ tais que
+Pela  \Cref{def:dados_linearmente_separaveis}, temos que existem $w\in \RR^n$ e $b\in \RR$ tais que
 \begin{align}
 w^{T}x+b &>0, \text{ para todo } x\in \Xset^{+}, \\
 w^{T}x+b &<0, \text{ para todo } x\in \Xset^{-}.
@@ -349,17 +347,17 @@ Situações reais dificilmente envolvem problemas cujos dados são linearmente s
 
 \begin{figure}[htbp] 
 	\centering
-	\begin{subfigure}[h]{0.32\textwidth}
+	\begin{subfigure}[h]{0.30\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{dados_linearmenteseparaveismmll}
+		\includegraphics[width=\textwidth]{dados_linearmente_separaveis}
 		\caption{Dados linearmente separáveis. \label{fig:dados_linearmente_separaveis_e_nao_separaveis:a}}
 	\end{subfigure}
-	\begin{subfigure}[h]{0.31\textwidth}
+	\begin{subfigure}[h]{0.30\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{dados_nlinearmenteseparaveismml}
-		\caption{Dados não linearmente separáveis. \label{fig:dados_linearmente_separaveis_e_nao_separaveis:b}}
+		\includegraphics[width=\textwidth]{dados_nao_linearmente_separaveis}
+		\caption{Dados não-linearmente separáveis. \label{fig:dados_linearmente_separaveis_e_nao_separaveis:b}}
 	\end{subfigure}
-\caption{Conjunto de dados. \label{fig:dados_linearmente_separaveis_e_nao_separaveis} \\ Fonte: \textcite{Faisal2019} }
+\caption{Conjunto de dados. \label{fig:dados_linearmente_separaveis_e_nao_separaveis} }
 \end{figure}
 
 
@@ -398,8 +396,8 @@ Desse modo, para obter um bom classificador não basta apenas maximizar a margem
 
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.40\textwidth]{restricoes_maximizacaomargem}
-	\caption{Exemplo de hiperplano que não classifica os dados. \label{fig:hiperplano_nao_classificador} \\ Fonte: \textcite{Evelin2017}}
+	\includegraphics[width=0.38\textwidth]{hiperplano_nao_classifica_dados}
+	\caption{Exemplo de hiperplano que não classifica os dados. \label{fig:hiperplano_nao_classificador}}
 \end{figure}
  
 
@@ -466,8 +464,8 @@ Quando as desigualdades na \Cref{defi:minimizador_local_global} forem estritas p
 
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.80\textwidth]{minimo_local_global_grafico}
-	\caption{ Mínimo local e mínimo global em uma dimensão. \\ Fonte: \textcite{Bertsekas:1999ua} \label{fig:grafico_minimo_local_global}}
+	\includegraphics[width=0.86\textwidth]{grafico_minimo_local_global}
+	\caption{ Mínimo local e mínimo global em uma dimensão. \label{fig:grafico_minimo_local_global}}
 \end{figure}
 
 Pela \Cref{defi:minimizador_local_global}, todo minimizador global é também minimizador local, porém a recíproca não é verdadeira. É interessante salientar que em muitas circunstâncias iremos nos contentar com um ponto de mínimo local pois, de modo geral, condições globais e soluções globais só podem ser encontradas se o problema possuir certas propriedades que garantem, essencialmente, que qualquer mínimo local é global. Uma destas propriedades é a convexidade, a qual abordaremos mais adiante (veja \Cref{chap:otimizacao_convexa}).
@@ -773,8 +771,8 @@ Para tanto, associado a $\Omega$ temos o conjunto de soluções do sistema homog
 
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.70\textwidth]{nucleoA_paralelo_S}
-	\caption{Fonte: \textcite{Ana1994} \label{fig:nucleoA_paralelo_S}}
+	\includegraphics[width=0.60\textwidth]{nucleoA_paralelo_S}
+	\caption{ Núcleo de uma matriz. \\ Fonte: \textcite{Ana1994} \label{fig:nucleoA_paralelo_S}}
 \end{figure}
 
 
@@ -1041,21 +1039,30 @@ Vamos considerar agora problemas da forma
 \]
 em que $x \in \RR^{n}$ e $A \in \RR^{m\times n}$. Como na seção anterior, estamos interessados nesse primeiro momento em analisar a região de factibilidade e determinar as direções factíveis, que são aquelas em que há espaço para se movimentar dentro da região $\Omega$. 
 
-Denotando cada linha da matriz $A$ da forma $a_{i}^{T} = (a_{i1} , a_{i2} , \ldots , a_{in})$, podemos caracterizar o conjunto factível da seguinte forma
+Denotando cada linha da matriz $A$ da forma $a_{i\cdot}^{T} = (a_{i1} , a_{i2} , \ldots , a_{in})$, podemos caracterizar o conjunto factível da seguinte forma
 \[
-\Omega = \{ x\in \RR^{n} \mid a_{i}^{T}x \leq b_{i} \ \text{para todo} \ i \in \{ 1,2, \ldots , m \} \} .
+\Omega = \{ x\in \RR^{n} \mid a_{i\cdot}^{T}x \leq b_{i} \ \text{para todo} \ i \in \{ 1,2, \ldots , m \} \} .
 \]
 
-Desse modo, cada uma das $m$ desigualdades $a_{i}^{T}x \leq b_{i}$ define em $\RR^{n}$ um semiespaço. O hiperplano divisor é $a_{i}^{T}x = b_{i}$ e o semiespaço definido é aquele que está do lado contrário à direção apontada pelo vetor $a_{i}$. Assim, a região $\Omega$ consiste na instersecção dos $m$ semiespaços. Em alguns casos, como representado na \Cref{fig:regiao_factivel_poliedro}, $\Omega$ é um poliedro em $\RR^{n}$.
+Desse modo, cada uma das $m$ desigualdades $a_{i\cdot}^{T}x \leq b_{i}$ define em $\RR^{n}$ um semiespaço. O hiperplano divisor é $a_{i\cdot}^{T}x = b_{i}$ e o semiespaço definido é aquele que está do lado contrário à direção apontada pelo vetor $a_{i}$. Assim, a região $\Omega$ consiste na instersecção dos $m$ semiespaços. Em alguns casos, como representado na \Cref{fig:regiao_factivel_poliedro}, $\Omega$ é um conjunto \emph{poliedral} em $\RR^{n}$.
 
 
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.45\textwidth]{regiao_factivel_poliedro}
-	\caption{Região de factibilidade. \\ Fonte: \textcite{Ana1994} \label{fig:regiao_factivel_poliedro}}
+	\includegraphics[width=0.45\textwidth]{conjunto_factivel_poliedral}
+	\caption{Conjunto factível poliedral. \\ Fonte: \textcite{Ana1994} \label{fig:regiao_factivel_poliedro}}
 \end{figure}
 
-Um conceito fundamental para formular as condições de otimalidade e que fornece uma grande quantidade de informações é o de \emph{restrição ativa}.
+\begin{defi} \label{defi:conjunto_poliedral}
+Dizemos que um conjunto é \emph{poliedral} quando ele pode ser representado como o conjunto de soluções de um sistema finito de equações e inequações lineares. Por exemplo:
+\[
+D = \{ x\in \RR^{n} \mid Ax=b, \ Wx \leq c \} ,
+\] 
+em que $A\in \RR^{m\times n}$, $W\in \RR^{p\times n}$, $b\in \RR^{m}$ e $c\in \RR^{p}$. Neste contexto, dizemos que $h:\RR^{n} \rightarrow \RR^{m}$, $h(x) = Ax-b$, é uma \emph{função afim}. Assim como $g:\RR^{n} \rightarrow \RR^{p}$, dada por $g(x)=Wx-c$.
+\end{defi}
+
+
+Por conseguinte, um conceito fundamental para formular as condições de otimalidade e que fornece uma grande quantidade de informações é o de \emph{restrição ativa}.
 
 \begin{defi}
 Dado $\xbar \in \Omega$, dizemos que a restrição de desigualdade $a_{i}^{T}\bar{x} \leq b_{i}$ que corresponde ao índice $i\in \{ 1,2, \ldots , m\}$ é \emph{ativa} no ponto $\xbar$ quando $a_{i}^{T}\bar{x} = b_{i}$. Caso $a_{i}^{T}\bar{x} < b_{i}$ dizemos que a restrição é \emph{inativa} em $\xbar$. 
@@ -1069,15 +1076,16 @@ O conjunto dos índices das restrições de desigualdade ativas no ponto $\xbar 
 Por convenção, qualquer restrição de igualdade é considerada ativa em todo ponto factível.
 \end{obs}
 
-O conjunto das direções factíveis a partir de $x$ depende das restrições ativas nesse ponto, pois são elas que restringem o domínio de factibilidade na vizinhança de $x$, enquanto que as restrições inativas não possuem influência na vizinhança de $x$. Um exemplo é representado na \Cref{fig:restricoes_inativas}, em que é possível perceber que a solução $x^{*}$ não depende das restrições inativas $g_{2}, g_{3}$.
+A cada $x\in \Omega$ podemos associar um número $r(x)$, com $0\leq r(x) \leq m$, que representa a quantidade de restrições ativas em $x$. Assim, na \Cref{fig:restricoes_ativas} temos que $r(x^{1}) = 1$, $r(x^{2}) = 2$, $r(x^{3}) = 1$, $r(x^{4}) = 0$ e $r(x^{5}) = 2$.
 
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.45\textwidth]{restricoes_inativas}
-	\caption{Restrições ativas e inativas. \\ Fonte: \textcite{luenberger2008linear} \label{fig:restricoes_inativas}}
+	\includegraphics[width=0.45\textwidth]{restricoes_ativas}
+	\caption{Restrições ativas e inativas. \label{fig:restricoes_ativas}}
 \end{figure}
 
-Ademais, a cada $x\in \Omega$ podemos associar um número $r(x)$, com $0\leq r(x) \leq m$, que representa a quantidade de restrições ativas em $x$. O \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos fornece uma caracterização das direções factíveis em $x$.
+Ademais, o conjunto das direções factíveis a partir de $x$ depende das restrições ativas nesse ponto, pois são elas que restringem o domínio de factibilidade na vizinhança de $x$, enquanto que as restrições inativas não possuem influência na vizinhança de $x$.
+O \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos fornece uma caracterização das direções factíveis em $x$.
 
 \begin{teo} \label{teo:direcoes_factiveis_restricao_desigualdade}
 Considere $x\in \Omega$ tal que $r(x) = p$ com $0<p \leq m$. Um vetor $d \in \RR^{n}$ é uma direção factível em $x$ se, e somente se, $a_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$.
@@ -1103,10 +1111,10 @@ Por outro lado, se $i \notin \mathcal{I}(x)$, temos que $a_{i}^{T} x < b_{i}$. N
 	a_{i}^{T}x + \alpha a_{i}^{T}d = b_{i} ,
 	\]
 	e resolvendo para $\alpha$,
-	\[
+	\[ \label{eq:1_teo_direcoes_factiveis_restricao_desigualdade}
 	\alpha = \dfrac{b_{i} - a_{i}^{T}x}{a_{i}^{T}d}.
 	\]
-	Então, para $\alpha$ satisfazer todas as restrições $i \in \mathcal{M}-\mathcal{I}(x)$, é preciso tomar o mínimo. Assim, se definimos
+	Então, para $\alpha$ satisfazer todas as restrições $i \in \mathcal{M}-\mathcal{I}(x)$, é preciso tomar o mínimo de \eqref{eq:1_teo_direcoes_factiveis_restricao_desigualdade}. Assim, se definimos
 	\[
 	\tilde{\alpha} = \min_{i \in \mathcal{M}-\mathcal{I}(x) } \left( \dfrac{b_{i} - a_{i}^{T}x}{a_{i}^{T}d} \right) ,
 	\]
@@ -1115,7 +1123,7 @@ Por outro lado, se $i \notin \mathcal{I}(x)$, temos que $a_{i}^{T} x < b_{i}$. N
 Portanto, $d$ será uma direção factível em $x$.
 \end{proof}
 
-Ademais, interessados em saber quanto podemos andar sobre uma direção factível $d$ a partir de $x \in \Omega$, precisamos determinar o maior valor de $\alpha$ tal que $a_{i}^{T}(x + \alpha d) \leq b_{i}$, para todo $i\in \mathcal{M}$, o que equivale a determinar o menor valor de $\alpha$ para o qual $a_{i}^{T}(x+\alpha d) = b_{i}$, para algum $i\in \mathcal{M}$. Este valor é dado na demonstração do \Cref{teo:direcoes_factiveis_restricao_desigualdade}, em que se $i$ é tal que $a_{i}^{T}d \leq 0$, $\alpha$ pode ser arbitrariamente grande. E no caso em que $i$ é tal que $a_{i}^{T}d >0$, o valor procurado é
+Além disso, interessados em saber quanto podemos andar sobre uma direção factível $d$ a partir de $x \in \Omega$, precisamos determinar o maior valor de $\alpha$ tal que $a_{i}^{T}(x + \alpha d) \leq b_{i}$, para todo $i\in \mathcal{M}$, o que equivale a determinar o menor valor de $\alpha$ para o qual $a_{i}^{T}(x+\alpha d) = b_{i}$, para algum $i\in \mathcal{M}$. Este valor é dado na demonstração do \Cref{teo:direcoes_factiveis_restricao_desigualdade}, em que se $i$ é tal que $a_{i}^{T}d \leq 0$, $\alpha$ pode ser arbitrariamente grande. E no caso em que $i$ é tal que $a_{i}^{T}d >0$, o valor procurado é
 \[
 \tilde{\alpha} = \min_{i \in \mathcal{M}-\mathcal{I}(x) } \left( \dfrac{b_{i} - a_{i}^{T}x}{a_{i}^{T}d} \right) .
 \]
@@ -1123,9 +1131,7 @@ Ademais, interessados em saber quanto podemos andar sobre uma direção factíve
 
 \subsubsection{Condições Necessárias de Primeira Ordem}
 
-
-Desenvolver a noção de direções factíveis para avaliar a estrutura do conjunto factível na vizinhança de uma solução é fundamental para determinar as condições de otimalidade no caso de problemas com restrições de desigualdade. Tendo feito isso, é necessário agora definir o conceito de direção de descida.
-
+No intuito de determinar as condições de otimalidade no caso de problemas com restrições de desigualdade, acabamos de desenvolver a noção de direções factíveis para avaliar a estrutura do conjunto factível na vizinhança de uma solução. Agora, é necessário definir o conceito de direção de descida.
 
 \begin{defi} \label{defi:direcao_de_descida}
 Dizemos que $d\in \RR^{n}$ é uma \emph{direção de descida} de $f:\RR^{n} \rightarrow \RR$ no ponto $\xbar \in \RR^{n}$, se existe $\varepsilon >0$ tal que
@@ -1241,12 +1247,12 @@ implicando em
 \[ \label{eq:2_condicao_necessaria_1ordem_restricao_desigualdade}
 \nabla f(x^{*})^{T}d = -d^{T}d = -\Vert d \Vert^{2} <0,
 \]
-e portanto, $d$ é uma direção de descida. Veja \Cref{fig:projecao_sobre_nucleo_teo_condicao_1ordem_desigualdade}.
+e portanto, $d$ é uma direção de descida. Veja \Cref{fig:projecao_gradiente_sobre_nucleoA}.
 
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.60\textwidth]{projecao_sobre_nucleo_teo_condicao_1ordem_desigualdade}
-	\caption{Fonte: \textcite{Ana1994} \label{fig:projecao_sobre_nucleo_teo_condicao_1ordem_desigualdade}}
+	\includegraphics[width=0.55\textwidth]{projecao_gradiente_sobre_nucleoA}
+	\caption{Projeção de $-\nabla f(x)$ sobre o $\mathcal{N}(\tilde{A_{\mathcal{I}}})$. \\ Fonte: \textcite{Ana1994}. \label{fig:projecao_gradiente_sobre_nucleoA}}
 \end{figure}
 Ademais, vejamos que $d$ também é uma direção factível. Com efeito,
 \[
@@ -1260,7 +1266,7 @@ Então,
 \[
 \nabla f(x^{*})^{T}d = \lambda_{j} a_{i_{j}}^{T} d.
 \]
-Usando \eqref{eq:2_condicao_necessaria_1ordem_restricao_desigualdade} e como $\lambda_{j} >0$, obtemos
+Usando \eqref{eq:2_condicao_necessaria_1ordem_restricao_desigualdade} e o fato de $\lambda_{j} >0$, obtemos
 \[
 a_{i_{j}}^{T} d <0.
 \]
@@ -1284,13 +1290,13 @@ Sejam $f \in \mathcal{C}^{2}$, $x^{*}$ um minimizador local do problema \eqref{p
 \end{enumerate}
 \end{teo}
 \begin{proof}
-Perceba que se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então pelo \Cref{teo:condicao_necessaria_1ordem_restricao_desigualdade} existe $\boldsymbol{\lambda} \in \RR^{r(x^{*})}$ tal que 
+Perceba que se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então pelo \Cref{teo:condicao_necessaria_1ordem_restricao_desigualdade}, existe $\boldsymbol{\lambda} \in \RR^{r(x^{*})}$ tal que 
 \[
-\nabla f(x^{*}) = A_{\mathcal{I}}^{T} \boldsymbol{\lambda} \ \text{e} \ \lambda_{i} \leq 0
+\nabla f(x^{*}) = A_{\mathcal{I}}^{T} \boldsymbol{\lambda} \ \text{e} \ \lambda_{i} \leq 0,
 \] 
 para todo $i \in \mathcal{I}(x^{*})$.
 
-Por conseguinte, se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, em particular ele é solução do seguinte problema com restrições de igualdade
+Por conseguinte, se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, em particular, ele é solução do seguinte problema com restrições de igualdade
 \[ 
 \begin{aligned}
 \min_{x} & \quad f(x) \\
@@ -1509,14 +1515,14 @@ Neste capítulo o objetivo principal é apresentar alguns resultados e definiç�
 Um \emph{conjunto} $C \subset \RR^{n}$ é dito \emph{convexo} quando dados $x,y \in C$, o segmento $[x,y] = \{ (1-t)x + ty \mid t\in [0,1] \}$ estiver inteiramente contido em $C$.
 \end{defi}
 
-Esta definição pode ser interpretada geometricamente afirmando que um conjunto é convexo se, dados dois pontos no conjunto, cada ponto no segmento de linha que une esses dois pontos também for um membro do conjunto. A \Cref{fig:conjuntos_convexos} ilustra a noção de convexidade de conjuntos.
+Esta definição pode ser interpretada geometricamente afirmando que um conjunto é convexo se, dados dois pontos no conjunto, cada ponto no segmento de linha que une esses dois pontos também for um membro do conjunto. A \Cref{fig:conjuntos_convexos} ilustra a noção de convexidade de conjuntos, em que o conjunto $C_{1}$ representa um conjunto convexo e o conjunto $C_{2}$ não é convexo.
 
 
 %criar minha própria figura
 \begin{figure}[!h] 
 	\centering
-	\includegraphics[width=0.60\textwidth]{convexidade}
-	\caption{ Conjunto convexo e não convexo. \label{fig:conjuntos_convexos} \\ Fonte: \textcite{Luenberger:2016}}
+	\includegraphics[width=0.60\textwidth]{conjuntos_convexo_naoconvexo}
+	\caption{ Conjunto convexo e não-convexo. \label{fig:conjuntos_convexos}}
 \end{figure}
 
 
@@ -1736,44 +1742,33 @@ dizemos que $f$ é \emph{estritamente convexa}.
 
 \begin{figure}[!h] 
 \centering
-\begin{subfigure}[h]{0.45\textwidth}
+\begin{subfigure}[h]{0.42\textwidth}
 \centering
-\includegraphics[width=\textwidth]{convex_function1}
+\includegraphics[width=\textwidth]{funcao_convexa_1}
 \caption{Função Convexa \label{fig:funcao_convexa}}
 \end{subfigure}
-\begin{subfigure}[!h]{0.43\textwidth}
+\begin{subfigure}[!h]{0.40\textwidth}
 	\centering
-	\includegraphics[width=\textwidth]{convex_function2}
-	\caption{Função estritamente convexa. \label{fig:funcao_estritamente_convexa}}
-\end{subfigure}
-\begin{subfigure}[!h]{0.4\textwidth}
-	\centering
-	\includegraphics[width=\textwidth]{no_convex_function}
+	\includegraphics[width=\textwidth]{funcao_nao_convexa}
 	\caption{Função não convexa. \label{fig:funcao_nao_convexa}}
 \end{subfigure}
-\caption{Funções convexas e não convexas \label{fig:exemplos_funcao_convexa}\\ Fonte: \textcite{Luenberger:2016}}
+\caption{Funções convexas e não-convexas. \label{fig:exemplos_funcao_convexa}}
 \end{figure}
 
 
 A noção geométrica da \Cref{defi:funcao_convexa} é apresentada na \Cref{fig:nocao_funcao_convexa}, em que qualquer arco do gráfico de uma função convexa está sempre abaixo do segmento que liga as extremidades.
 
-
-%criar minha própria imagem
 \begin{figure}[!h] 
 	\centering
 	\includegraphics[width=0.82\textwidth]{funcao_convexa}
 	\caption{ Noção geométrica de função convexa. \label{fig:nocao_funcao_convexa} \\ Fonte: \textcite{Evelin2017}}
 \end{figure}
 
-
-
 \begin{defi}
 Se $C \subset \RR^{n}$ é um conjunto convexo, dizemos que $f: C \rightarrow \RR $ é uma \emph{função côncava} em $C$, quando a função $(-f)$ é convexa em $C$.
 \end{defi}
 
-
 Assim, maximizar uma função côncava num conjunto convexo equivale a minimizar uma função convexa num conjunto convexo.
-
 
 O \Cref{teo:convexidade_e_minimizador} justifica o fato da convexidade ser uma propriedade tão importante em otimização.
 
@@ -1849,6 +1844,13 @@ Agora, multiplicando a primeira desigualdade por $(1-t)$ e a segunda por $t$, ob
 \end{align}
 Portanto, a função $f$ é convexa em $C$.
 \end{proof}
+
+O \Cref{teo:diferenciabilidade_e_convexidade} afirma que a aproximação linear baseada na derivada local subestima a função convexa. Este resultado é ilustrado na \Cref{fig:funcao_convexa_aproximacao_linear_derivada} a seguir. 
+\begin{figure}[!h] 
+	\centering
+	\includegraphics[width=0.55\textwidth]{funcao_convexa_aproximacao_linear_derivada}
+	\caption{Ilustração da \Cref{teo:diferenciabilidade_e_convexidade}. \label{fig:funcao_convexa_aproximacao_linear_derivada} \\ Fonte: \textcite{luenberger2008linear}}
+\end{figure}
 
 Para os resultados que vem a seguir vamos utilizar o \Cref{fato:Taylor_com_resto_lagrange}, que fornece a fórmula de Taylor com resto de Lagrange. Sua demonstração pode ser encontrada em \textcite[p.196]{Elon2019}.
 
