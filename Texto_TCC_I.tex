@@ -379,7 +379,7 @@ com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_
 
 \subsection{Formulação Matemática do Problema de Classificação - Margem Flexível (CSVM)}
 
-Situações reais dificilmente envolvem problemas cujos dados são linearmente separáveis. Em vista disso, faz-se necessário estender os conceitos e resultados estudados nas SVMs lineares de margem rígida para o caso de SVM com margem flexível, quando os dados não são linearmente separáveis. Para tanto, considere um conjunto de dados não-linearmente sepavável como da \Cref{fig:dados_linearmente_separaveis_e_nao_separaveis:b}, isto é, não existe um hiperplano separador. 
+Situações reais dificilmente envolvem problemas cujos dados são linearmente separáveis. Em vista disso, faz-se necessário estender os conceitos e resultados estudados nas SVMs lineares de margem rígida para o caso de SVM com margem flexível, quando os dados não são linearmente separáveis. Para tanto, considere um conjunto de dados não-linearmente separável como da \Cref{fig:dados_linearmente_separaveis_e_nao_separaveis:b}, isto é, não existe um hiperplano separador. 
 
 
 \begin{figure}[htbp] 
@@ -564,7 +564,7 @@ Pela definição de ínfimo, temos que para todo $k\in \mathds{N}$ existe $x^{k}
 \[
 \bar{v} \leq f(x^{k}) \leq \bar{v} + \dfrac{1}{k} .
 \]
-Passando ao limite quando $k \rightarrow \infty $, e usando o Teorema do Sanduíche conluímos que
+Passando ao limite quando $k \rightarrow \infty $, e usando o Teorema do Sanduíche concluímos que
 \[\label{eq:teo_weierstrass}
 \lim_{k \rightarrow \infty} f(x^{k}) = \bar{v}.
 \]
@@ -639,7 +639,7 @@ Passando o limite quando $t\rightarrow 0$, obtemos
 \[
 0 \leq \nabla f(x^{*})^{T}d .
 \]
-Supondo que $\nabla f(x^{*})$ não fosse nulo, como $d \in \RR^{n}$ é arbitrário, poderíamos escolher $d=-\nabla f(x^{*})$, resultando em
+Supondo que $\nabla f(x^{*})$ fosse não-nulo, como $d \in \RR^{n}$ é arbitrário, poderíamos escolher $d=-\nabla f(x^{*})$, resultando em
 \[
 0 \leq \nabla f(x^{*})^{T}d = - \Vert \nabla f(x^{*}) \Vert^{2} ,
 \]
@@ -1078,11 +1078,21 @@ em que $x \in \RR^{n}$ e $W \in \RR^{m\times n}$. Como na seção anterior, esta
 
 Denotando cada linha da matriz $W$ da forma $w_{i}^{T} = (w_{i1} , w_{i2} , \ldots , w_{in})$, podemos caracterizar o conjunto factível da seguinte forma
 \[
-\Omega = \{ x\in \RR^{n} \mid w_{i}^{T}x \leq c_{i} \ \text{para todo} \ i \in \{ 1,2, \ldots , m \} \} .
+\Omega = \{ x\in \RR^{n} \mid w_{i}^{T}x \leq c_{i} \ \text{para todo} \ i = 1,2, \ldots , m \} .
 \]
 
-Desse modo, cada uma das $m$ desigualdades $w_{i}^{T}x \leq c_{i}$ define em $\RR^{n}$ um semiespaço. O hiperplano divisor é $w_{i}^{T}x = c_{i}$ e o semiespaço definido é aquele que está do lado contrário à direção apontada pelo vetor $w_{i}$. Assim, a região $\Omega$ consiste na instersecção dos $m$ semiespaços. Em alguns casos, como representado na \Cref{fig:regiao_factivel_poliedro}, $\Omega$ é um conjunto \emph{poliedral} em $\RR^{n}$.
+Cada uma das $m$ desigualdades $w_{i}^{T}x \leq c_{i}$ define em $\RR^{n}$ um \emph{semiespaço}. O hiperplano divisor é dado por $\Hset (w_{i}, c_{i}) = \{ x \mid w_{i}^{T}x = c_{i} \}$ e o semiespaço definido é aquele que está do lado contrário à direção apontada pelo vetor $w_{i}$. Desta forma, a região $\Omega$ consiste na intersecção dos $m$ semiespaços. Este tipo de conjunto de $\RR^{n}$ é chamado \emph{poliedro} ou conjunto \emph{poliedral}. Vamos definir formalmente este conceito.
 
+
+\begin{defi} \label{defi:conjunto_poliedral}
+Um \emph{poliedro} ou um conjunto \emph{poliedral} $\mathcal{P} \subset \RR^{n}$ é definido como o conjunto de soluções de um sistema finito de equações e inequações lineares:
+\[
+\mathcal{P} = \{ x\in \RR^{n} \mid Ax=b, \ Wx \leq c \} ,
+\] 
+em que $A\in \RR^{m\times n}$, $W\in \RR^{p\times n}$, $b\in \RR^{m}$ e $c\in \RR^{p}$. Neste contexto, dizemos que $h:\RR^{n} \rightarrow \RR^{m}$, dada por $h(x) = Ax-b$, e $g:\RR^{n} \rightarrow \RR^{p}$, dada por $g(x)=Wx-c$, são funções \emph{afim}.
+\end{defi}
+
+A \Cref{fig:regiao_factivel_poliedro} representa um poliedro em $\RR^{2}$.
 
 \begin{figure}[!ht] 
 	\centering
@@ -1090,28 +1100,18 @@ Desse modo, cada uma das $m$ desigualdades $w_{i}^{T}x \leq c_{i}$ define em $\R
 	\caption{Conjunto factível poliedral. \\ Fonte: \textcite{Ana1994} \label{fig:regiao_factivel_poliedro}}
 \end{figure}
 
-\begin{defi} \label{defi:conjunto_poliedral}
-Dizemos que um conjunto é \emph{poliedral} quando ele pode ser representado como o conjunto de soluções de um sistema finito de equações e inequações lineares. Por exemplo:
-\[
-D = \{ x\in \RR^{n} \mid Ax=b, \ Wx \leq c \} ,
-\] 
-em que $A\in \RR^{m\times n}$, $W\in \RR^{p\times n}$, $b\in \RR^{m}$ e $c\in \RR^{p}$. Neste contexto, dizemos que $h:\RR^{n} \rightarrow \RR^{m}$, $h(x) = Ax-b$, é uma \emph{função afim}. Assim como $g:\RR^{n} \rightarrow \RR^{p}$, dada por $g(x)=Wx-c$.
-\end{defi}
-
-
-Por conseguinte, um conceito fundamental para formular as condições de otimalidade e que fornece uma grande quantidade de informações é o de \emph{restrição ativa}.
+Um conceito fundamental para formular as condições de otimalidade para o problema \eqref{problema_geral_minimizacao_desigualdade} e que fornece uma grande quantidade de informações é o de \emph{restrição ativa}. Portanto, consideramos, no que segue, que $\Omega$ é o conjunto factível deste problema.
 
 \begin{defi}
-Dado $\xbar \in \Omega$, dizemos que a restrição de desigualdade $w_{i}^{T}\bar{x} \leq c_{i}$ que corresponde ao índice $i\in \{ 1,2, \ldots , m\}$ é \emph{ativa} no ponto $\xbar$ quando $w_{i}^{T}\bar{x} = c_{i}$. Caso $w_{i}^{T}\bar{x} < c_{i}$ dizemos que a restrição é \emph{inativa} em $\xbar$. 
-\end{defi} 
-O conjunto dos índices das restrições de desigualdade ativas no ponto $\xbar \in \Omega$ é denotado por
+Dado $\xbar \in \Omega$, dizemos que a restrição de desigualdade $w_{i}^{T}\bar{x} \leq c_{i}$ que corresponde ao índice $i\in \{ 1,2, \ldots , m\}$ é \emph{ativa} no ponto $\xbar$ quando $w_{i}^{T}\bar{x} = c_{i}$. Caso $w_{i}^{T}\bar{x} < c_{i}$ dizemos que a restrição é \emph{inativa} em $\xbar$. O conjunto dos índices das restrições de desigualdade ativas no ponto $\xbar \in \Omega$ é denotado por
 \[
 \mathcal{I} (\xbar) = \{ i = 1,2, \ldots , m \mid w_{i}^{T}\bar{x} = c_{i} \} .
 \]
+\end{defi} 
 
-\begin{obs}
-Por convenção, qualquer restrição de igualdade é considerada ativa em todo ponto factível.
-\end{obs}
+%\begin{obs}
+%Por convenção, qualquer restrição de igualdade é considerada ativa em todo ponto factível.
+%\end{obs}
 
 A cada $x\in \Omega$ podemos associar um número $r(x)$, com $0\leq r(x) \leq m$, que representa a quantidade de restrições ativas em $x$. Assim, na \Cref{fig:restricoes_ativas} temos que $r(x^{1}) = 1$, $r(x^{2}) = 2$, $r(x^{3}) = 1$, $r(x^{4}) = 0$ e $r(x^{5}) = 2$.
 
@@ -1125,45 +1125,42 @@ Ademais, o conjunto das direções factíveis a partir de $x$ depende das restri
 O \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos fornece uma caracterização das direções factíveis em $x$.
 
 \begin{teo} \label{teo:direcoes_factiveis_restricao_desigualdade}
-Considere $x\in \Omega$ tal que $r(x) = p$ com $0<p \leq m$. Um vetor $d \in \RR^{n}$ é uma direção factível em $x$ se, e somente se, $w_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$.
+Considere $x\in \Omega$ tal que $r(x) = p$ com $0<p \leq m$. Um vetor $d \in \RR^{n}$ é uma direção factível a partir de $x$ se, e somente se, $w_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$.
 \end{teo}
 \begin{proof}
-Seja $\alpha >0$ e suponhamos que $d\in \RR^{n}$ é uma direção factível em $x$. Então, $x+\alpha d \in \Omega$, o que ocorre se, e somente se, $W(x+\alpha d) \leq c$, ou seja, $w_{i}^{T}(x+\alpha d) \leq c_{i}$, para todo $i \in \mathcal{M} \coloneqq \{ 1,2, \ldots ,m \}$. 
+Suponhamos que $d\in \RR^{n}$ é uma direção factível em $x$. Então existe $\bar{\alpha} >0$ tal que $x+\alpha d \in \Omega$ para todo $\alpha \in (0, \tilde{\alpha} ]$, o que ocorre se, e somente se, $W(x+\alpha d) \leq c$, ou seja, $w_{i}^{T}(x+\alpha d) \leq c_{i}$, para todo $i \in \mathcal{M} \coloneqq \{ 1,2, \ldots ,m \}$. 
 Em particular, se $i\in \mathcal{I} (x)$ temos que
 \[
 w_{i}^{T}(x+\alpha d) = c_{i} + \alpha w_{i}^{T}d \leq c_{i},
 \]
-e consequentemente, devemos ter
+e consequentemente, temos
 \[
 w_{i}^{T}d \leq 0.
 \]
 
-Reciprocamente, suponhamos que $w_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$. Assim, se $i \in \mathcal{I} (x)$, temos que $w_{i}^{T} x = c_{i}$, implicando que $w_{i}^{T}(x+\alpha d) \leq c_{i}$.
+Reciprocamente, seja $d\in \RR^{n}$ e suponhamos que $w_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$. Assim, se $i \in \mathcal{I} (x)$, temos que $w_{i}^{T} x = c_{i}$, implicando que, para qualquer $\alpha >0$, $w_{i}^{T}(x+\alpha d) \leq c_{i}$.
 Por outro lado, se $i \notin \mathcal{I}(x)$, temos que $w_{i}^{T} x < c_{i}$. Neste caso, é preciso analisar duas situações:
 \begin{enumerate}
-	\item[(i)] Se $w_{i}^{T}d \leq 0$, então $w_{i}^{T}(x + \alpha d) \leq c_{i}$;
+	\item[(i)] Se $w_{i}^{T}d \leq 0$, então $w_{i}^{T}(x + \alpha d) \leq c_{i}$, para qualquer $\alpha >0$             ;
 
-	\item[(ii)]Se $w_{i}^{T}d >0$ podemos calcular o valor de $\alpha$ de modo que $w_{i}^{T}(x+\alpha d) = c_{i}$. Desse modo, temos que
+	\item[(ii)]Se $w_{i}^{T}d >0$ podemos encontrar $\alpha_{i} >0$ de modo que $w_{i}^{T}x + w_{i}^{T}(\alpha d) = c_{i}$. Considere que como $w_{i}^{T}x < c_{i}$ existe $\beta >0$, tal que $w_{i}^{T}x + \beta_{i} = c_{i}$. Desse modo, temos que escolher $\alpha_{i}$ tal que $\beta_{i} = \alpha_{i} w_{i}^{T} d$, isto é,
 	\[
-	w_{i}^{T}x + \alpha w_{i}^{T}d = c_{i} ,
+	w_{i}^{T}x + \alpha_{i} w_{i}^{T}d = c_{i} ,
 	\]
-	e resolvendo para $\alpha$,
+	para todo $i \notin \mathcal{I}(x)$. Podemos fazer isso resolvendo a equação anterior para $\alpha_{i}$, encontrando
 	\[ \label{eq:1_teo_direcoes_factiveis_restricao_desigualdade}
-	\alpha = \dfrac{c_{i} - w_{i}^{T}x}{w_{i}^{T}d}.
+	\alpha_{i} = \dfrac{c_{i} - w_{i}^{T}x}{w_{i}^{T}d}.
 	\]
-	Então, para $\alpha$ satisfazer todas as restrições $i \in \mathcal{M}-\mathcal{I}(x)$, é preciso tomar o mínimo de \eqref{eq:1_teo_direcoes_factiveis_restricao_desigualdade}. Assim, se definimos
-	\[
-	\tilde{\alpha} = \min_{i \in \mathcal{M}-\mathcal{I}(x) } \left( \dfrac{c_{i} - w_{i}^{T}x}{w_{i}^{T}d} \right) ,
+	Assim, se tomarmos o mínimo de \eqref{eq:1_teo_direcoes_factiveis_restricao_desigualdade}, para todo $i \in \mathcal{M} \backslash \mathcal{I}(x)$, isto é, se definirmos
+	\[ \label{eq:2_teo_direcoes_factiveis_restricao_desigualdade}
+	\tilde{\alpha} = \min_{i \in \mathcal{M} \backslash \mathcal{I}(x) } \left( \dfrac{c_{i} - w_{i}^{T}x}{w_{i}^{T}d} \right) ,
 	\]
 	teremos que $w_{i}^{T}(x + \alpha d) \leq c_{i}$ para todo $i \in \mathcal{M}$ e $\alpha \in (0,\tilde{\alpha} ]$. 
 \end{enumerate}	
-Portanto, $d$ será uma direção factível em $x$.
+Portanto, de (i) e (ii), $d$ será uma direção factível a partir de $x$.
 \end{proof}
 
-Além disso, interessados em saber quanto podemos andar sobre uma direção factível $d$ a partir de $x \in \Omega$, precisamos determinar o maior valor de $\alpha$ tal que $w_{i}^{T}(x + \alpha d) \leq c_{i}$, para todo $i\in \mathcal{M}$, o que equivale a determinar o menor valor de $\alpha$ para o qual $w_{i}^{T}(x+\alpha d) = c_{i}$, para algum $i\in \mathcal{M}$. Este valor é dado na demonstração do \Cref{teo:direcoes_factiveis_restricao_desigualdade}, em que se $i$ é tal que $w_{i}^{T}d \leq 0$, $\alpha$ pode ser arbitrariamente grande. E no caso em que $i$ é tal que $w_{i}^{T}d >0$, o valor procurado é
-\[
-\tilde{\alpha} = \min_{i \in \mathcal{M}-\mathcal{I}(x) } \left( \dfrac{c_{i} - w_{i}^{T}x}{w_{i}^{T}d} \right) .
-\]
+A demonstração do \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos dá, na equação \eqref{eq:2_teo_direcoes_factiveis_restricao_desigualdade}, o quanto podemos andar em uma direção factível $d$ a partir de $x \in \Omega$ e ainda continuarmos sobre o conjunto factível.
 
 
 \subsubsection{Condições Necessárias de Primeira Ordem}
@@ -1988,7 +1985,7 @@ Considere a função $f: \RR^{n} \rightarrow \RR$ dada por
 \[
 f(x) = \dfrac{1}{2}\Vert x \Vert,
 \]
-com $x\in \RR^{n}$. Emtão a função $f$ é uma função convexa.
+com $x\in \RR^{n}$. Então a função $f$ é uma função convexa.
 \end{prop}
 \begin{proof}
 Seja $\Vert \cdot \Vert$ a norma de um vetor. Para quaisquer $x, y \in \RR^{n}$ e qualquer $\alpha \in [0,1]$, temos que
