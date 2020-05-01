@@ -71,7 +71,44 @@ style=numeric-comp, noerroretextools=true, sorting=nty,
  \let\etoolboxforlistloop\forlistloop % save the good meaning of \forlistloop
  \usepackage{autonum}
  \let\forlistloop\etoolboxforlistloop % restore the good meaning of \forlistloop
- 
+
+
+\usepackage[left,mathlines]{lineno}
+\usepackage{etoolbox} %% <- for \pretocmd, \apptocmd and \patchcmd
+
+%% Patch 'normal' math environment: (currently unused, but good to have)
+% \newcommand*\linenomathpatch[1]{%
+%   \expandafter\pretocmd\csname #1\endcsname {\linenomath}{}{}%
+%   \expandafter\pretocmd\csname #1*\endcsname{\linenomath}{}{}%
+%   \expandafter\apptocmd\csname end#1\endcsname {\endlinenomath}{}{}%
+%   \expandafter\apptocmd\csname end#1*\endcsname{\endlinenomath}{}{}%
+% }
+%% Patch AMS math environment:
+\newcommand*\linenomathpatchAMS[1]{%
+  \expandafter\pretocmd\csname #1\endcsname {\linenomathAMS}{}{}%
+  \expandafter\pretocmd\csname #1*\endcsname{\linenomathAMS}{}{}%
+  \expandafter\apptocmd\csname end#1\endcsname {\endlinenomath}{}{}%
+  \expandafter\apptocmd\csname end#1*\endcsname{\endlinenomath}{}{}%
+}
+
+%% Definition of \linenomathAMS depends on whether the mathlines option is provided
+\expandafter\ifx\linenomath\linenomathWithnumbers
+  \let\linenomathAMS\linenomathWithnumbers
+  %% The following line gets rid of an extra line numbers at the bottom:
+  \patchcmd\linenomathAMS{\advance\postdisplaypenalty\linenopenalty}{}{}{}
+\else
+  \let\linenomathAMS\linenomathNonumbers
+\fi
+
+% \linenomathpatch{equation} %% <- unnecessary, equation is already patched
+\linenomathpatchAMS{gather}
+\linenomathpatchAMS{multline}
+\linenomathpatchAMS{align}
+\linenomathpatchAMS{alignat}
+\linenomathpatchAMS{flalign}
+
+\linenumbers
+
  
 \begin{document}
 
@@ -92,19 +129,19 @@ As Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}
 Agora, vamos formular matematicamente o problema de classificação utilizando as Máquinas de Vetores Suporte. Para tanto, considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig:classificacao_dados}.
 
 
-\begin{figure}[!h] 
+\begin{figure}[!ht] 
 \centering
 \begin{subfigure}[h]{0.3\textwidth}
 \centering
 \includegraphics[width=\textwidth]{hiperplano_SVM_linear}
 \caption{Linear. \label{fig:classificacao_dados:hiperplano_SVM_linear}}
 \end{subfigure}
-\begin{subfigure}[!h]{0.3\textwidth}
+\begin{subfigure}[!ht]{0.3\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{hiperplano_SVM_flexivel}
 	\caption{Flexível. \label{fig:classificacao_dados:hiperplano_SVM_flexivel}}
 \end{subfigure}
-\begin{subfigure}[!h]{0.3\textwidth}
+\begin{subfigure}[!ht]{0.3\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{hiperplano_SVM_nao_linear}
 	\caption{Não Linear. \label{fig:classificacao_dados:hiperplano_SVM_nao_linear}}
@@ -342,7 +379,7 @@ com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_
 
 \subsection{Formulação Matemática do Problema de Classificação - Margem Flexível (CSVM)}
 
-Situações reais dificilmente envolvem problemas cujos dados são linearmente separáveis. Em vista disso, faz-se necessário estender os conceitos e resultados estudados nas SVMs lineares de margem rígida para o caso de SVM com margem flexível, quando os dados não são linearmente separáveis. Para tanto, considere um conjunto de dados não-linearmente sepavável como da \Cref{fig:dados_linearmente_separaveis_e_nao_separaveis:b}, isto é, não existe um hiperplano separador. 
+Situações reais dificilmente envolvem problemas cujos dados são linearmente separáveis. Em vista disso, faz-se necessário estender os conceitos e resultados estudados nas SVMs lineares de margem rígida para o caso de SVM com margem flexível, quando os dados não são linearmente separáveis. Para tanto, considere um conjunto de dados não-linearmente separável como da \Cref{fig:dados_linearmente_separaveis_e_nao_separaveis:b}, isto é, não existe um hiperplano separador. 
 
 
 \begin{figure}[htbp] 
@@ -370,10 +407,10 @@ Neste caso, temos que o conjunto viável
 Assim, no intuito de contornar esse problema utilizamos regularização para suavizar as margens, acrescentando variáveis de folga $\xi_{i} \geq 0$ associadas aos dados de treinamento $x_{i}$, com $i=1, \ldots , m$, e permitindo, assim, uma flexibilização do problema de estimar as variáveis $w$ e $b$. Em outras palavras, a restrição $1-y_{i}(w^{T}x^{i} + b) \leq 0$ é relaxada e substituída por $1-y_{i}(w^{T}x^{i} + b) \leq \xi_{i} $, com $\xi_{i} \geq 0$. Cada variável de folga $\xi_{i}$ mensura a distância que determinado dado $x_{i}$ está do seu respectivo hiperplano separador, caso este dado esteja do lado errado.
 
 %Esta imagem também não está sendo lida, detectar problema #chateada -Uhhhul deu certo! LEMBRETE: não usar acento ao nomear figuras
-\begin{figure}[!h] 
+\begin{figure}[!ht] 
 	\centering
-	\includegraphics[width=0.40\textwidth]{mmlinterpretacao_variavel_xi}
-	\caption{Variáveis de folga. \label{fig:variaveis_de_folga} \\ Fonte: \textcite{Faisal2019}}
+	\includegraphics[width=0.50\textwidth]{variaveis_de_folga}
+	\caption{Variáveis de folga. \label{fig:variaveis_de_folga}}
 \end{figure}
 
 Tal procedimento permite que pontos da classe positiva permaneçam fora do semiespaço $\mathcal{S}^{+}=\{x\in \RR^n \mid w^{T}x+b\geq 1\}$ ou pontos da classe negativa fora do semiespaço $\mathcal{S}^{-}=\{x\in \RR^n \mid w^{T}x+b\leq -1\}$. 
@@ -394,7 +431,7 @@ Agora nosso objetivo é encontrar $w$ e $b$ ótimos de modo a obter um bom class
  
 Desse modo, para obter um bom classificador não basta apenas maximizar a margem definida pelos hiperplanos $\Hset^{+} (w,b)$ e $\Hset^{-} (w,b)$ e introduzir as variáveis de folga nas restrições, mantendo a mesma função objetivo, pois, como exemplificado por \textcite{Evelin2017}, a \Cref{fig:hiperplano_nao_classificador} ilustra o hiperplano dado por $w_{0}^{T}x+b = 0$, que não poder ser usado para classificar os dados, mas satisfaz as restrições \eqref{restricoesCSVM+} e \eqref{restricoesCSVM-}. 
 
-\begin{figure}[!h] 
+\begin{figure}[!ht] 
 	\centering
 	\includegraphics[width=0.38\textwidth]{hiperplano_nao_classifica_dados}
 	\caption{Exemplo de hiperplano que não classifica os dados. \label{fig:hiperplano_nao_classificador}}
@@ -462,7 +499,7 @@ Dizemos que um ponto $x^{*} \in \Omega$ é
 
 Quando as desigualdades na \Cref{defi:minimizador_local_global} forem estritas para $x \neq x^{*}$, diremos que $x^{*}$ é minimizador estrito. Essas definições são representadas na \Cref{fig:grafico_minimo_local_global}.
 
-\begin{figure}[!h] 
+\begin{figure}[!ht] 
 	\centering
 	\includegraphics[width=0.86\textwidth]{grafico_minimo_local_global}
 	\caption{ Mínimo local e mínimo global em uma dimensão. \label{fig:grafico_minimo_local_global}}
@@ -527,7 +564,7 @@ Pela definição de ínfimo, temos que para todo $k\in \mathds{N}$ existe $x^{k}
 \[
 \bar{v} \leq f(x^{k}) \leq \bar{v} + \dfrac{1}{k} .
 \]
-Passando ao limite quando $k \rightarrow \infty $, e usando o Teorema do Sanduíche conluímos que
+Passando ao limite quando $k \rightarrow \infty $, e usando o Teorema do Sanduíche concluímos que
 \[\label{eq:teo_weierstrass}
 \lim_{k \rightarrow \infty} f(x^{k}) = \bar{v}.
 \]
@@ -602,7 +639,7 @@ Passando o limite quando $t\rightarrow 0$, obtemos
 \[
 0 \leq \nabla f(x^{*})^{T}d .
 \]
-Supondo que $\nabla f(x^{*})$ não fosse nulo, como $d \in \RR^{n}$ é arbitrário, poderíamos escolher $d=-\nabla f(x^{*})$, resultando em
+Supondo que $\nabla f(x^{*})$ fosse não-nulo, como $d \in \RR^{n}$ é arbitrário, poderíamos escolher $d=-\nabla f(x^{*})$, resultando em
 \[
 0 \leq \nabla f(x^{*})^{T}d = - \Vert \nabla f(x^{*}) \Vert^{2} ,
 \]
@@ -769,7 +806,7 @@ Para obter as condições de otimalidade para um ponto de mínimo $x^{*}$ do pro
 
 Para tanto, associado a $\Omega$ temos o conjunto de soluções do sistema homogêneo $Ax=b$, que é chamado de Núcleo de $A$ e denotado por $\mathcal{N}(A)$. Este conjunto é um subespaço de $\RR^{n}$ de dimensão $n-m$, pois $\posto (A)=m$, e é interessante observar que $\mathcal{N}(A)$ é um subespaço paralelo à variedade afim $\Omega$ e passa pela origem. Esta noção é representada na \Cref{fig:nucleoA_paralelo_S}.
 
-\begin{figure}[!h] 
+\begin{figure}[!ht] 
 	\centering
 	\includegraphics[width=0.60\textwidth]{nucleoA_paralelo_S}
 	\caption{ Núcleo de uma matriz. \\ Fonte: \textcite{Ana1994} \label{fig:nucleoA_paralelo_S}}
@@ -1034,51 +1071,51 @@ Vamos considerar agora problemas da forma
 \[ \label{problema_geral_minimizacao_desigualdade}
 \begin{aligned}
 \min_{x} & \quad f(x) \\
-\text{s.a} & \quad Ax \leq b,
+\text{s.a} & \quad Wx \leq c,
 \end{aligned}
 \]
-em que $x \in \RR^{n}$ e $A \in \RR^{m\times n}$. Como na seção anterior, estamos interessados nesse primeiro momento em analisar a região de factibilidade e determinar as direções factíveis, que são aquelas em que há espaço para se movimentar dentro da região $\Omega$. 
+em que $x \in \RR^{n}$ e $W \in \RR^{m\times n}$. Como na seção anterior, estamos interessados nesse primeiro momento em analisar a região de factibilidade e determinar as direções factíveis, que são aquelas em que há espaço para se movimentar dentro da região $\Omega$. 
 
-Denotando cada linha da matriz $A$ da forma $a_{i\cdot}^{T} = (a_{i1} , a_{i2} , \ldots , a_{in})$, podemos caracterizar o conjunto factível da seguinte forma
+Denotando cada linha da matriz $W$ da forma $w_{i}^{T} = (w_{i1} , w_{i2} , \ldots , w_{in})$, podemos caracterizar o conjunto factível da seguinte forma
 \[
-\Omega = \{ x\in \RR^{n} \mid a_{i\cdot}^{T}x \leq b_{i} \ \text{para todo} \ i \in \{ 1,2, \ldots , m \} \} .
+\Omega = \{ x\in \RR^{n} \mid w_{i}^{T}x \leq c_{i} \ \text{para todo} \ i = 1,2, \ldots , m \} .
 \]
 
-Desse modo, cada uma das $m$ desigualdades $a_{i\cdot}^{T}x \leq b_{i}$ define em $\RR^{n}$ um semiespaço. O hiperplano divisor é $a_{i\cdot}^{T}x = b_{i}$ e o semiespaço definido é aquele que está do lado contrário à direção apontada pelo vetor $a_{i}$. Assim, a região $\Omega$ consiste na instersecção dos $m$ semiespaços. Em alguns casos, como representado na \Cref{fig:regiao_factivel_poliedro}, $\Omega$ é um conjunto \emph{poliedral} em $\RR^{n}$.
+Cada uma das $m$ desigualdades $w_{i}^{T}x \leq c_{i}$ define em $\RR^{n}$ um \emph{semiespaço}. O hiperplano divisor é dado por $\Hset (w_{i}, c_{i}) = \{ x \mid w_{i}^{T}x = c_{i} \}$ e o semiespaço definido é aquele que está do lado contrário à direção apontada pelo vetor $w_{i}$. Desta forma, a região $\Omega$ consiste na intersecção dos $m$ semiespaços. Este tipo de conjunto de $\RR^{n}$ é chamado \emph{poliedro} ou conjunto \emph{poliedral}. Vamos definir formalmente este conceito.
 
 
-\begin{figure}[!h] 
+\begin{defi} \label{defi:conjunto_poliedral}
+Um \emph{poliedro} ou um conjunto \emph{poliedral} $\mathcal{P} \subset \RR^{n}$ é definido como o conjunto de soluções de um sistema finito de equações e inequações lineares:
+\[
+\mathcal{P} = \{ x\in \RR^{n} \mid Ax=b, \ Wx \leq c \} ,
+\] 
+em que $A\in \RR^{m\times n}$, $W\in \RR^{p\times n}$, $b\in \RR^{m}$ e $c\in \RR^{p}$. Neste contexto, dizemos que $h:\RR^{n} \rightarrow \RR^{m}$, dada por $h(x) = Ax-b$, e $g:\RR^{n} \rightarrow \RR^{p}$, dada por $g(x)=Wx-c$, são funções \emph{afim}.
+\end{defi}
+
+A \Cref{fig:regiao_factivel_poliedro} representa um poliedro em $\RR^{2}$.
+
+\begin{figure}[!ht] 
 	\centering
 	\includegraphics[width=0.45\textwidth]{conjunto_factivel_poliedral}
 	\caption{Conjunto factível poliedral. \\ Fonte: \textcite{Ana1994} \label{fig:regiao_factivel_poliedro}}
 \end{figure}
 
-\begin{defi} \label{defi:conjunto_poliedral}
-Dizemos que um conjunto é \emph{poliedral} quando ele pode ser representado como o conjunto de soluções de um sistema finito de equações e inequações lineares. Por exemplo:
-\[
-D = \{ x\in \RR^{n} \mid Ax=b, \ Wx \leq c \} ,
-\] 
-em que $A\in \RR^{m\times n}$, $W\in \RR^{p\times n}$, $b\in \RR^{m}$ e $c\in \RR^{p}$. Neste contexto, dizemos que $h:\RR^{n} \rightarrow \RR^{m}$, $h(x) = Ax-b$, é uma \emph{função afim}. Assim como $g:\RR^{n} \rightarrow \RR^{p}$, dada por $g(x)=Wx-c$.
-\end{defi}
-
-
-Por conseguinte, um conceito fundamental para formular as condições de otimalidade e que fornece uma grande quantidade de informações é o de \emph{restrição ativa}.
+Um conceito fundamental para formular as condições de otimalidade para o problema \eqref{problema_geral_minimizacao_desigualdade} e que fornece uma grande quantidade de informações é o de \emph{restrição ativa}. Portanto, consideramos, no que segue, que $\Omega$ é o conjunto factível deste problema.
 
 \begin{defi}
-Dado $\xbar \in \Omega$, dizemos que a restrição de desigualdade $a_{i}^{T}\bar{x} \leq b_{i}$ que corresponde ao índice $i\in \{ 1,2, \ldots , m\}$ é \emph{ativa} no ponto $\xbar$ quando $a_{i}^{T}\bar{x} = b_{i}$. Caso $a_{i}^{T}\bar{x} < b_{i}$ dizemos que a restrição é \emph{inativa} em $\xbar$. 
-\end{defi} 
-O conjunto dos índices das restrições de desigualdade ativas no ponto $\xbar \in \Omega$ é denotado por
+Dado $\xbar \in \Omega$, dizemos que a restrição de desigualdade $w_{i}^{T}\bar{x} \leq c_{i}$ que corresponde ao índice $i\in \{ 1,2, \ldots , m\}$ é \emph{ativa} no ponto $\xbar$ quando $w_{i}^{T}\bar{x} = c_{i}$. Caso $w_{i}^{T}\bar{x} < c_{i}$ dizemos que a restrição é \emph{inativa} em $\xbar$. O conjunto dos índices das restrições de desigualdade ativas no ponto $\xbar \in \Omega$ é denotado por
 \[
-\mathcal{I} (\xbar) = \{ i = 1,2, \ldots , m \mid a_{i}^{T}\bar{x} = b_{i} \} .
+\mathcal{I} (\xbar) = \{ i = 1,2, \ldots , m \mid w_{i}^{T}\bar{x} = c_{i} \} .
 \]
+\end{defi} 
 
-\begin{obs}
-Por convenção, qualquer restrição de igualdade é considerada ativa em todo ponto factível.
-\end{obs}
+%\begin{obs}
+%Por convenção, qualquer restrição de igualdade é considerada ativa em todo ponto factível.
+%\end{obs}
 
 A cada $x\in \Omega$ podemos associar um número $r(x)$, com $0\leq r(x) \leq m$, que representa a quantidade de restrições ativas em $x$. Assim, na \Cref{fig:restricoes_ativas} temos que $r(x^{1}) = 1$, $r(x^{2}) = 2$, $r(x^{3}) = 1$, $r(x^{4}) = 0$ e $r(x^{5}) = 2$.
 
-\begin{figure}[!h] 
+\begin{figure}[!ht] 
 	\centering
 	\includegraphics[width=0.45\textwidth]{restricoes_ativas}
 	\caption{Restrições ativas e inativas. \label{fig:restricoes_ativas}}
@@ -1088,45 +1125,42 @@ Ademais, o conjunto das direções factíveis a partir de $x$ depende das restri
 O \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos fornece uma caracterização das direções factíveis em $x$.
 
 \begin{teo} \label{teo:direcoes_factiveis_restricao_desigualdade}
-Considere $x\in \Omega$ tal que $r(x) = p$ com $0<p \leq m$. Um vetor $d \in \RR^{n}$ é uma direção factível em $x$ se, e somente se, $a_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$.
+Considere $x\in \Omega$ tal que $r(x) = p$ com $0<p \leq m$. Um vetor $d \in \RR^{n}$ é uma direção factível a partir de $x$ se, e somente se, $w_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$.
 \end{teo}
 \begin{proof}
-Seja $\alpha >0$ e suponhamos que $d\in \RR^{n}$ é uma direção factível em $x$. Então, $x+\alpha d \in \Omega$, o que ocorre se, e somente se, $A(x+\alpha d) \leq b$, ou seja, $a_{i}^{T}(x+\alpha d) \leq b_{i}$, para todo $i \in \mathcal{M} \coloneqq \{ 1,2, \ldots ,m \}$. 
+Suponhamos que $d\in \RR^{n}$ é uma direção factível em $x$. Então existe $\bar{\alpha} >0$ tal que $x+\alpha d \in \Omega$ para todo $\alpha \in (0, \tilde{\alpha} ]$, o que ocorre se, e somente se, $W(x+\alpha d) \leq c$, ou seja, $w_{i}^{T}(x+\alpha d) \leq c_{i}$, para todo $i \in \mathcal{M} \coloneqq \{ 1,2, \ldots ,m \}$. 
 Em particular, se $i\in \mathcal{I} (x)$ temos que
 \[
-a_{i}^{T}(x+\alpha d) = b_{i} + \alpha a_{i}^{T}d \leq b_{i},
+w_{i}^{T}(x+\alpha d) = c_{i} + \alpha w_{i}^{T}d \leq c_{i},
 \]
-e consequentemente, devemos ter
+e consequentemente, temos
 \[
-a_{i}^{T}d \leq 0.
+w_{i}^{T}d \leq 0.
 \]
 
-Reciprocamente, suponhamos que $a_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$. Assim, se $i \in \mathcal{I} (x)$, temos que $a_{i}^{T} x = b_{i}$, implicando que $a_{i}^{T}(x+\alpha d) \leq b_{i}$.
-Por outro lado, se $i \notin \mathcal{I}(x)$, temos que $a_{i}^{T} x < b_{i}$. Neste caso, é preciso analisar duas situações:
+Reciprocamente, seja $d\in \RR^{n}$ e suponhamos que $w_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$. Assim, se $i \in \mathcal{I} (x)$, temos que $w_{i}^{T} x = c_{i}$, implicando que, para qualquer $\alpha >0$, $w_{i}^{T}(x+\alpha d) \leq c_{i}$.
+Por outro lado, se $i \notin \mathcal{I}(x)$, temos que $w_{i}^{T} x < c_{i}$. Neste caso, é preciso analisar duas situações:
 \begin{enumerate}
-	\item[(i)] Se $a_{i}^{T}d \leq 0$, então $a_{i}^{T}(x + \alpha d) \leq b_{i}$;
+	\item[(i)] Se $w_{i}^{T}d \leq 0$, então $w_{i}^{T}(x + \alpha d) \leq c_{i}$, para qualquer $\alpha >0$             ;
 
-	\item[(ii)]Se $a_{i}^{T}d >0$ podemos calcular o valor de $\alpha$ de modo que $a_{i}^{T}(x+\alpha d) = b_{i}$. Desse modo, temos que
+	\item[(ii)]Se $w_{i}^{T}d >0$ podemos encontrar $\alpha_{i} >0$ de modo que $w_{i}^{T}x + w_{i}^{T}(\alpha d) = c_{i}$. Considere que como $w_{i}^{T}x < c_{i}$ existe $\beta >0$, tal que $w_{i}^{T}x + \beta_{i} = c_{i}$. Desse modo, temos que escolher $\alpha_{i}$ tal que $\beta_{i} = \alpha_{i} w_{i}^{T} d$, isto é,
 	\[
-	a_{i}^{T}x + \alpha a_{i}^{T}d = b_{i} ,
+	w_{i}^{T}x + \alpha_{i} w_{i}^{T}d = c_{i} ,
 	\]
-	e resolvendo para $\alpha$,
+	para todo $i \notin \mathcal{I}(x)$. Podemos fazer isso resolvendo a equação anterior para $\alpha_{i}$, encontrando
 	\[ \label{eq:1_teo_direcoes_factiveis_restricao_desigualdade}
-	\alpha = \dfrac{b_{i} - a_{i}^{T}x}{a_{i}^{T}d}.
+	\alpha_{i} = \dfrac{c_{i} - w_{i}^{T}x}{w_{i}^{T}d}.
 	\]
-	Então, para $\alpha$ satisfazer todas as restrições $i \in \mathcal{M}-\mathcal{I}(x)$, é preciso tomar o mínimo de \eqref{eq:1_teo_direcoes_factiveis_restricao_desigualdade}. Assim, se definimos
-	\[
-	\tilde{\alpha} = \min_{i \in \mathcal{M}-\mathcal{I}(x) } \left( \dfrac{b_{i} - a_{i}^{T}x}{a_{i}^{T}d} \right) ,
+	Assim, se tomarmos o mínimo de \eqref{eq:1_teo_direcoes_factiveis_restricao_desigualdade}, para todo $i \in \mathcal{M} \backslash \mathcal{I}(x)$, isto é, se definirmos
+	\[ \label{eq:2_teo_direcoes_factiveis_restricao_desigualdade}
+	\tilde{\alpha} = \min_{i \in \mathcal{M} \backslash \mathcal{I}(x) } \left( \dfrac{c_{i} - w_{i}^{T}x}{w_{i}^{T}d} \right) ,
 	\]
-	teremos que $a_{i}^{T}(x + \alpha d) \leq b_{i}$ para todo $i \in \mathcal{M}$ e $\alpha \in (0,\tilde{\alpha} ]$. 
+	teremos que $w_{i}^{T}(x + \alpha d) \leq c_{i}$ para todo $i \in \mathcal{M}$ e $\alpha \in (0,\tilde{\alpha} ]$. 
 \end{enumerate}	
-Portanto, $d$ será uma direção factível em $x$.
+Portanto, de (i) e (ii), $d$ será uma direção factível a partir de $x$.
 \end{proof}
 
-Além disso, interessados em saber quanto podemos andar sobre uma direção factível $d$ a partir de $x \in \Omega$, precisamos determinar o maior valor de $\alpha$ tal que $a_{i}^{T}(x + \alpha d) \leq b_{i}$, para todo $i\in \mathcal{M}$, o que equivale a determinar o menor valor de $\alpha$ para o qual $a_{i}^{T}(x+\alpha d) = b_{i}$, para algum $i\in \mathcal{M}$. Este valor é dado na demonstração do \Cref{teo:direcoes_factiveis_restricao_desigualdade}, em que se $i$ é tal que $a_{i}^{T}d \leq 0$, $\alpha$ pode ser arbitrariamente grande. E no caso em que $i$ é tal que $a_{i}^{T}d >0$, o valor procurado é
-\[
-\tilde{\alpha} = \min_{i \in \mathcal{M}-\mathcal{I}(x) } \left( \dfrac{b_{i} - a_{i}^{T}x}{a_{i}^{T}d} \right) .
-\]
+A demonstração do \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos dá, na equação \eqref{eq:2_teo_direcoes_factiveis_restricao_desigualdade}, o quanto podemos andar em uma direção factível $d$ a partir de $x \in \Omega$ e ainda continuarmos sobre o conjunto factível.
 
 
 \subsubsection{Condições Necessárias de Primeira Ordem}
@@ -1198,19 +1232,19 @@ Novamente, a análise dependerá das restrição ativas em $x$. Se $r(x) =0$, o 
 Agora, já possuímos os ferramentais necessários para determinar a condição necessária de primeira ordem a ser satisfeita por uma solução do problema \eqref{problema_geral_minimizacao_desigualdade}.
 
 \begin{teo}(\textbf{Condição necessária de primeira ordem}) \label{teo:condicao_necessaria_1ordem_restricao_desigualdade}
-Consideremos o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{1}$ e $x^{*} \in \Omega$ tal que $1 \leq r(x^{*}) \leq n$. Seja $\mathcal{I} \subset \mathcal{M}$, $\mathcal{I} = \{ i_{1}, i_{2}, \ldots , i_{r(x^{*})} \}$ tal que $a_{i}^{T}x = b_{i}$ se, e somente se, $i\in \mathcal{I}$. Seja $A_{\mathcal{I}} \in \RR^{r(x^{*})\times n}$ a submatriz de $A$ cujas linhas são as que tem índices em $\mathcal{I}$ e 
+Consideremos o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{1}$ e $x^{*} \in \Omega$ tal que $1 \leq r(x^{*}) \leq n$. Seja $\mathcal{I} \subset \mathcal{M}$, $\mathcal{I} = \{ i_{1}, i_{2}, \ldots , i_{r(x^{*})} \}$ tal que $w_{i}^{T}x = c_{i}$ se, e somente se, $i\in \mathcal{I}$. Seja $W_{\mathcal{I}} \in \RR^{r(x^{*})\times n}$ a submatriz de $W$ cujas linhas são as que tem índices em $\mathcal{I}$ e 
 \[
-b_{\mathcal{I}} = \begin{bmatrix*} b_{i_{1}} \\ b_{i_{2}} \\ \vdots \\ b_{i_{r(x^{*})}} \end{bmatrix*} .
+c_{\mathcal{I}} = \begin{bmatrix*} c_{i_{1}} \\ c_{i_{2}} \\ \vdots \\ c_{i_{r(x^{*})}} \end{bmatrix*} .
 \]
-Supomos que $\posto (A_{\mathcal{I}}) = r(x^{*})$.
+Supomos que $\posto (W_{\mathcal{I}}) = r(x^{*})$.
 
 Se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então existe $\boldsymbol{\lambda} \in \RR^{r(x^{*})}$ tal que 
 \[
-\nabla f(x^{*}) = \sum_{k=1}^{r(x^{*})} \lambda_{k} a_{i_{k}} \quad \text{e} \quad \lambda_{k} \leq 0, \ 1\leq k\leq r(x^{*}),
+\nabla f(x^{*}) = \sum_{k=1}^{r(x^{*})} \lambda_{k} w_{i_{k}} \quad \text{e} \quad \lambda_{k} \leq 0, \ 1\leq k\leq r(x^{*}),
 \]
 ou, equivalentemente
 \[ \label{eq:condicao_necessaria_1ordem_restricao_desigualdade}
-\nabla f(x^{*}) = A_{\mathcal{I}}^{T} \boldsymbol{\lambda}, \quad \boldsymbol{\lambda} \in \RR^{r(x^{*})}
+\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\lambda}, \quad \boldsymbol{\lambda} \in \RR^{r(x^{*})}
 \]
 e
 \[
@@ -1220,26 +1254,26 @@ e
 \begin{proof}
 Suponhamos que \eqref{eq:condicao_necessaria_1ordem_restricao_desigualdade} não ocorre. Isso pode acontecer por dois motivos:
 \begin{enumerate}
-\item[(i)] $\nabla f(x^{*}) \neq A_{\mathcal{I}}^{T} \boldsymbol{\lambda} \ \text{para todo} \ \boldsymbol{\lambda} \in \RR^{r(x^{*})}$.
+\item[(i)] $\nabla f(x^{*}) \neq W_{\mathcal{I}}^{T} \boldsymbol{\lambda} \ \text{para todo} \ \boldsymbol{\lambda} \in \RR^{r(x^{*})}$.
 
-Em outras palavras, temos que $\nabla f(x^{*})$ não pode ser escrito como combinação linear das linhas de $A_{\mathcal{I}}$. Assim, $x^{*}$ não é minimizador local do problema com restrições de igualdade definido por 
+Em outras palavras, temos que $\nabla f(x^{*})$ não pode ser escrito como combinação linear das linhas de $W_{\mathcal{I}}$. Assim, $x^{*}$ não é minimizador local do problema com restrições de igualdade definido por 
 \[ \label{eq:1_condicao_necessaria_1ordem_restricao_desigualdade}
 \begin{aligned}
 \min_{x} & \quad f(x) \\
-\text{s.a} & \quad A_{\mathcal{I}}x=b_{\mathcal{I}} ,
+\text{s.a} & \quad W_{\mathcal{I}}x=c_{\mathcal{I}} ,
 \end{aligned}
 \]
 pois $x^{*}$ não satisfaz a condição necessária de primeira ordem para o problema \eqref{eq:1_condicao_necessaria_1ordem_restricao_desigualdade}. Logo, $x^{*}$ também não pode ser minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}, o que é uma contradição.
 
-\item[(ii)] $\nabla f(x^{*}) = A_{\mathcal{I}}^{T} \boldsymbol{\lambda}$, mas existe $j$ tal que $\lambda_{j} >0$.
+\item[(ii)] $\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\lambda}$, mas existe $j$ tal que $\lambda_{j} >0$.
 
-Se $r(x^{*}) = 1$ e $\mathcal{I} = \{ i_{1} \}$, então $\nabla f(x^{*}) = \lambda_{1} a_{i_{1}}$ e $\lambda_{1} >0$. Tomando $d=-\nabla f(x^{*})$ temos que
+Se $r(x^{*}) = 1$ e $\mathcal{I} = \{ i_{1} \}$, então $\nabla f(x^{*}) = \lambda_{1} w_{i_{1}}$ e $\lambda_{1} >0$. Tomando $d=-\nabla f(x^{*})$ temos que
 \[
-a_{i_{1}}^{T}d = -\lambda_{1} a_{i_{1}}^{T}a_{i_{1}} = -\lambda_{1} \Vert a_{i_{1}} \Vert^{2} < 0.
+w_{i_{1}}^{T}d = -\lambda_{1} w_{i_{1}}^{T}w_{i_{1}} = -\lambda_{1} \Vert w_{i_{1}} \Vert^{2} < 0.
 \]
 Assim, $d$ é uma direção de descida factível no ponto $x^{*}$, e portanto, $x^{*}$ não pode ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, contradizendo a hipótese.
 
-Agora, se $2\leq r(x^{*}) \leq n$, denotamos por $\tilde{A_{\mathcal{I}}}$ a matriz obtida retirando a linha $a_{i_{j}}$ correspondente ao multiplicador $\lambda_{j} >0$. Consideramos $d=P_{\mathcal{N}(\tilde{A_{\mathcal{I}}})} (-\nabla f(x^{*}))$, em que $P_{\mathcal{N}(\tilde{A_{\mathcal{I}}})}$ é o operador projeção ortogonal sobre $\mathcal{N}(\tilde{A_{\mathcal{I}}})$. Então, temos que
+Agora, se $2\leq r(x^{*}) \leq n$, denotamos por $\tilde{W_{\mathcal{I}}}$ a matriz obtida retirando a linha $w_{i_{j}}$ correspondente ao multiplicador $\lambda_{j} >0$. Consideramos $d=P_{\mathcal{N}(\tilde{W_{\mathcal{I}}})} (-\nabla f(x^{*}))$, em que $P_{\mathcal{N}(\tilde{W_{\mathcal{I}}})}$ é o operador projeção ortogonal sobre $\mathcal{N}(\tilde{W_{\mathcal{I}}})$. Então, temos que
 \[
 (-\nabla f(x^{*}) -d)^{T}d =0,
 \]
@@ -1249,28 +1283,28 @@ implicando em
 \]
 e portanto, $d$ é uma direção de descida. Veja \Cref{fig:projecao_gradiente_sobre_nucleoA}.
 
-\begin{figure}[!h] 
+\begin{figure}[!ht] 
 	\centering
-	\includegraphics[width=0.55\textwidth]{projecao_gradiente_sobre_nucleoA}
-	\caption{Projeção de $-\nabla f(x)$ sobre o $\mathcal{N}(\tilde{A_{\mathcal{I}}})$. \\ Fonte: \textcite{Ana1994}. \label{fig:projecao_gradiente_sobre_nucleoA}}
+	\includegraphics[width=0.55\textwidth]{projecao_gradiente_sobre_nucleoW}
+	\caption{Projeção de $-\nabla f(x)$ sobre o $\mathcal{N}(\tilde{W_{\mathcal{I}}})$. \\ Fonte: \textcite{Ana1994}. \label{fig:projecao_gradiente_sobre_nucleoA}}
 \end{figure}
 Ademais, vejamos que $d$ também é uma direção factível. Com efeito,
 \[
-\nabla f(x^{*}) = \lambda_{1} a_{i_{1}} + \lambda_{2} a_{i_{2}} + \ldots + \lambda_{j} a_{i_{j}} + \ldots + \lambda_{r(x^{*})} a_{i_{r(x^{*})}}
+\nabla f(x^{*}) = \lambda_{1} w_{i_{1}} + \lambda_{2} w_{i_{2}} + \ldots + \lambda_{j} w_{i_{j}} + \ldots + \lambda_{r(x^{*})} w_{i_{r(x^{*})}}
 \]
-e, por construção, como tomamos $d \in \mathcal{N}(\tilde{A_{\mathcal{I}}})$ e $\posto (A_{\mathcal{I}}) = r(x^{*})$, temos que
+e, por construção, como tomamos $d \in \mathcal{N}(\tilde{W_{\mathcal{I}}})$ e $\posto (W_{\mathcal{I}}) = r(x^{*})$, temos que
 \[
-a_{i_{k}}^{T}d =0 \ \text{para todo} \ k \neq j.
+w_{i_{k}}^{T}d =0 \ \text{para todo} \ k \neq j.
 \]
 Então,
 \[
-\nabla f(x^{*})^{T}d = \lambda_{j} a_{i_{j}}^{T} d.
+\nabla f(x^{*})^{T}d = \lambda_{j} w_{i_{j}}^{T} d.
 \]
 Usando \eqref{eq:2_condicao_necessaria_1ordem_restricao_desigualdade} e o fato de $\lambda_{j} >0$, obtemos
 \[
-a_{i_{j}}^{T} d <0.
+w_{i_{j}}^{T} d <0.
 \]
-Portanto, $a_{i_{k}}^{T} d \leq 0$ para todo $k$ tal que $1 \leq k \leq r(x^{*})$, ou seja, $d$ é uma direção factível e de descida, contradizendo o fato de $x^{*}$ ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
+Portanto, $w_{i_{k}}^{T} d \leq 0$ para todo $k$ tal que $1 \leq k \leq r(x^{*})$, ou seja, $d$ é uma direção factível e de descida, contradizendo o fato de $x^{*}$ ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
 \end{enumerate}
 \end{proof}
 
@@ -1284,15 +1318,15 @@ Desenvolveremos agora as condições necessárias e as condições suficientes d
 \begin{teo}(\textbf{Condição necessária de segunda ordem}) \label{teo:condicao_necessaria_2ordem_desigualdade}
 Sejam $f \in \mathcal{C}^{2}$, $x^{*}$ um minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}, e $r(x^{*})$ e $\mathcal{I}$ definidos como anteriormente. Então
 \begin{enumerate}
-	\item[(i)] Existe $\boldsymbol{\lambda} \in \RR^{r(x^{*})}$ tal que $\nabla f(x^{*}) = A_{\mathcal{I}}^{T} \boldsymbol{\lambda}$ e $\lambda_{i} \leq 0$ para todo $i \in \mathcal{I}(x^{*})$;
+	\item[(i)] Existe $\boldsymbol{\lambda} \in \RR^{r(x^{*})}$ tal que $\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\lambda}$ e $\lambda_{i} \leq 0$ para todo $i \in \mathcal{I}(x^{*})$;
 
-	\item[(ii)] Para todo $y \in \mathcal{N}(A_{\mathcal{I}})$ temos que $y^{T} \nabla^{2} f(x^{*})y \geq 0$.
+	\item[(ii)] Para todo $y \in \mathcal{N}(W_{\mathcal{I}})$ temos que $y^{T} \nabla^{2} f(x^{*})y \geq 0$.
 \end{enumerate}
 \end{teo}
 \begin{proof}
 Perceba que se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então pelo \Cref{teo:condicao_necessaria_1ordem_restricao_desigualdade}, existe $\boldsymbol{\lambda} \in \RR^{r(x^{*})}$ tal que 
 \[
-\nabla f(x^{*}) = A_{\mathcal{I}}^{T} \boldsymbol{\lambda} \ \text{e} \ \lambda_{i} \leq 0,
+\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\lambda} \ \text{e} \ \lambda_{i} \leq 0,
 \] 
 para todo $i \in \mathcal{I}(x^{*})$.
 
@@ -1300,18 +1334,18 @@ Por conseguinte, se $x^{*}$ é minimizador local de \eqref{problema_geral_minimi
 \[ 
 \begin{aligned}
 \min_{x} & \quad f(x) \\
-\text{s.a} & \quad A_{\mathcal{I}}x=b_{\mathcal{I}} ,
+\text{s.a} & \quad W_{\mathcal{I}}x=c_{\mathcal{I}} ,
 \end{aligned}
 \]
-em que $A_{\mathcal{I}}$ é a submatriz de $A$ cujas linhas correspondem às restrições ativas em $x^{*}$. Então, a condição necessária de segunda ordem para problemas com restrições de igualdade definida na \Cref{subsubsection:condicao_2ordem_igualdade} nos garante que
+em que $W_{\mathcal{I}}$ é a submatriz de $W$ cujas linhas correspondem às restrições ativas em $x^{*}$. Então, a condição necessária de segunda ordem para problemas com restrições de igualdade definida na \Cref{subsubsection:condicao_2ordem_igualdade} nos garante que
 \[
-y^{T}\nabla^{2} f(x^{*})y \geq 0 \ \text{para todo} \ y \in \mathcal{N}(A_{\mathcal{I}}) .
-\]{}
+y^{T}\nabla^{2} f(x^{*})y \geq 0 \ \text{para todo} \ y \in \mathcal{N}(W_{\mathcal{I}}) .
+\]
 \end{proof}
 
 
 \begin{teo}(\textbf{Condição suficiente de segunda ordem}) \label{teo:condicao_suficiente_2ordem_desigualdade}
-Sejam $f \in \mathcal{C}^{2}$, $x^{*} \in \Omega$, e $r(x^{*})$ e $\mathcal{I}$ definidos como anteriormente. Se $\nabla f(x^{*}) = A_{\mathcal{I}}^{T} \boldsymbol{\lambda}$ com $\lambda_{i} \leq 0$ para todo $i \in \mathcal{I}(x^{*})$, e $y^{T} \nabla^{2} f(x^{*})y \succ 0$ para todo $y \in \mathcal{N}(A_{\mathcal{J}})$, $y\neq 0$, em que $\mathcal{J} = \{ i\in \{ 1,2, \ldots , r(x^{*}) \} \mid \lambda_{i} <0 \}$, então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
+Sejam $f \in \mathcal{C}^{2}$, $x^{*} \in \Omega$, e $r(x^{*})$ e $\mathcal{I}$ definidos como anteriormente. Se $\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\lambda}$ com $\lambda_{i} \leq 0$ para todo $i \in \mathcal{I}(x^{*})$, e $y^{T} \nabla^{2} f(x^{*})y \succ 0$ para todo $y \in \mathcal{N}(W_{\mathcal{J}})$, $y\neq 0$, em que $\mathcal{J} = \{ i\in \{ 1,2, \ldots , r(x^{*}) \} \mid \lambda_{i} <0 \}$, então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
 \end{teo}
 \begin{proof}
 Por demonstrar.
@@ -1416,7 +1450,7 @@ Um ponto $x^{*} \in \RR^{n} $ é dito \emph{estacionário} para o problema \eqre
 \nabla f(x^{*})+\sum_{i=1}^{m} \mu_{i}^{*} \nabla g_{i}(x^{*})+\sum_{i=1}^{p} \lambda_{i}^{*} \nabla h_{i}(x^{*}) & =0, \\ 
 g(x^{*}) \leq 0, h(x^{*}) & =0,  \label{eq:2_ponto_estacionario} \\ 
 \mu_{i}^{*} & \geq 0, \quad i= 1, \ldots , m,   \label{eq:3_ponto_estacionario} \\ 
-\lambda_{i}^{*} g_{i}(x^{*}) & =0, \quad i= 1, \ldots , m.  \label{eq:4_ponto_estacionario}
+\mu_{i}^{*} g_{i}(x^{*}) & =0, \quad i= 1, \ldots , m.  \label{eq:4_ponto_estacionario}
 \end{align}
 
 
@@ -1519,7 +1553,7 @@ Esta definição pode ser interpretada geometricamente afirmando que um conjunto
 
 
 %criar minha própria figura
-\begin{figure}[!h] 
+\begin{figure}[!ht] 
 	\centering
 	\includegraphics[width=0.60\textwidth]{conjuntos_convexo_naoconvexo}
 	\caption{ Conjunto convexo e não-convexo. \label{fig:conjuntos_convexos}}
@@ -1732,22 +1766,23 @@ Seja $C \subset \RR^{n}$ um conjunto convexo. Dizemos que a \emph{função} $f: 
 f((1-t)x + ty) \leq (1-t)f(x) + tf(y),
 \]
 para todos $x,y \in C$ e $t \in [0,1]$.
-\end{defi}
+
 Se para todo $t \in (0,1)$ e $x \neq y$ vale que
 \[
 f((1-t)x + ty) < (1-t)f(x) + tf(y),
 \]
 dizemos que $f$ é \emph{estritamente convexa}.
+\end{defi}
+A \Cref{fig:funcao_convexa} apresenta um exemplo de uma função convexa, enquanto que na \Cref{fig:funcao_nao_convexa} podemos vizualizar uma função não-convexa.
 
-
-\begin{figure}[!h] 
+\begin{figure}[!ht] 
 \centering
 \begin{subfigure}[h]{0.42\textwidth}
 \centering
 \includegraphics[width=\textwidth]{funcao_convexa_1}
 \caption{Função Convexa \label{fig:funcao_convexa}}
 \end{subfigure}
-\begin{subfigure}[!h]{0.40\textwidth}
+\begin{subfigure}[!ht]{0.40\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{funcao_nao_convexa}
 	\caption{Função não convexa. \label{fig:funcao_nao_convexa}}
@@ -1755,13 +1790,12 @@ dizemos que $f$ é \emph{estritamente convexa}.
 \caption{Funções convexas e não-convexas. \label{fig:exemplos_funcao_convexa}}
 \end{figure}
 
-
 A noção geométrica da \Cref{defi:funcao_convexa} é apresentada na \Cref{fig:nocao_funcao_convexa}, em que qualquer arco do gráfico de uma função convexa está sempre abaixo do segmento que liga as extremidades.
 
-\begin{figure}[!h] 
+\begin{figure}[!ht] 
 	\centering
-	\includegraphics[width=0.82\textwidth]{funcao_convexa}
-	\caption{ Noção geométrica de função convexa. \label{fig:nocao_funcao_convexa} \\ Fonte: \textcite{Evelin2017}}
+	\includegraphics[width=0.75\textwidth]{nocao_geometrica_funcao_convexa}
+	\caption{Noção geométrica de uma função convexa. \label{fig:nocao_funcao_convexa}}
 \end{figure}
 
 \begin{defi}
@@ -1846,9 +1880,9 @@ Portanto, a função $f$ é convexa em $C$.
 \end{proof}
 
 O \Cref{teo:diferenciabilidade_e_convexidade} afirma que a aproximação linear baseada na derivada local subestima a função convexa. Este resultado é ilustrado na \Cref{fig:funcao_convexa_aproximacao_linear_derivada} a seguir. 
-\begin{figure}[!h] 
+\begin{figure}[!ht] 
 	\centering
-	\includegraphics[width=0.55\textwidth]{funcao_convexa_aproximacao_linear_derivada}
+	\includegraphics[width=0.50\textwidth]{funcao_convexa_aproximacao_linear_derivada}
 	\caption{Ilustração da \Cref{teo:diferenciabilidade_e_convexidade}. \label{fig:funcao_convexa_aproximacao_linear_derivada} \\ Fonte: \textcite{luenberger2008linear}}
 \end{figure}
 
@@ -1952,7 +1986,7 @@ Considere a função $f: \RR^{n} \rightarrow \RR$ dada por
 \[
 f(x) = \dfrac{1}{2}\Vert x \Vert,
 \]
-com $x\in \RR^{n}$. Emtão a função $f$ é uma função convexa.
+com $x\in \RR^{n}$. Então a função $f$ é uma função convexa.
 \end{prop}
 \begin{proof}
 Seja $\Vert \cdot \Vert$ a norma de um vetor. Para quaisquer $x, y \in \RR^{n}$ e qualquer $\alpha \in [0,1]$, temos que
