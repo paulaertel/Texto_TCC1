@@ -804,16 +804,16 @@ e de modo geral, $\Omega$ é uma reta se $m=n-1$, um plano se $m=n-2$ e uma vari
 
 Para obter as condições de otimalidade para um ponto de mínimo $x^{*}$ do problema \eqref{problema_geral_minimizacao_igualdade}, a ideia central é considerar o movimento para longe do ponto em uma determinada direção, desde que possamos continuar, pelo menos inicialmente, no conjunto $\Omega$. Desse modo, dado $x \in \Omega$ dizemos que um vetor $d$ é uma \emph{direção factível} de $x$ se existe $\bar{\alpha} >0$ tal que $x + \alpha d \in \Omega$, para todo $\alpha$ com $0 \leq \alpha \leq \bar{\alpha}$. Em vista disso, o primeiro passo será determinar o conjunto de direções factíveis em $\Omega$. 
 
-Para tanto, associado a $\Omega$ temos o conjunto de soluções do sistema homogêneo $Ax=b$, que é chamado de Núcleo de $A$ e denotado por $\mathcal{N}(A)$. Este conjunto é um subespaço de $\RR^{n}$ de dimensão $n-m$, pois $\posto (A)=m$, e é interessante observar que $\mathcal{N}(A)$ é um subespaço paralelo à variedade afim $\Omega$ e passa pela origem. Esta noção é representada na \Cref{fig:nucleoA_paralelo_S}.
+Para tanto, associado a $\Omega$ temos o conjunto de soluções do sistema homogêneo $Ax=0$, que é chamado de Núcleo de $A$ e denotado por $\mathcal{N}(A)$. Este conjunto é um subespaço de $\RR^{n}$ de dimensão $n-m$, pois $\posto (A)=m$, e é interessante observar que $\mathcal{N}(A)$ é um subespaço paralelo à variedade afim $\Omega$ e passa pela origem. Esta noção é representada na \Cref{fig:nucleoA_paralelo_Omega}.
 
 \begin{figure}[!ht] 
 	\centering
-	\includegraphics[width=0.60\textwidth]{nucleoA_paralelo_S}
-	\caption{ Núcleo de uma matriz. \\ Fonte: \textcite{Ana1994} \label{fig:nucleoA_paralelo_S}}
+	\includegraphics[width=0.60\textwidth]{nucleoA_paralelo_Omega}
+	\caption{ Núcleo de uma matriz. \\ Fonte: \textcite{Ana1994} \label{fig:nucleoA_paralelo_Omega}}
 \end{figure}
 
 
-Como $\posto (A)=m$, as $m$ linhas de $A$ formam um conjunto de vetores linearmente independentes que geram o subespaço chamado imagem de $A^{T}$ de dimensão $m$, que é denotado por $Im(A^{T})$. Dessa forma, como é possível observar na \Cref{fig:nucleoA_paralelo_S} as linhas de $A$ são ortogonais a $\mathcal{N}(A)$, ou, em outras palavras, $\mathcal{N}(A)$ é o complemento ortogonal de $Im(A^{T})$. Vamos demonstrar este resultado. 
+Como $\posto (A)=m$, as $m$ linhas de $A$ formam um conjunto de vetores linearmente independentes que geram o subespaço chamado imagem de $A^{T}$ de dimensão $m$, que é denotado por $Im(A^{T})$. Dessa forma, como é possível observar na \Cref{fig:nucleoA_paralelo_Omega}, as linhas de $A$ são ortogonais ao $\mathcal{N}(A)$, ou, em outras palavras, $\mathcal{N}(A)$ é o complemento ortogonal de $Im(A^{T})$. Vamos demonstrar este resultado. 
 
 \begin{prop} \label{prop:complemento_ortogonal_nucleo}
 Seja $A \in \RR^{m\times n}$. $\mathcal{N}(A) = Im(A^{T})^{\bot}$.
@@ -843,7 +843,7 @@ então $A(\tilde{x} + \alpha d) = b$ implica em $Ad = 0$ e, portanto, $d \in \ma
 
 A partir disso, é possível construir uma parametrização que caracterize o conjunto factível. Se $\{ z_{1}, z_{2}, \ldots , z_{n-m} \}$ é uma base de $\mathcal{N}(A)$ e $Z$ a matriz de dimensão $n\times (n-m)$ cujas colunas são os vetores $z_{i}$, então para todo $d \in \mathcal{N}(A)$, existe $\boldsymbol{\gamma} \in \RR^{n-m}$ tal que $d=Z\boldsymbol{\gamma}$, ou seja, $d$ é escrito como combinação linear dos vetores da base do núcleo de A. Assim, se $\tilde{x}$ é uma solução de \eqref{eq:restricao_de_igualdade}, podemos caracterizar o conjunto factível da seguinte forma
 \[ \label{parametrizacao_de_S}
-\Omega = \{ x \in \RR^{n} \mid x=\tilde{x} + Z\boldsymbol{\gamma} , \ \boldsymbol{\gamma} \in \RR^{n-m} \ \text{e} \ A\xbar =b \} .
+\Omega = \{ x \in \RR^{n} \mid x=\tilde{x} + Z\boldsymbol{\gamma} , \ \boldsymbol{\gamma} \in \RR^{n-m} \ \text{e} \ A\tilde{x} =b \} .
 \]
 
 \subsubsection{Condições Necessárias de Primeira Ordem}
