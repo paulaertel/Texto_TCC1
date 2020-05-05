@@ -861,7 +861,7 @@ e a partir dela podemos considerar o seguinte problema de minimização sem rest
 
 Primeiramente, vejamos que os problemas \eqref{problema_geral_minimizacao_igualdade} e \eqref{problema_minimizacao_irrestrita_phi} são equivalentes.
 
-\begin{prop}
+\begin{prop} \label{prop:equivalencia_problema_restricoes_igualdade_irrestrito}
 O vetor $\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de $\varphi$ em $\RR^{n-m}$ se, e somente se, $x^{*} \coloneqq  \tilde{x} + Z\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
 \end{prop}
 \begin{proof}
@@ -869,26 +869,26 @@ Seja $\boldsymbol{\gamma}^{*}$ um minimizador local (global) de $\varphi$ em $\R
 \[
 f(\tilde{x} + Z\boldsymbol{\gamma}^{*} ) = \varphi (\boldsymbol{\gamma}^{*}) \leq \varphi (\boldsymbol{\gamma}) = f(\tilde{x} + Z\boldsymbol{\gamma}) ,
 \]
-para todo $\boldsymbol{\gamma} \in \RR^{n-m}$. Logo, chamando $x^{*}\coloneqq \tilde{x} + Z\boldsymbol{\gamma}^{*}$, temos
+para todo $\boldsymbol{\gamma} \in \RR^{n-m}$. Logo, chamando $x^{*}\coloneqq \tilde{x} + Z\boldsymbol{\gamma}^{*} \in \Omega$, temos
 \[
 f(x^{*}) \leq f(x),
 \]
-para todo $x \in \RR^{n}$, com $x^{*} \in \Omega$. Portanto, $x^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
+para todo $x \in \Omega$. Portanto, $x^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
 
-Reciprocamente, suponhamos que $x^{*}=\tilde{x} + Z\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}. Então,
-\[
+Reciprocamente, suponhamos que $x^{*}=\tilde{x} + Z\boldsymbol{\gamma}^{*}$, com $\boldsymbol{\gamma}^{*} \in \RR^{n-m}$, é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}. Então,
+\[ \label{eq:1_prop:equivalencia_problema_restricoes_igualdade_irrestrito}
 f(\tilde{x} + Z\boldsymbol{\gamma}^{*}) = f(x^{*}) \leq f(x) = f(\tilde{x} + Z\boldsymbol{\gamma})
 \]
-para todo $x \in \RR^{n}$, o que implica em 
+para todo $x \in \Omega$ e $\boldsymbol{\gamma} \in \RR^{n-m}$. Assim, a definição \eqref{funcao_phi_restricoes_igualdade} da função $\varphi$ e \eqref{eq:1_prop:equivalencia_problema_restricoes_igualdade_irrestrito} implicam em 
 \[
 \varphi(\boldsymbol{\gamma}^{*}) \leq \varphi(\boldsymbol{\gamma}) , 
 \]
 para todo $\boldsymbol{\gamma} \in \RR^{n-m}$. Portanto, $\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de $\varphi$ em $\RR^{n-m}$.
 \end{proof}
 
-Agora, como \eqref{problema_minimizacao_irrestrita_phi} é um problema de minimização irrestrito, o \Cref{teo:condicao_necessaria_1_ordem} nos diz que a condição necessária de primeira ordem para algum $x^{*} \in \RR^{n}$ é
+Agora, como \eqref{problema_minimizacao_irrestrita_phi} é um problema de minimização irrestrito, o \Cref{teo:condicao_necessaria_1_ordem} nos diz que a condição necessária de primeira ordem para algum $\boldsymbol{\gamma}^{*} \in \RR^{n-m}$ é
 \[ \label{condicao_1_ordem_phi}
-\nabla \varphi(x^{*}) = 0.
+\nabla \varphi(\boldsymbol{\gamma}^{*}) = 0.
 \]
 
 Por \eqref{funcao_phi_restricoes_igualdade} e definindo a função $g: \RR^{n-m} \rightarrow \RR^{n}$, com $g(\boldsymbol{\gamma}) = \tilde{x} + Z\boldsymbol{\gamma}$, temos que $\varphi(\boldsymbol{\gamma}) = f(g(\boldsymbol{\gamma}))$. Aplicando a regra da cadeia para calcular sua derivada, obtemos
@@ -997,7 +997,7 @@ Isso significa que $\nabla^{2} f(x^{*})$ é semidefinida positiva para todo $y\i
 
 Analogamente, a partir das condições suficientes para o problema \eqref{problema_minimizacao_irrestrita_phi}, podemos determinar as seguintes condições suficientes de segunda ordem para \eqref{problema_geral_minimizacao_igualdade}.
 
-\begin{teo} \label{teo:condicao_suficiente_2ordem_igualdade}
+\begin{teo}(\textbf{Condição suficiente de segunda ordem}) \label{teo:condicao_suficiente_2ordem_igualdade}
 Se $x^{*} \in \RR^{n}$ verifica $Ax^{*}=b$ e 
 \begin{enumerate}
 	\item[(i)] $Z^{T}\nabla f(x^{*}) =0$,
@@ -1128,7 +1128,7 @@ O \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos fornece uma caracteri
 Considere $x\in \Omega$ tal que $r(x) = p$ com $0<p \leq m$. Um vetor $d \in \RR^{n}$ é uma direção factível a partir de $x$ se, e somente se, $w_{i}^{T}d \leq 0$ para todo $i \in \mathcal{I} (x)$.
 \end{teo}
 \begin{proof}
-Suponhamos que $d\in \RR^{n}$ é uma direção factível em $x$. Então existe $\bar{\alpha} >0$ tal que $x+\alpha d \in \Omega$ para todo $\alpha \in (0, \tilde{\alpha} ]$, o que ocorre se, e somente se, $W(x+\alpha d) \leq c$, ou seja, $w_{i}^{T}(x+\alpha d) \leq c_{i}$, para todo $i \in \mathcal{M} \coloneqq \{ 1,2, \ldots ,m \}$. 
+Suponhamos que $d\in \RR^{n}$ é uma direção factível em $x$. Então existe $\tilde{\alpha} >0$ tal que $x+\alpha d \in \Omega$ para todo $\alpha \in (0, \tilde{\alpha} ]$, o que ocorre se, e somente se, $W(x+\alpha d) \leq c$, ou seja, $w_{i}^{T}(x+\alpha d) \leq c_{i}$, para todo $i \in \mathcal{M} \coloneqq \{ 1,2, \ldots ,m \}$. 
 Em particular, se $i\in \mathcal{I} (x)$ temos que
 \[
 w_{i}^{T}(x+\alpha d) = c_{i} + \alpha w_{i}^{T}d \leq c_{i},
@@ -1143,7 +1143,7 @@ Por outro lado, se $i \notin \mathcal{I}(x)$, temos que $w_{i}^{T} x < c_{i}$. N
 \begin{enumerate}
 	\item[(i)] Se $w_{i}^{T}d \leq 0$, então $w_{i}^{T}(x + \alpha d) \leq c_{i}$, para qualquer $\alpha >0$             ;
 
-	\item[(ii)]Se $w_{i}^{T}d >0$ podemos encontrar $\alpha_{i} >0$ de modo que $w_{i}^{T}x + w_{i}^{T}(\alpha d) = c_{i}$. Considere que como $w_{i}^{T}x < c_{i}$ existe $\beta >0$, tal que $w_{i}^{T}x + \beta_{i} = c_{i}$. Desse modo, temos que escolher $\alpha_{i}$ tal que $\beta_{i} = \alpha_{i} w_{i}^{T} d$, isto é,
+	\item[(ii)]Se $w_{i}^{T}d >0$ podemos encontrar $\alpha_{i} >0$ de modo que $w_{i}^{T}x + w_{i}^{T}(\alpha_{i} d) = c_{i}$. Considere que como $w_{i}^{T}x < c_{i}$ existe $\beta >0$, tal que $w_{i}^{T}x + \beta_{i} = c_{i}$. Desse modo, temos que escolher $\alpha_{i}$ tal que $\beta_{i} = \alpha_{i} w_{i}^{T} d$, isto é,
 	\[
 	w_{i}^{T}x + \alpha_{i} w_{i}^{T}d = c_{i} ,
 	\]
@@ -1238,23 +1238,23 @@ c_{\mathcal{I}} = \begin{bmatrix*} c_{i_{1}} \\ c_{i_{2}} \\ \vdots \\ c_{i_{r(x
 \]
 Supomos que $\posto (W_{\mathcal{I}}) = r(x^{*})$.
 
-Se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então existe $\boldsymbol{\lambda} \in \RR^{r(x^{*})}$ tal que 
+Se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que 
 \[
-\nabla f(x^{*}) = \sum_{k=1}^{r(x^{*})} \lambda_{k} w_{i_{k}} \quad \text{e} \quad \lambda_{k} \leq 0, \ 1\leq k\leq r(x^{*}),
+\nabla f(x^{*}) = \sum_{k=1}^{r(x^{*})} \mu_{k} w_{i_{k}} \quad \text{e} \quad \mu_{k} \leq 0, \ 1\leq k\leq r(x^{*}),
 \]
 ou, equivalentemente
 \[ \label{eq:condicao_necessaria_1ordem_restricao_desigualdade}
-\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\lambda}, \quad \boldsymbol{\lambda} \in \RR^{r(x^{*})}
+\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\mu}, \quad \boldsymbol{\mu} \in \RR^{r(x^{*})}
 \]
 e
 \[
-\lambda_{k} \leq 0, \ 1\leq k\leq r(x^{*}).
+\mu_{k} \leq 0, \ 1\leq k\leq r(x^{*}).
 \]
 \end{teo}
 \begin{proof}
 Suponhamos que \eqref{eq:condicao_necessaria_1ordem_restricao_desigualdade} não ocorre. Isso pode acontecer por dois motivos:
 \begin{enumerate}
-\item[(i)] $\nabla f(x^{*}) \neq W_{\mathcal{I}}^{T} \boldsymbol{\lambda} \ \text{para todo} \ \boldsymbol{\lambda} \in \RR^{r(x^{*})}$.
+\item[(i)] $\nabla f(x^{*}) \neq W_{\mathcal{I}}^{T} \boldsymbol{\mu} \ \text{para todo} \ \boldsymbol{\mu} \in \RR^{r(x^{*})}$.
 
 Em outras palavras, temos que $\nabla f(x^{*})$ não pode ser escrito como combinação linear das linhas de $W_{\mathcal{I}}$. Assim, $x^{*}$ não é minimizador local do problema com restrições de igualdade definido por 
 \[ \label{eq:1_condicao_necessaria_1ordem_restricao_desigualdade}
@@ -1265,15 +1265,15 @@ Em outras palavras, temos que $\nabla f(x^{*})$ não pode ser escrito como combi
 \]
 pois $x^{*}$ não satisfaz a condição necessária de primeira ordem para o problema \eqref{eq:1_condicao_necessaria_1ordem_restricao_desigualdade}. Logo, $x^{*}$ também não pode ser minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}, o que é uma contradição.
 
-\item[(ii)] $\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\lambda}$, mas existe $j$ tal que $\lambda_{j} >0$.
+\item[(ii)] $\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\mu}$, mas existe $j$ tal que $\mu_{j} >0$.
 
-Se $r(x^{*}) = 1$ e $\mathcal{I} = \{ i_{1} \}$, então $\nabla f(x^{*}) = \lambda_{1} w_{i_{1}}$ e $\lambda_{1} >0$. Tomando $d=-\nabla f(x^{*})$ temos que
+Se $r(x^{*}) = 1$ e $\mathcal{I} = \{ i_{1} \}$, então $\nabla f(x^{*}) = \mu_{1} w_{i_{1}}$ e $\mu_{1} >0$. Tomando $d=-\nabla f(x^{*})$ temos que
 \[
-w_{i_{1}}^{T}d = -\lambda_{1} w_{i_{1}}^{T}w_{i_{1}} = -\lambda_{1} \Vert w_{i_{1}} \Vert^{2} < 0.
+w_{i_{1}}^{T}d = -\mu_{1} w_{i_{1}}^{T}w_{i_{1}} = -\mu_{1} \Vert w_{i_{1}} \Vert^{2} < 0.
 \]
 Assim, $d$ é uma direção de descida factível no ponto $x^{*}$, e portanto, $x^{*}$ não pode ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, contradizendo a hipótese.
 
-Agora, se $2\leq r(x^{*}) \leq n$, denotamos por $\tilde{W_{\mathcal{I}}}$ a matriz obtida retirando a linha $w_{i_{j}}$ correspondente ao multiplicador $\lambda_{j} >0$. Consideramos $d=P_{\mathcal{N}(\tilde{W_{\mathcal{I}}})} (-\nabla f(x^{*}))$, em que $P_{\mathcal{N}(\tilde{W_{\mathcal{I}}})}$ é o operador projeção ortogonal sobre $\mathcal{N}(\tilde{W_{\mathcal{I}}})$. Então, temos que
+Agora, se $2\leq r(x^{*}) \leq n$, denotamos por $\tilde{W_{\mathcal{I}}}$ a matriz obtida retirando a linha $w_{i_{j}}$ correspondente ao multiplicador $\mu_{j} >0$. Consideramos $d=P_{\mathcal{N}(\tilde{W_{\mathcal{I}}})} (-\nabla f(x^{*}))$, em que $P_{\mathcal{N}(\tilde{W_{\mathcal{I}}})}$ é o operador projeção ortogonal sobre $\mathcal{N}(\tilde{W_{\mathcal{I}}})$. Então, temos que
 \[
 (-\nabla f(x^{*}) -d)^{T}d =0,
 \]
@@ -1290,7 +1290,7 @@ e portanto, $d$ é uma direção de descida. Veja \Cref{fig:projecao_gradiente_s
 \end{figure}
 Ademais, vejamos que $d$ também é uma direção factível. Com efeito,
 \[
-\nabla f(x^{*}) = \lambda_{1} w_{i_{1}} + \lambda_{2} w_{i_{2}} + \ldots + \lambda_{j} w_{i_{j}} + \ldots + \lambda_{r(x^{*})} w_{i_{r(x^{*})}}
+\nabla f(x^{*}) = \mu_{1} w_{i_{1}} + \mu_{2} w_{i_{2}} + \ldots + \mu_{j} w_{i_{j}} + \ldots + \mu_{r(x^{*})} w_{i_{r(x^{*})}}
 \]
 e, por construção, como tomamos $d \in \mathcal{N}(\tilde{W_{\mathcal{I}}})$ e $\posto (W_{\mathcal{I}}) = r(x^{*})$, temos que
 \[
@@ -1298,9 +1298,9 @@ w_{i_{k}}^{T}d =0 \ \text{para todo} \ k \neq j.
 \]
 Então,
 \[
-\nabla f(x^{*})^{T}d = \lambda_{j} w_{i_{j}}^{T} d.
+\nabla f(x^{*})^{T}d = \mu_{j} w_{i_{j}}^{T} d.
 \]
-Usando \eqref{eq:2_condicao_necessaria_1ordem_restricao_desigualdade} e o fato de $\lambda_{j} >0$, obtemos
+Usando \eqref{eq:2_condicao_necessaria_1ordem_restricao_desigualdade} e o fato de $\mu_{j} >0$, obtemos
 \[
 w_{i_{j}}^{T} d <0.
 \]
@@ -1318,15 +1318,15 @@ Desenvolveremos agora as condições necessárias e as condições suficientes d
 \begin{teo}(\textbf{Condição necessária de segunda ordem}) \label{teo:condicao_necessaria_2ordem_desigualdade}
 Sejam $f \in \mathcal{C}^{2}$, $x^{*}$ um minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}, e $r(x^{*})$ e $\mathcal{I}$ definidos como anteriormente. Então
 \begin{enumerate}
-	\item[(i)] Existe $\boldsymbol{\lambda} \in \RR^{r(x^{*})}$ tal que $\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\lambda}$ e $\lambda_{i} \leq 0$ para todo $i \in \mathcal{I}(x^{*})$;
+	\item[(i)] Existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que $\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\mu}$ e $\mu_{i} \leq 0$ para todo $i \in \mathcal{I}(x^{*})$;
 
 	\item[(ii)] Para todo $y \in \mathcal{N}(W_{\mathcal{I}})$ temos que $y^{T} \nabla^{2} f(x^{*})y \geq 0$.
 \end{enumerate}
 \end{teo}
 \begin{proof}
-Perceba que se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então pelo \Cref{teo:condicao_necessaria_1ordem_restricao_desigualdade}, existe $\boldsymbol{\lambda} \in \RR^{r(x^{*})}$ tal que 
+Perceba que se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então pelo \Cref{teo:condicao_necessaria_1ordem_restricao_desigualdade}, existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que 
 \[
-\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\lambda} \ \text{e} \ \lambda_{i} \leq 0,
+\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\mu} \ \text{e} \ \mu_{i} \leq 0,
 \] 
 para todo $i \in \mathcal{I}(x^{*})$.
 
@@ -1345,7 +1345,7 @@ y^{T}\nabla^{2} f(x^{*})y \geq 0 \ \text{para todo} \ y \in \mathcal{N}(W_{\math
 
 
 \begin{teo}(\textbf{Condição suficiente de segunda ordem}) \label{teo:condicao_suficiente_2ordem_desigualdade}
-Sejam $f \in \mathcal{C}^{2}$, $x^{*} \in \Omega$, e $r(x^{*})$ e $\mathcal{I}$ definidos como anteriormente. Se $\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\lambda}$ com $\lambda_{i} \leq 0$ para todo $i \in \mathcal{I}(x^{*})$, e $y^{T} \nabla^{2} f(x^{*})y \succ 0$ para todo $y \in \mathcal{N}(W_{\mathcal{J}})$, $y\neq 0$, em que $\mathcal{J} = \{ i\in \{ 1,2, \ldots , r(x^{*}) \} \mid \lambda_{i} <0 \}$, então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
+Sejam $f \in \mathcal{C}^{2}$, $x^{*} \in \Omega$, e $r(x^{*})$ e $\mathcal{I}$ definidos como anteriormente. Se $\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\mu}$ com $\mu_{i} \leq 0$ para todo $i \in \mathcal{I}(x^{*})$, e $y^{T} \nabla^{2} f(x^{*})y \succ 0$ para todo $y \in \mathcal{N}(W_{\mathcal{J}})$, $y\neq 0$, em que $\mathcal{J} = \{ i\in \{ 1,2, \ldots , r(x^{*}) \} \mid \mu_{i} <0 \}$, então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
 \end{teo}
 \begin{proof}
 Por demonstrar.
