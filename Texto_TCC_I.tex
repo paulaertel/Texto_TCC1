@@ -846,7 +846,7 @@ A partir disso, é possível construir uma parametrização que caracterize o co
 \Omega = \{ x \in \RR^{n} \mid x=\tilde{x} + Z\boldsymbol{\gamma} , \ \boldsymbol{\gamma} \in \RR^{n-m} \ \text{e} \ A\tilde{x} =b \} .
 \]
 
-\subsubsection{Condições Necessárias de Primeira Ordem}
+\subsubsection{Condições Necessárias de Primeira Ordem} \label{subsection:condicoes_1ordem_igualdade}
 
 Como vimos anteriormente, de modo geral, se um ponto é solução de um problema de otimização então deve satisfazer determinadas propriedades, que são chamadas de condições de otimalidade. Nesta seção abordaremos a condição necessária de primeira ordem para o problema de minimização com restrições de igualdade. Para obter esta condição utilizaremos a parametrização do conjunto factível proposta em \eqref{parametrizacao_de_S}, transferindo as restrições de \eqref{problema_geral_minimizacao_igualdade} para sua função objetivo. Com isso obtemos um novo problema de minimização irrestrita, para o qual as condições necessárias de primeira e segunda ordem já são conhecidas.
 
@@ -1219,17 +1219,19 @@ f(\xbar + td) - f(\xbar) <0.
 Portanto, $d \in \mathcal{D}_{f}(\xbar)$.
 \end{proof}
 
-Assim, a partir de um ponto $x\in \Omega$, estamos interessados em saber se existem direções de descida factíveis, isto é, direções factíveis tais que
+Assim, a partir de um ponto $\xbar \in \Omega$, estamos interessados em saber se existem direções de descida factíveis, isto é, direções factíveis tais que
 \[ \label{eq:caracterizacao_direcao_descida}
-\nabla f(x)^{T}d < 0,
+\nabla f(\xbar)^{T}d < 0,
 \]
-pois se existe uma direção $d$ que satisfaz \eqref{eq:caracterizacao_direcao_descida}, decorre do \Cref{lema:direcao_de_descida} e da \Cref{defi:direcao_de_descida} que $x$ não é minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}.
+pois se existe uma direção $d$ que satisfaz \eqref{eq:caracterizacao_direcao_descida}, decorre do \Cref{lema:direcao_de_descida} e da \Cref{defi:direcao_de_descida} que $\xbar$ não é minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}.
 
 \begin{obs}
-Novamente, a análise dependerá das restrição ativas em $x$. Se $r(x) =0$, o ponto está no interior de $\Omega$ e as condições necessárias e suficientes são as mesmas do caso em que o problema é irrestrito.
+Novamente, a análise dependerá das restrição ativas em $\xbar$. Se $r(\xbar) =0$, o ponto está no interior de $\Omega$ e as condições necessárias e suficientes são as mesmas do caso em que o problema é irrestrito.
 \end{obs}
 
 Agora, já possuímos os ferramentais necessários para determinar a condição necessária de primeira ordem a ser satisfeita por uma solução do problema \eqref{problema_geral_minimizacao_desigualdade}.
+
+
 
 \begin{teo}(\textbf{Condição necessária de primeira ordem}) \label{teo:condicao_necessaria_1ordem_restricao_desigualdade}
 Consideremos o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{1}$ e $x^{*} \in \Omega$ tal que $1 \leq r(x^{*}) \leq n$. Seja $\mathcal{I} \subset \mathcal{M}$, $\mathcal{I} = \{ i_{1}, i_{2}, \ldots , i_{r(x^{*})} \}$ tal que $w_{i}^{T}x = c_{i}$ se, e somente se, $i\in \mathcal{I}$. Seja $W_{\mathcal{I}} \in \RR^{r(x^{*})\times n}$ a submatriz de $W$ cujas linhas são as que tem índices em $\mathcal{I}$ e 
@@ -1239,75 +1241,170 @@ c_{\mathcal{I}} = \begin{bmatrix*} c_{i_{1}} \\ c_{i_{2}} \\ \vdots \\ c_{i_{r(x
 Supomos que $\posto (W_{\mathcal{I}}) = r(x^{*})$.
 
 Se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que 
-\[
-\nabla f(x^{*}) = \sum_{k=1}^{r(x^{*})} \mu_{k} w_{i_{k}} \quad \text{e} \quad \mu_{k} \leq 0, \ 1\leq k\leq r(x^{*}),
+\[ \label{eq:condicao_necessaria_1ordem_restricao_desigualdade_somatorio}
+\nabla f(x^{*}) + \sum_{k=1}^{r(x^{*})} \mu_{k} w_{i_{k}} = 0 \quad \text{e} \quad \mu_{k} \geq 0, \ 1\leq k\leq r(x^{*}),
 \]
 ou, equivalentemente
 \[ \label{eq:condicao_necessaria_1ordem_restricao_desigualdade}
-\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\mu}, \quad \boldsymbol{\mu} \in \RR^{r(x^{*})}
+\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0, \quad \boldsymbol{\mu} \in \RR^{r(x^{*})}
 \]
 e
 \[
-\mu_{k} \leq 0, \ 1\leq k\leq r(x^{*}).
+\mu_{k} \geq 0, \ 1\leq k\leq r(x^{*}).
 \]
 \end{teo}
 \begin{proof}
-Suponhamos que \eqref{eq:condicao_necessaria_1ordem_restricao_desigualdade} não ocorre. Isso pode acontecer por dois motivos:
+Suponhamos, por contradição, que \eqref{eq:condicao_necessaria_1ordem_restricao_desigualdade} não ocorre. Isso pode acontecer por dois motivos:
 \begin{enumerate}
-\item[(i)] $\nabla f(x^{*}) \neq W_{\mathcal{I}}^{T} \boldsymbol{\mu} \ \text{para todo} \ \boldsymbol{\mu} \in \RR^{r(x^{*})}$.
+\item[(i)] $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} \neq 0 \ \text{para todo} \ \boldsymbol{\mu} \in \RR^{r(x^{*})}$.
 
-Em outras palavras, temos que $\nabla f(x^{*})$ não pode ser escrito como combinação linear das linhas de $W_{\mathcal{I}}$. Assim, $x^{*}$ não é minimizador local do problema com restrições de igualdade definido por 
+Assim, temos que $\nabla f(x^{*})$ não pode ser escrito como combinação linear das linhas de $W_{\mathcal{I}}$. Em outras palavras, $x^{*}$ não é minimizador local do seguinte problema
 \[ \label{eq:1_condicao_necessaria_1ordem_restricao_desigualdade}
 \begin{aligned}
 \min_{x} & \quad f(x) \\
 \text{s.a} & \quad W_{\mathcal{I}}x=c_{\mathcal{I}} ,
 \end{aligned}
 \]
-pois $x^{*}$ não satisfaz a condição necessária de primeira ordem para o problema \eqref{eq:1_condicao_necessaria_1ordem_restricao_desigualdade}. Logo, $x^{*}$ também não pode ser minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}, o que é uma contradição.
+pois $x^{*}$ não satisfaz a condição necessária de primeira ordem para o problema \eqref{eq:1_condicao_necessaria_1ordem_restricao_desigualdade} proposta em \eqref{condicao_1_ordem_gradiente} na \Cref{subsection:condicoes_1ordem_igualdade}. Logo, $x^{*}$ não pode ser minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}, o que é uma contradição.
 
-\item[(ii)] $\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\mu}$, mas existe $j$ tal que $\mu_{j} >0$.
+\item[(ii)] $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} = 0$, mas existe $j$ tal que $\mu_{j} <0$.
 
-Se $r(x^{*}) = 1$ e $\mathcal{I} = \{ i_{1} \}$, então $\nabla f(x^{*}) = \mu_{1} w_{i_{1}}$ e $\mu_{1} >0$. Tomando $d=-\nabla f(x^{*})$ temos que
+Primeiramente, se $r(x^{*}) = 1$ temos $\mathcal{I} = \{ i_{1} \}$ e então, 
 \[
-w_{i_{1}}^{T}d = -\mu_{1} w_{i_{1}}^{T}w_{i_{1}} = -\mu_{1} \Vert w_{i_{1}} \Vert^{2} < 0.
+\nabla f(x^{*}) + \mu_{1} w_{i_{1}} =0 ,
 \]
-Assim, $d$ é uma direção de descida factível no ponto $x^{*}$, e portanto, $x^{*}$ não pode ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, contradizendo a hipótese.
+com $\mu_{1} <0$, ou equivalentemente, 
+\[
+\nabla f(x^{*}) = - \mu_{1} w_{i_{1}} ,
+\]
+com $\mu_{1} <0$. Assim, tomando $d=-\nabla f(x^{*}) = \mu_{1} w_{i_{1}}$, com $\mu_{1} <0$, temos que $d$ é uma direção de descida, pois
+\[
+\nabla f(x^{*})^{T}d = -\nabla f(x^{*})^{T} \nabla f(x^{*}) = -\Vert \nabla f(x^{*}) \Vert^{2} <0,
+\]
+e além disso, $d$ é uma direção factível, pois
+\[
+w_{i_{1}}^{T}d = \mu_{1} w_{i_{1}}^{T}w_{i_{1}} = \mu_{1} \Vert w_{i_{1}} \Vert^{2} < 0,
+\]
+devido o fato de $\mu_{1} <0$. Desse modo, $d$ é uma direção de descida factível no ponto $x^{*}$, e portanto $x^{*}$ não pode ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, contradizendo a hipótese.
 
-Agora, se $2\leq r(x^{*}) \leq n$, denotamos por $\tilde{W_{\mathcal{I}}}$ a matriz obtida retirando a linha $w_{i_{j}}$ correspondente ao multiplicador $\mu_{j} >0$. Consideramos $d=P_{\mathcal{N}(\tilde{W_{\mathcal{I}}})} (-\nabla f(x^{*}))$, em que $P_{\mathcal{N}(\tilde{W_{\mathcal{I}}})}$ é o operador projeção ortogonal sobre $\mathcal{N}(\tilde{W_{\mathcal{I}}})$. Então, temos que
+Agora, considere o caso em que $2\leq r(x^{*}) \leq n$. Vamos denotar por $\tilde{W_{\mathcal{I}}}$ a matriz obtida retirando a linha $w_{i_{j}}$ que corresponde ao multiplicador $\mu_{j} >0$. Tomando $d=\proj_{\mathcal{N}(\tilde{W_{\mathcal{I}}})} (-\nabla f(x^{*}))$, temos que
 \[
 (-\nabla f(x^{*}) -d)^{T}d =0,
 \]
-implicando em
+pois eles são ortogonais (veja \Cref{fig:projecao_gradiente_sobre_nucleoA}), o que implica em
 \[ \label{eq:2_condicao_necessaria_1ordem_restricao_desigualdade}
-\nabla f(x^{*})^{T}d = -d^{T}d = -\Vert d \Vert^{2} <0,
+\nabla f(x^{*})^{T}d = -d^{T}d = -\Vert d \Vert^{2} <0.
 \]
-e portanto, $d$ é uma direção de descida. Veja \Cref{fig:projecao_gradiente_sobre_nucleoA}.
-
 \begin{figure}[!ht] 
 	\centering
 	\includegraphics[width=0.55\textwidth]{projecao_gradiente_sobre_nucleoW}
 	\caption{Projeção de $-\nabla f(x)$ sobre o $\mathcal{N}(\tilde{W_{\mathcal{I}}})$. \\ Fonte: \textcite{Ana1994}. \label{fig:projecao_gradiente_sobre_nucleoA}}
 \end{figure}
-Ademais, vejamos que $d$ também é uma direção factível. Com efeito,
+Logo, $d$ é uma direção de descida. Além disso, $d$ é uma direção factível. Com efeito, por \eqref{eq:condicao_necessaria_1ordem_restricao_desigualdade_somatorio}, temos que
 \[
-\nabla f(x^{*}) = \mu_{1} w_{i_{1}} + \mu_{2} w_{i_{2}} + \ldots + \mu_{j} w_{i_{j}} + \ldots + \mu_{r(x^{*})} w_{i_{r(x^{*})}}
+\nabla f(x^{*}) + \mu_{1} w_{i_{1}} + \mu_{2} w_{i_{2}} + \ldots + \mu_{j} w_{i_{j}} + \ldots + \mu_{r(x^{*})} w_{i_{r(x^{*})}} =0
 \]
-e, por construção, como tomamos $d \in \mathcal{N}(\tilde{W_{\mathcal{I}}})$ e $\posto (W_{\mathcal{I}}) = r(x^{*})$, temos que
-\[
-w_{i_{k}}^{T}d =0 \ \text{para todo} \ k \neq j.
+e, como tomamos $d \in \mathcal{N}(\tilde{W_{\mathcal{I}}})$ temos que
+\[ \label{eq:3_condicao_necessaria_1ordem_restricao_desigualdade}
+w_{i_{k}}^{T}d =0, 
 \]
-Então,
+para todo $k \neq j$. Então,
 \[
-\nabla f(x^{*})^{T}d = \mu_{j} w_{i_{j}}^{T} d.
+\nabla f(x^{*})^{T}d + \mu_{j} w_{i_{j}}^{T} d =0,
 \]
-Usando \eqref{eq:2_condicao_necessaria_1ordem_restricao_desigualdade} e o fato de $\mu_{j} >0$, obtemos
+e reescrevendo, obtemos
 \[
+\nabla f(x^{*})^{T}d = -\mu_{j} w_{i_{j}}^{T} d =0.
+\]
+Agora, utilizando \eqref{eq:2_condicao_necessaria_1ordem_restricao_desigualdade} e o fato de $\mu_{j} <0$, obtemos
+\[ \label{eq:4_condicao_necessaria_1ordem_restricao_desigualdade}
 w_{i_{j}}^{T} d <0.
 \]
-Portanto, $w_{i_{k}}^{T} d \leq 0$ para todo $k$ tal que $1 \leq k \leq r(x^{*})$, ou seja, $d$ é uma direção factível e de descida, contradizendo o fato de $x^{*}$ ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
+Assim, de \eqref{eq:3_condicao_necessaria_1ordem_restricao_desigualdade} e \eqref{eq:4_condicao_necessaria_1ordem_restricao_desigualdade}, conluímos que
+\[
+w_{i_{k}}^{T} d \leq 0
+\]
+para todo $k$ tal que $1 \leq k \leq r(x^{*})$, ou seja, $d$ é uma direção factível. Portanto, $d$ é uma direção factível e de descida a partir de $x^{*}$, o que contradiz contradizendo o fato de $x^{*}$ ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
 \end{enumerate}
 \end{proof}
 
+
+%\begin{teo}(\textbf{Condição necessária de primeira ordem}) \label{teo:condicao_necessaria_1ordem_restricao_desigualdade}
+%Consideremos o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{1}$ e $x^{*} \in \Omega$ tal que $1 \leq r(x^{*}) \leq n$. Seja $\mathcal{I} \subset \mathcal{M}$, $\mathcal{I} = \{ i_{1}, i_{2}, \ldots , i_{r(x^{*})} \}$ tal que $w_{i}^{T}x = c_{i}$ se, e somente se, $i\in \mathcal{I}$. Seja $W_{\mathcal{I}} \in \RR^{r(x^{*})\times n}$ a submatriz de $W$ cujas linhas são as que tem índices em $\mathcal{I}$ e 
+%\[
+%c_{\mathcal{I}} = \begin{bmatrix*} c_{i_{1}} \\ c_{i_{2}} \\ \vdots \\ c_{i_{r(x^{*})}} \end{bmatrix*} .
+%\]
+%Supomos que $\posto (W_{\mathcal{I}}) = r(x^{*})$.
+
+%Se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que 
+%\[
+%\nabla f(x^{*}) = \sum_{k=1}^{r(x^{*})} \mu_{k} w_{i_{k}} \quad \text{e} \quad \mu_{k} \leq 0, \ 1\leq k\leq r(x^{*}),
+%\]
+%ou, equivalentemente
+%\[ \label{eq:condicao_necessaria_1ordem_restricao_desigualdade}
+%\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\mu}, \quad \boldsymbol{\mu} \in \RR^{r(x^{*})}
+%\]
+%e
+%\[
+%\mu_{k} \leq 0, \ 1\leq k\leq r(x^{*}).
+%\]
+%\end{teo}
+%\begin{proof}
+%Suponhamos que \eqref{eq:condicao_necessaria_1ordem_restricao_desigualdade} não ocorre. Isso pode acontecer por dois motivos:
+%\begin{enumerate}
+%\item[(i)] $\nabla f(x^{*}) \neq W_{\mathcal{I}}^{T} \boldsymbol{\mu} \ \text{para todo} \ \boldsymbol{\mu} \in \RR^{r(x^{*})}$.
+
+%Em outras palavras, temos que $\nabla f(x^{*})$ não pode ser escrito como combinação linear das linhas de $W_{\mathcal{I}}$. Assim, $x^{*}$ não é minimizador local do problema com restrições de igualdade definido por 
+%\[ \label{eq:1_condicao_necessaria_1ordem_restricao_desigualdade}
+%\begin{aligned}
+%\min_{x} & \quad f(x) \\
+%\text{s.a} & \quad W_{\mathcal{I}}x=c_{\mathcal{I}} ,
+%\end{aligned}
+%\]
+%pois $x^{*}$ não satisfaz a condição necessária de primeira ordem para o problema \eqref{eq:1_condicao_necessaria_1ordem_restricao_desigualdade}. Logo, $x^{*}$ também não pode ser minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}, o que é uma contradição.
+
+%\item[(ii)] $\nabla f(x^{*}) = W_{\mathcal{I}}^{T} \boldsymbol{\mu}$, mas existe $j$ tal que $\mu_{j} >0$.
+
+%Se $r(x^{*}) = 1$ e $\mathcal{I} = \{ i_{1} \}$, então $\nabla f(x^{*}) = \mu_{1} w_{i_{1}}$ e $\mu_{1} >0$. Tomando $d=-\nabla f(x^{*})$ temos que
+%\[
+%w_{i_{1}}^{T}d = -\mu_{1} w_{i_{1}}^{T}w_{i_{1}} = -\mu_{1} \Vert w_{i_{1}} \Vert^{2} < 0.
+%\]
+%Assim, $d$ é uma direção de descida factível no ponto $x^{*}$, e portanto, $x^{*}$ não pode ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, contradizendo a hipótese.
+
+%Agora, se $2\leq r(x^{*}) \leq n$, denotamos por $\tilde{W_{\mathcal{I}}}$ a matriz obtida retirando a linha $w_{i_{j}}$ correspondente ao multiplicador $\mu_{j} >0$. Consideramos $d=P_{\mathcal{N}(\tilde{W_{\mathcal{I}}})} (-\nabla f(x^{*}))$, em que $P_{\mathcal{N}(\tilde{W_{\mathcal{I}}})}$ é o operador projeção ortogonal sobre $\mathcal{N}(\tilde{W_{\mathcal{I}}})$. Então, temos que
+%\[
+%(-\nabla f(x^{*}) -d)^{T}d =0,
+%\]
+%implicando em
+%\[ \label{eq:2_condicao_necessaria_1ordem_restricao_desigualdade}
+%\nabla f(x^{*})^{T}d = -d^{T}d = -\Vert d \Vert^{2} <0,
+%\]
+%e portanto, $d$ é uma direção de descida. Veja \Cref{fig:projecao_gradiente_sobre_nucleoA}.
+
+%\begin{figure}[!ht] 
+%	\centering
+%	\includegraphics[width=0.55\textwidth]{projecao_gradiente_sobre_nucleoW}
+%	\caption{Projeção de $-\nabla f(x)$ sobre o $\mathcal{N}(\tilde{W_{\mathcal{I}}})$. \\ Fonte: \textcite{Ana1994}. \label{fig:projecao_gradiente_sobre_nucleoA}}
+%\end{figure}
+%Ademais, vejamos que $d$ também é uma direção factível. Com efeito,
+%\[
+%\nabla f(x^{*}) = \mu_{1} w_{i_{1}} + \mu_{2} w_{i_{2}} + \ldots + \mu_{j} w_{i_{j}} + \ldots + \mu_{r(x^{*})} w_{i_{r(x^{*})}}
+%\]
+%e, por construção, como tomamos $d \in \mathcal{N}(\tilde{W_{\mathcal{I}}})$ e $\posto (W_{\mathcal{I}}) = r(x^{*})$, temos que
+%\[
+%w_{i_{k}}^{T}d =0 \ \text{para todo} \ k \neq j.
+%\]
+%Então,
+%\[
+%\nabla f(x^{*})^{T}d = \mu_{j} w_{i_{j}}^{T} d.
+%\]
+%Usando \eqref{eq:2_condicao_necessaria_1ordem_restricao_desigualdade} e o fato de $\mu_{j} >0$, obtemos
+%\[
+%w_{i_{j}}^{T} d <0.
+%\]
+%Portanto, $w_{i_{k}}^{T} d \leq 0$ para todo $k$ tal que $1 \leq k \leq r(x^{*})$, ou seja, $d$ é uma direção factível e de descida, contradizendo o fato de $x^{*}$ ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
+%\end{enumerate}
+%\end{proof}
 
 
 \subsubsection{Condições Necessárias e Suficientes de Segunda Ordem}
