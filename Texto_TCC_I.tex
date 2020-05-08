@@ -1234,7 +1234,7 @@ Agora, já possuímos os ferramentais necessários para determinar a condição 
 
 
 \begin{teo}(\textbf{Condição necessária de primeira ordem}) \label{teo:condicao_necessaria_1ordem_restricao_desigualdade}
-Consideremos o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{1}$ e $x^{*} \in \Omega$ tal que $1 \leq r(x^{*}) \leq n$. Seja $\mathcal{I} \subset \mathcal{M}$, $\mathcal{I} = \{ i_{1}, i_{2}, \ldots , i_{r(x^{*})} \}$ tal que $w_{i}^{T}x = c_{i}$ se, e somente se, $i\in \mathcal{I}$. Seja $W_{\mathcal{I}} \in \RR^{r(x^{*})\times n}$ a submatriz de $W$ cujas linhas são as que tem índices em $\mathcal{I}$ e 
+Consideremos o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{1}$ e $x^{*} \in \Omega$ tal que $1 \leq r(x^{*}) \leq n$. Seja $\mathcal{I} \subset \mathcal{M}$, $\mathcal{I} = \{ i_{1}, i_{2}, \ldots , i_{r(x^{*})} \}$ tal que $w_{i}^{T}x^{*} = c_{i}$ se, e somente se, $i\in \mathcal{I}$. Seja $W_{\mathcal{I}} \in \RR^{r(x^{*})\times n}$ a submatriz de $W$ cujas linhas são as que tem índices em $\mathcal{I}$ e 
 \[
 c_{\mathcal{I}} = \begin{bmatrix*} c_{i_{1}} \\ c_{i_{2}} \\ \vdots \\ c_{i_{r(x^{*})}} \end{bmatrix*} .
 \]
@@ -1287,7 +1287,7 @@ w_{i_{1}}^{T}d = \mu_{1} w_{i_{1}}^{T}w_{i_{1}} = \mu_{1} \Vert w_{i_{1}} \Vert^
 \]
 devido o fato de $\mu_{1} <0$. Desse modo, $d$ é uma direção de descida factível no ponto $x^{*}$, e portanto $x^{*}$ não pode ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, contradizendo a hipótese.
 
-Agora, considere o caso em que $2\leq r(x^{*}) \leq n$. Vamos denotar por $\tilde{W_{\mathcal{I}}}$ a matriz obtida retirando a linha $w_{i_{j}}$ que corresponde ao multiplicador $\mu_{j} >0$. Tomando $d=\proj_{\mathcal{N}(\tilde{W_{\mathcal{I}}})} (-\nabla f(x^{*}))$, temos que
+Agora, considere o caso em que $2\leq r(x^{*}) \leq n$. Vamos denotar por $\tilde{W_{\mathcal{I}}}$ a matriz obtida retirando a linha $w_{i_{j}}$ que corresponde ao multiplicador $\mu_{j} <0$. Tomando $d=\proj_{\mathcal{N}(\tilde{W_{\mathcal{I}}})} (-\nabla f(x^{*}))$, temos que
 \[
 (-\nabla f(x^{*}) -d)^{T}d =0,
 \]
@@ -1300,11 +1300,11 @@ pois eles são ortogonais (veja \Cref{fig:projecao_gradiente_sobre_nucleoA}), o 
 	\includegraphics[width=0.55\textwidth]{projecao_gradiente_sobre_nucleoW}
 	\caption{Projeção de $-\nabla f(x)$ sobre o $\mathcal{N}(\tilde{W_{\mathcal{I}}})$. \\ Fonte: \textcite{Ana1994}. \label{fig:projecao_gradiente_sobre_nucleoA}}
 \end{figure}
-Logo, $d$ é uma direção de descida. Além disso, $d$ é uma direção factível. Com efeito, por \eqref{eq:condicao_necessaria_1ordem_restricao_desigualdade_somatorio}, temos que
+Logo, $d$ é uma direção de descida. Além disso, $d$ é uma direção factível. Com efeito, temos que
 \[
 \nabla f(x^{*}) + \mu_{1} w_{i_{1}} + \mu_{2} w_{i_{2}} + \ldots + \mu_{j} w_{i_{j}} + \ldots + \mu_{r(x^{*})} w_{i_{r(x^{*})}} =0
 \]
-e, como tomamos $d \in \mathcal{N}(\tilde{W_{\mathcal{I}}})$ temos que
+com $\mu_{j} <0$, e como tomamos $d \in \mathcal{N}(\tilde{W_{\mathcal{I}}})$ temos que
 \[ \label{eq:3_condicao_necessaria_1ordem_restricao_desigualdade}
 w_{i_{k}}^{T}d =0, 
 \]
@@ -1314,7 +1314,7 @@ para todo $k \neq j$. Então,
 \]
 e reescrevendo, obtemos
 \[
-\nabla f(x^{*})^{T}d = -\mu_{j} w_{i_{j}}^{T} d =0.
+\nabla f(x^{*})^{T}d = -\mu_{j} w_{i_{j}}^{T} d.
 \]
 Agora, utilizando \eqref{eq:2_condicao_necessaria_1ordem_restricao_desigualdade} e o fato de $\mu_{j} <0$, obtemos
 \[ \label{eq:4_condicao_necessaria_1ordem_restricao_desigualdade}
@@ -1324,7 +1324,7 @@ Assim, de \eqref{eq:3_condicao_necessaria_1ordem_restricao_desigualdade} e \eqre
 \[
 w_{i_{k}}^{T} d \leq 0
 \]
-para todo $k$ tal que $1 \leq k \leq r(x^{*})$, ou seja, $d$ é uma direção factível. Portanto, $d$ é uma direção factível e de descida a partir de $x^{*}$, o que contradiz contradizendo o fato de $x^{*}$ ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
+para todo $k$ tal que $1 \leq k \leq r(x^{*})$, ou seja, $d$ é uma direção factível. Portanto, $d$ é uma direção factível e de descida a partir de $x^{*}$, o que contradiz o fato de $x^{*}$ ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
 \end{enumerate}
 \end{proof}
 
