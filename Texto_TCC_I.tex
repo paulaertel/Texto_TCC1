@@ -842,15 +842,15 @@ x=\tilde{x} + \alpha d \quad \text{e} \quad Ax=b ,
 então $A(\tilde{x} + \alpha d) = b$ implica em $Ad = 0$ e, portanto, $d \in \mathcal{N}(A)$. Dessa forma, concluímos que $\mathcal{N}(A)$ é o conjunto de direções factíveis em $\Omega$.
 
 A partir disso, é possível construir uma parametrização que caracterize o conjunto factível. Se $\{ z_{1}, z_{2}, \ldots , z_{n-m} \}$ é uma base de $\mathcal{N}(A)$ e $Z$ a matriz de dimensão $n\times (n-m)$ cujas colunas são os vetores $z_{i}$, então para todo $d \in \mathcal{N}(A)$, existe $\boldsymbol{\gamma} \in \RR^{n-m}$ tal que $d=Z\boldsymbol{\gamma}$, ou seja, $d$ é escrito como combinação linear dos vetores da base do núcleo de A. Assim, se $\tilde{x}$ é uma solução de \eqref{eq:restricao_de_igualdade}, podemos caracterizar o conjunto factível da seguinte forma
-\[ \label{parametrizacao_de_S}
+\[ \label{parametrizacao_de_Omega}
 \Omega = \{ x \in \RR^{n} \mid x=\tilde{x} + Z\boldsymbol{\gamma} , \ \boldsymbol{\gamma} \in \RR^{n-m} \ \text{e} \ A\tilde{x} =b \} .
 \]
 
 \subsubsection{Condições Necessárias de Primeira Ordem} \label{subsection:condicoes_1ordem_igualdade}
 
-Como vimos anteriormente, de modo geral, se um ponto é solução de um problema de otimização então deve satisfazer determinadas propriedades, que são chamadas de condições de otimalidade. Nesta seção abordaremos a condição necessária de primeira ordem para o problema de minimização com restrições de igualdade. Para obter esta condição utilizaremos a parametrização do conjunto factível proposta em \eqref{parametrizacao_de_S}, transferindo as restrições de \eqref{problema_geral_minimizacao_igualdade} para sua função objetivo. Com isso obtemos um novo problema de minimização irrestrita, para o qual as condições necessárias de primeira e segunda ordem já são conhecidas.
+Como vimos anteriormente, de modo geral, se um ponto é solução de um problema de otimização então deve satisfazer determinadas propriedades, que são chamadas de condições de otimalidade. Nesta seção abordaremos a condição necessária de primeira ordem para o problema de minimização com restrições de igualdade. Para obter esta condição utilizaremos a parametrização do conjunto factível proposta em \eqref{parametrizacao_de_Omega}, transferindo as restrições de \eqref{problema_geral_minimizacao_igualdade} para sua função objetivo. Com isso obtemos um novo problema de minimização irrestrita, para o qual as condições necessárias de primeira e segunda ordem já são conhecidas.
 
-Assim sendo, a caracterização de $\Omega$ dada em \eqref{parametrizacao_de_S} permite definir a seguinte função $\varphi : \RR^{n-m} \rightarrow \RR$ dada por
+Assim sendo, a caracterização de $\Omega$ dada em \eqref{parametrizacao_de_Omega} permite definir a seguinte função $\varphi : \RR^{n-m} \rightarrow \RR$ dada por
 \[ \label{funcao_phi_restricoes_igualdade}
 \varphi (\boldsymbol{\gamma}) = f(\tilde{x} + Z\boldsymbol{\gamma}),
 \]
@@ -859,31 +859,101 @@ e a partir dela podemos considerar o seguinte problema de minimização sem rest
 \min_{\boldsymbol{\gamma}} \varphi (\boldsymbol{\gamma}) .
 \]
 
+Vejamos um exemplo de como determinar a função $\varphi$.
+
+\begin{exem}
+Considere o problema 
+\[ \label{exem:parametrizacao_omega}
+\begin{aligned}
+\min_{x} & \quad x_{1}^{2} + 2x_{2}^{2} - 2x_{1} - 2x_{1}x_{2} \\
+\text{s.a} & \quad 2x_{1} + x_{2} = 1 .
+\end{aligned}
+\]
+Podemos reescrever a restrição na forma matricial
+\[
+\begin{bmatrix*} 2 & 1 \end{bmatrix*} \begin{bmatrix*} x_{1} \\ x_{2} \end{bmatrix*} = \begin{bmatrix*} 1 \end{bmatrix*} .
+\]
+Assim, denotando $A= \begin{bmatrix*} 2 & 1 \end{bmatrix*}$, é preciso primeiramente determinar uma base para $\mathcal{N}(A)$, pois ele é o conjunto das direções factíveis. Para tanto, basta resolver o sistema $Ad =0$ e a partir disso obtemos 
+\[ \label{eq:1_exem_parametrizacao_omega}
+Z = \begin{bmatrix*} 1 \\ -2 \end{bmatrix*}
+\]
+como uma base para $\mathcal{N}(A)$. Por conseguinte, é necessário determinar um ponto $\tilde{x}$ factível. Então, resolvendo
+\[
+2x_{1} + x_{2} = 1 ,
+\]
+temos que 
+\[
+x_{2} = 1 - 2x_{1}
+\]
+e tomando $x_{1} =1$ obtemos $x_{2} = -1$, isto é, $\tilde{x} = (1,-1)$. E assim, podemos determinar uma parametrização para o conjunto factível $\Omega$ como proposto em \eqref{parametrizacao_de_Omega}:
+\[
+\Omega = \left\{ x\in \RR^{2} \mid x = \begin{bmatrix*} 1 \\ -1 \end{bmatrix*} + \begin{bmatrix*} 1 \\ -2 \end{bmatrix*} \gamma , \ \gamma \in \RR \right\} .
+\]
+A partir dessa caracterização de $\Omega$ podemos definir a função $\varphi : \RR \rightarrow \RR$ dada por 
+\[
+\varphi(\gamma) = f(\tilde{x} + Z\gamma) = 13\gamma^{2} + 14\gamma +3 .
+\]
+Assim, podemos reformular o problema \eqref{exem:parametrizacao_omega} para um problema de minimização irrestrito dado por
+\[ \label{exem:parametrizacao_omega_funcao_phi}
+\min_{\boldsymbol{\gamma}} \varphi (\boldsymbol{\gamma}) = 13\gamma^{2} + 14\gamma +3 .
+\]
+Dessa forma, para determinar uma solução para o problema \eqref{exem:parametrizacao_omega_funcao_phi} utilizamos a condição suficiente de segunda ordem para problemas irrestritos dada pelo \Cref{teo:condicao_suficiente_irrestrito}. Logo, dado $\gamma^{*} \in \RR$, devemos ter
+\[
+\nabla \varphi(\gamma^{*}) = 26 \gamma^{*} +14 = 0 ,
+\]
+e resolvendo para $\gamma^{*}$, obtemos
+\[
+\gamma^{*} = - \dfrac{7}{13} .
+\]
+Além disso, como
+\[
+\nabla^{2} \varphi(\gamma^{*}) = 26 \succ 0 ,
+\]
+pois para todo $x\in \RR$, com $x\neq 0$, temos que $x^{T}26x = 26x^{2} \geq 0$, concluímos que $\gamma^{*} =  \dfrac{7}{13}$ é minimizador local de \eqref{exem:parametrizacao_omega_funcao_phi}.
+\end{exem}
+
 Primeiramente, vejamos que os problemas \eqref{problema_geral_minimizacao_igualdade} e \eqref{problema_minimizacao_irrestrita_phi} são equivalentes.
 
 \begin{prop} \label{prop:equivalencia_problema_restricoes_igualdade_irrestrito}
 O vetor $\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de $\varphi$ em $\RR^{n-m}$ se, e somente se, $x^{*} \coloneqq  \tilde{x} + Z\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
 \end{prop}
 \begin{proof}
-Seja $\boldsymbol{\gamma}^{*}$ um minimizador local (global) de $\varphi$ em $\RR^{n-m}$. Então,
+Seja $\boldsymbol{\gamma}^{*}$ um minimizador local (global) de $\varphi$ em $\RR^{n-m}$. Então, existe $\varepsilon >0$ tal que
 \[
-f(\tilde{x} + Z\boldsymbol{\gamma}^{*} ) = \varphi (\boldsymbol{\gamma}^{*}) \leq \varphi (\boldsymbol{\gamma}) = f(\tilde{x} + Z\boldsymbol{\gamma}) ,
+\varphi (\boldsymbol{\gamma}^{*}) \leq \varphi (\boldsymbol{\gamma}) ,
 \]
-para todo $\boldsymbol{\gamma} \in \RR^{n-m}$. Logo, chamando $x^{*}\coloneqq \tilde{x} + Z\boldsymbol{\gamma}^{*} \in \Omega$, temos
+para todo $\boldsymbol{\gamma} \in B\left( \boldsymbol{\gamma}^{*} , \dfrac{\varepsilon}{\Vert Z \Vert} \right) \cap \RR^{n-m}$. Logo, chamando $x^{*}\coloneqq \tilde{x} + Z\boldsymbol{\gamma}^{*} \in \Omega$, temos para $\boldsymbol{\gamma} \in B\left( \boldsymbol{\gamma}^{*} , \dfrac{\varepsilon}{\Vert Z \Vert} \right) \cap \RR^{n-m}$ que
 \[
-f(x^{*}) \leq f(x),
+f(\tilde{x} + Z\boldsymbol{\gamma}^{*} ) = f(x^{*}) \leq f(x) = f(\tilde{x} + Z\boldsymbol{\gamma}) ,
 \]
-para todo $x \in \Omega$. Portanto, $x^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
+em que $x = \tilde{x} + Z\boldsymbol{\gamma} \in \Omega$. Note que
+\[
+\begin{aligned}
+\Vert x-x^{*} \Vert &= \Vert (\tilde{x} + Z\boldsymbol{\gamma}) - (\tilde{x} + Z\boldsymbol{\gamma}^{*}) \Vert \\
+&= \Vert Z(\boldsymbol{\gamma} - \boldsymbol{\gamma}^{*} )\Vert \\
+&\leq \Vert Z\Vert \Vert \boldsymbol{\gamma} - \boldsymbol{\gamma}^{*} \Vert \\
+&< \Vert Z\Vert \dfrac{\varepsilon}{\Vert Z \Vert} \\
+&= \varepsilon . 
+\end{aligned}
+\]
+Portanto, $x\in B(x^{*}, \varepsilon ) \cap \Omega$, e assim,  $x^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
 
-Reciprocamente, suponhamos que $x^{*}=\tilde{x} + Z\boldsymbol{\gamma}^{*}$, com $\boldsymbol{\gamma}^{*} \in \RR^{n-m}$, é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}. Então,
+Reciprocamente, suponhamos que $\boldsymbol{\gamma}^{*} \in \RR^{n-m}$, tal que $x^{*}=\tilde{x} + Z\boldsymbol{\gamma}^{*}$, não é mínimo local (global) de $\varphi$. Então, para $\delta \coloneqq \dfrac{\varepsilon}{\Vert Z\Vert}$ existe $\boldsymbol{\bar{\gamma}} \in B(\boldsymbol{\gamma}^{*} , \delta )$ com
 \[ \label{eq:1_prop:equivalencia_problema_restricoes_igualdade_irrestrito}
-f(\tilde{x} + Z\boldsymbol{\gamma}^{*}) = f(x^{*}) \leq f(x) = f(\tilde{x} + Z\boldsymbol{\gamma})
+\varphi(\boldsymbol{\bar{\gamma}}) \leq \varphi({\boldsymbol{\gamma}^{*}}) .
 \]
-para todo $x \in \Omega$ e $\boldsymbol{\gamma} \in \RR^{n-m}$. Assim, a definição \eqref{funcao_phi_restricoes_igualdade} da função $\varphi$ e \eqref{eq:1_prop:equivalencia_problema_restricoes_igualdade_irrestrito} implicam em 
+Neste caso, $f(\xbar) \leq f(x^{*})$, porém, 
 \[
-\varphi(\boldsymbol{\gamma}^{*}) \leq \varphi(\boldsymbol{\gamma}) , 
+\begin{aligned}
+\Vert \xbar -x^{*} \Vert &= \Vert (\tilde{x} + Z\boldsymbol{\bar{\gamma}}) - (\tilde{x} + Z\boldsymbol{\gamma}^{*}) \Vert \\
+&= \Vert Z(\boldsymbol{\bar{\gamma}} - \boldsymbol{\gamma}^{*} )\Vert \\
+&\leq \Vert Z\Vert \Vert \boldsymbol{\bar{\gamma}} - \boldsymbol{\gamma}^{*} \Vert \\
+&< \Vert Z\Vert \delta \\
+&= \Vert Z\Vert \dfrac{\varepsilon}{\Vert Z \Vert} \\
+&= \varepsilon , 
+\end{aligned}
 \]
-para todo $\boldsymbol{\gamma} \in \RR^{n-m}$. Portanto, $\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de $\varphi$ em $\RR^{n-m}$.
+isto é, $\xbar \in B(x^{*} , \varepsilon )$. Portanto, $x^{*}$ não é minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}. Desse modo, pela contrapositiva, concluímos que se $x^{*}$ é minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}, então o vetor $\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de $\varphi$ em $\RR^{n-m}$.
 \end{proof}
 
 Agora, como \eqref{problema_minimizacao_irrestrita_phi} é um problema de minimização irrestrito, o \Cref{teo:condicao_necessaria_1_ordem} nos diz que a condição necessária de primeira ordem para algum $\boldsymbol{\gamma}^{*} \in \RR^{n-m}$ é
@@ -975,7 +1045,7 @@ A matriz $A^{\dag}$ é também chamada de \emph{pseudo-inversa} de Moore-Penrose
 
 \subsubsection{Condições Necessárias e Suficientes de Segunda Ordem} \label{subsubsection:condicao_2ordem_igualdade}
 
-A condição necessária de segunda ordem para uma solução $x^{*}$ do problema \eqref{problema_minimizacao_irrestrita_phi} é dada pelo \Cref{teo:condicao_necessaria_2_ordem} e toma a seguinte forma
+A condição necessária de segunda ordem para uma solução $\boldsymbol{\gamma}^{*}$ do problema \eqref{problema_minimizacao_irrestrita_phi} é dada pelo \Cref{teo:condicao_necessaria_2_ordem} e toma a seguinte forma
 \[ \label{hessiana_phi}
 \nabla^{2} \varphi (\boldsymbol{\gamma}^{*}) \succcurlyeq 0.
 \]
