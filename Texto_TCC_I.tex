@@ -938,11 +938,11 @@ em que $x = \tilde{x} + Z\boldsymbol{\gamma} \in \Omega$. Note que
 \]
 Portanto, $x\in B(x^{*}, \varepsilon ) \cap \Omega$, e assim,  $x^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
 
-Reciprocamente, suponhamos que $\boldsymbol{\gamma}^{*} \in \RR^{n-m}$, tal que $x^{*}=\tilde{x} + Z\boldsymbol{\gamma}^{*}$, não é mínimo local (global) de $\varphi$. Então, para $\delta \coloneqq \dfrac{\varepsilon}{\Vert Z\Vert}$ existe $\boldsymbol{\bar{\gamma}} \in B(\boldsymbol{\gamma}^{*} , \delta )$ com
+Reciprocamente, suponhamos que $\boldsymbol{\gamma}^{*} \in \RR^{n-m}$ não é mínimo local (global) de $\varphi$. Então, existe $\varepsilon >0$ tal que existe $\boldsymbol{\bar{\gamma}} \in B(\boldsymbol{\gamma}^{*} , \delta )$ com $\delta \coloneqq \dfrac{\varepsilon}{\Vert Z\Vert}$
 \[ \label{eq:1_prop:equivalencia_problema_restricoes_igualdade_irrestrito}
-\varphi(\boldsymbol{\bar{\gamma}}) \leq \varphi({\boldsymbol{\gamma}^{*}}) .
+\varphi(\boldsymbol{\bar{\gamma}}) < \varphi({\boldsymbol{\gamma}^{*}}) .
 \]
-Neste caso, $f(\xbar) \leq f(x^{*})$, porém, 
+Neste caso, $f(\xbar) < f(x^{*})$ além disso
 \[
 \begin{aligned}
 \Vert \xbar -x^{*} \Vert &= \Vert (\tilde{x} + Z\boldsymbol{\bar{\gamma}}) - (\tilde{x} + Z\boldsymbol{\gamma}^{*}) \Vert \\
@@ -953,7 +953,7 @@ Neste caso, $f(\xbar) \leq f(x^{*})$, porém,
 &= \varepsilon , 
 \end{aligned}
 \]
-isto é, $\xbar \in B(x^{*} , \varepsilon )$. Portanto, $x^{*}$ não é minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}. Desse modo, pela contrapositiva, concluímos que se $x^{*}$ é minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}, então o vetor $\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de $\varphi$ em $\RR^{n-m}$.
+isto é, $\xbar \in B(x^{*} , \varepsilon )$. Portanto, $x^{*}$ não é minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
 \end{proof}
 
 Agora, como \eqref{problema_minimizacao_irrestrita_phi} é um problema de minimização irrestrito, o \Cref{teo:condicao_necessaria_1_ordem} nos diz que a condição necessária de primeira ordem para algum $\boldsymbol{\gamma}^{*} \in \RR^{n-m}$ é
