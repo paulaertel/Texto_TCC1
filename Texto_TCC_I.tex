@@ -1096,14 +1096,14 @@ y^{T}\nabla^{2} f(x^{*})y > 0.
 \]
 Portanto, se $x^{*} \in \Omega$ satisfaz \eqref{eq:3_condicao_suficiente_igualdade} e \eqref{eq:4_condicao_suficiente_igualdade}, então ele é um minimizador local de \eqref{problema_geral_minimizacao_igualdade}. Assim, podemos enunciar o seguinte teorema.
 
-\begin{prop}(\textbf{Condição suficiente de segunda ordem}) \label{teo:condicao_suficiente_2ordem_igualdade}
+\begin{teo}(\textbf{Condição suficiente de segunda ordem}) \label{teo:condicao_suficiente_2ordem_igualdade}
 Se ${x}^{*} \in \RR^{n}$ verifica $A{x}^{*} = b$ e 
 \begin{enumerate}
 	\item[(i)] Existe $\boldsymbol{\lambda}^{*} \in \RR^{m}$ tal que $\nabla f({x}^{*}) = A^{T}\boldsymbol{\lambda}^{*}$;
 	\item[(ii)] Para todo $y \in \mathcal{N}(A)$ temos que $y^{T}\nabla^{2} f(x^{*})y > 0$; 
 \end{enumerate}
 então ${x}^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_igualdade}.
-\end{prop}
+\end{teo}
 \begin{proof}
 Para provar que $\tilde{x}$ é minimizador local de $f$ vamos verificar se ele satisfaz as condições suficientes de segunda ordem. Por hipótese temos que $\tilde{x} \in \RR^{n}$ satisfaz a restrição $A\tilde{x} = b$. Por conseguinte, existe $\boldsymbol{\lambda} \in \RR^{m}$ tal que $\nabla f(\tilde{x}) = A^{T}\boldsymbol{\lambda}$. Assim, seja Z a matriz cujas colunas são os vetores de uma base do $\mathcal{N}(A)$. Sabemos que as linhas de $A$ são ortogonais a $\mathcal{N}(A)$ e portanto,
 \[
