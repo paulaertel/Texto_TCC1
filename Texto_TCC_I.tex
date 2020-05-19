@@ -1512,7 +1512,7 @@ Desenvolveremos agora as condições necessárias e as condições suficientes d
 \begin{teo}(\textbf{Condição necessária de segunda ordem}) \label{teo:condicao_necessaria_2ordem_desigualdade}
 Considere o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{2}$ e $r(x^{*})$ e $\mathcal{I}(x^{*})$ definidos como anteriormente. Se $x^{*}$ é um minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade},  então
 \begin{enumerate}
-	\item[(i)] Existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0$ e $\mu_{i_k} \geq 0$ para todo $i_{k} \in \mathcal{I}(x^{*})$;
+	\item[(i)] Existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0$ e $\mu_{k} \geq 0$ para todo $i_{k} \in \mathcal{I}(x^{*})$;
 
 	\item[(ii)] Para todo $y \in \mathcal{N}(W_{\mathcal{I}})$ temos que $y^{T} \nabla^{2} f(x^{*})y \geq 0$.
 \end{enumerate}
@@ -1520,7 +1520,7 @@ Considere o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in 
 \begin{proof}
 Perceba que se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então pelo \Cref{teo:condicao_necessaria_1ordem_restricao_desigualdade}, existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que 
 \[
-\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0 \quad \text{e} \quad \mu_{i_k} \geq 0,
+\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0 \quad \text{e} \quad \mu_{k} \geq 0,
 \] 
 para todo $i_k \in \mathcal{I}(x^{*})$.
 
@@ -1541,13 +1541,13 @@ y^{T}\nabla^{2} f(x^{*})y \geq 0 \ \text{para todo} \ y \in \mathcal{N}(W_{\math
 \begin{teo}(\textbf{Condição suficiente de segunda ordem}) \label{teo:condicao_suficiente_2ordem_desigualdade}
 Considere o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{2}$ e $r(x^{*})$ e $\mathcal{I}(x^{*})$ definidos como anteriormente. Se $x^{*} \in \Omega$ satisfaz 
 \begin{enumerate}
-	\item[(i)] $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0$ com $\mu_{i_{k}} \geq 0$ para todo $i_{k} \in \mathcal{I}(x^{*})$, e 
-	\item[(ii)] $y^{T} \nabla^{2} f(x^{*})y > 0$ para todo $y \in \mathcal{N}(W_{\mathcal{J}})$, $y\neq 0$, em que $\mathcal{J} = \{ k\in \{ 1,2, \ldots , r(x^{*}) \} \mid \mu_{i_{k}} >0 \}$,
+	\item[(i)] $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0$ com $\mu_{k} \geq 0$ para todo $i_{k} \in \mathcal{I}(x^{*})$, e 
+	\item[(ii)] $y^{T} \nabla^{2} f(x^{*})y > 0$ para todo $y \in \mathcal{N}(W_{\mathcal{J}})$, $y\neq 0$, em que $\mathcal{J} = \{ k\in \{ 1,2, \ldots , r(x^{*}) \} \mid \mu_{k} >0 \}$,
 \end{enumerate}
 então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
 \end{teo}
 \begin{proof}
-Primeiramente, se $\mu_{i_k} >0$ para todo $i_k \in \mathcal{I}(x^{*})$, então
+Primeiramente, se $\mu_{k} >0$ para todo $i_k \in \mathcal{I}(x^{*})$, então
 \[
 W_{\mathcal{I}} = W_{\mathcal{J}}.
 \]
@@ -1568,11 +1568,11 @@ para todo $y \in \mathcal{N}(W_{\mathcal{J}})$ e $y\neq 0$, então, pelo \Cref{t
 \]
 e consequentemente, é minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}.
 
-Agora, suponha que existe pelo menos um $k$ tal que $\mu_{i_k} =0$. Neste caso, observe que
+Agora, suponha que existe pelo menos um $k$ tal que $\mu_{k} =0$. Neste caso, observe que
 \[
 W_{\mathcal{I}}^{T} \boldsymbol{\mu} = W_{\mathcal{J}}^{T} \boldsymbol{\mu}_{\mathcal{J}},
 \]
-em que $\boldsymbol{\mu}_{\mathcal{J}}$ é um subvetor de $\boldsymbol{\mu}$ cujas componentes $\mu_{i_k}$ são as que possuem índice em $\mathcal{J} = \{ k\in \{ 1,2, \ldots , r(x^{*}) \} \mid \mu_{i_{k}} >0 \}$. Desse modo, temos que $x^{*} \in \Omega$ satisfaz
+em que $\boldsymbol{\mu}_{\mathcal{J}}$ é vetor formado pelas componentes $\mu_{k}$ de $\boldsymbol{\mu}$ que possuem índice em $\mathcal{J} = \{ k\in \{ 1,2, \ldots , r(x^{*}) \} \mid \mu_{k} >0 \}$. Desse modo, temos que $x^{*} \in \Omega$ satisfaz
 \[
 \nabla f(x^{*}) + W_{\mathcal{J}}^{T} \boldsymbol{\mu}_{\mathcal{J}} =0
 \]
@@ -1624,38 +1624,68 @@ Dado um ponto $x^{*} \in \Omega$, o vetor $d\in \RR^{n}$ é uma direção factí
 
 \subsubsection{Condições Necessárias de Primeira Ordem}
 
-\begin{teo}(\textbf{Condição necessária de primeira ordem}) \label{teo:condicao_necessaria_1ordem_igualdade_desigualdade}
-Consideremos o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} com $f\in \mathcal{C}^{1}$ e $x^{*} \in \Omega$ tal que $m\leq r(x^{*}) \leq n$ e $s(x^{*}) \geq 1$. Sejam $\mathcal{I} = \{ 1,2, \ldots ,m, i_{1} , i_{2} , \ldots , i_{s(x^{*})} \}$, $\mathcal{J} = \{ i_{1} , i_{2} , \ldots , i_{s(x^{*})} \}$ tal que $w_{j}^{T}x = c_{j}$ se, e somente se, $j\in \mathcal{J}$, $W_{\mathcal{J}}$ a submatriz de $W$ cujas linhas são as que têm os índices em $\mathcal{J}$, e $c_{\mathcal{J}} \in \RR^{s(x^{*})}$ formado pelas componentes de $c$ correspondentes a $\mathcal{J}$. Seja $B \in \RR^{[m+s(x^{*})]\times n}$ dada por
+Nos teoremas a seguir vamos considerar $\mathcal{I}(x^{*})$ e $\mathcal{J}(x^{*})$ como definidos anteriormente e denotaremos por $W_{\mathcal{J}}$ a submatriz de $W$ cujas linhas são as que têm os índices em $\mathcal{J}(x^{*})$, por $c_{\mathcal{J}} \in \RR^{s(x^{*})}$ o vetor formado pelas componentes de $c$ correspondentes a $\mathcal{J}(x^{*})$ e por $B \in \RR^{r(x^{*})\times n}$ a matriz dada por
 \[
 B = \begin{bmatrix*} A \\ W_{\mathcal{J}} \end{bmatrix*} ,
 \]
-e $\posto (B)= r(x^{*})$.
-
-Se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_igualdade_desigualdade}, então existe $\boldsymbol{\lambda} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que
-\[
-\nabla f(x^{*}) = A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu}
+em que $\posto (B)= r(x^{*})$.
+\begin{teo}(\textbf{Condição necessária de primeira ordem}) \label{teo:KKT}
+Considere o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} com $f\in \mathcal{C}^{1}$ e $x^{*} \in \Omega$ tal que $m\leq r(x^{*}) \leq n$ e $s(x^{*}) \geq 1$.
+Se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_igualdade_desigualdade}, e $\posto (B)= r(x^{*})$, então existe $\boldsymbol{\lambda} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que
+\[ \label{eq:1_teo_KKT}
+\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} = 0
 \]
 e
-\[
-\mu_{k} \leq 0 \ \text{para todo} \ k \ \text{tal que} \ 1 \leq k \leq s(x^{*}).
+\[ \label{eq:2_teo_KKT}
+\mu_{k} \geq 0 \ \text{para todo} \ k \ \text{tal que} \ 1 \leq k \leq s(x^{*}).
 \]
 \end{teo}
 \begin{proof}
 Por demonstrar.
 \end{proof}
 
+As condições \eqref{eq:1_teo_KKT} e \eqref{eq:2_teo_KKT} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). A partir delas podemos definir \emph{ponto estacionário}.
+
+\begin{defi} 
+Um ponto $x^{*} \in \RR^{n} $ é um \emph{ponto estacionário} do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} (ou ainda, um \emph{ponto de Karush-Kuhn-Tucker(KKT)}), quando $x^{*} \in \Omega$ e existem $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}$, tais que as condições \eqref{eq:1_teo_KKT} e \eqref{eq:2_teo_KKT} são satisfeitas. Os elementos $\boldsymbol{\mu}^{*}$ e $\boldsymbol{\lambda}^{*}$ são chamados os \emph{multiplicadores de Lagrange} associados ao ponto estacionário $x^{*}$.
+\end{defi}
+Em outras palavras, $x^{*}$ é dito estacionário quando satisfaz as condições KKT. 
+
+É importante observar que se não for verificada a hipóstese de a matriz $B$ ser posto completo, podemos ter minimizadores que não cumprem KKT, o que dificulta a caracterização de tais pontos. Vejamos a seguir um exemplo que justifica essa afirmação.
+
+\begin{exem}
+Considere o problema 
+\[
+\begin{aligned}
+\min_{x} & \quad f(x)=x_{1} \\
+\text{s.a} & \quad g_{1}(x)=-x_{1}^{3} + x_{2} \leq 0 , \\
+& \quad g_{2}(x) = -x_{2} \leq 0.
+\end{aligned}
+\]
+
+O ponto $x^{*} = 0$ é o minimizador deste problema, mas não cumpre as condições KKT. De fato, observe que $0\leq x_{2} \leq x_{1}^{3}$, o que implica em $f(x)= x_{1} \geq 0 = f(x^{*})$, para todo ponto factível $x$.
+
+No entanto, 
+\[
+\nabla f(x^{*}) = \begin{bmatrix*} 1 \\ 0 \end{bmatrix*} , \nabla g_{1}(x^{*}) = \begin{bmatrix*} 0 \\ 1 \end{bmatrix*} \ \text{e} \ \nabla g_{2}(x^{*}) = \begin{bmatrix*} 0 \\ -1 \end{bmatrix*},
+\]
+ou seja, os gradientes das restrições não são LI e, portanto, $x^{*}$ não é um ponto regular. Assim, as condições KKT não são satisfeitas, pois não existem $\mu_{1}^{*} , \mu_{2}^{*} \in \RR^{+}$ tais que 
+\[
+\begin{bmatrix*} 1 \\ 0 \end{bmatrix*} + \mu_{1}^{*} \begin{bmatrix*} 0 \\ 1 \end{bmatrix*} + \mu_{2}^{*} \begin{bmatrix*} 0 \\ -1 \end{bmatrix*} = \begin{bmatrix*} 0 \\ 0 \end{bmatrix*}.
+\]
+\end{exem}
 
 \subsubsection{Condições Necessárias e Suficientes de Segunda Ordem}
 
 
 \begin{teo}(\textbf{Condição necessária de segunda ordem}) \label{teo:condicao_necessaria_2ordem_igualdade_desigualdade}
-Sejam $f \in \mathcal{C}^{2}$, $x^{*}$ um minimizador local do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade}, $r(x^{*})$, $s(x^{*})$, $\mathcal{J}$ e $B$ definidos como anteriormente. Então
+Considere o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} com $f \in \mathcal{C}^{2}$ e $r(x^{*})$, $s(x^{*})$, $\mathcal{J}(x^{*})$ e $B$ definidos como anteriormente. Se $x^{*}$ é um minimizador local do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade}, então
 \begin{enumerate}
 	\item[(i)] Existem $\boldsymbol{\lambda} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que 
 	\[
-	\nabla f(x^{*}) = A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu}, \ \mu_{k} \leq 0 \ \text{para todo} \ k\in \{ 1,2, \ldots , s(x^{*}) \} ;
+	\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} =0 \ \text{e} \ \mu_{k} \geq 0 \ \text{para todo} \ k\in \{ 1,2, \ldots , s(x^{*}) \} ;
 	\]
-	\item[(ii)] $y^{T}\nabla^{2} f(x^{*})y \succcurlyeq 0$ para todo $y\in \mathcal{N}(B)$.
+	\item[(ii)] $y^{T}\nabla^{2} f(x^{*})y \geq 0$ para todo $y\in \mathcal{N}(B)$.
 \end{enumerate}	
 \end{teo}
 \begin{proof}
@@ -1664,22 +1694,22 @@ Por demonstrar.
 
 
 \begin{teo}(\textbf{Condição suficiente de segunda ordem}) \label{teo:condicao_suficiente_igualdade_desigualdade}
-Sejam $f\in \mathcal{C}^{2}$, $x^{*} \in \Omega$, $r(x^{*})$, $s(x^{*})$ e $\mathcal{J}$ definidos como anteriormente. Então, se $x^{*}$ verifica
+Considere o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} com $f \in \mathcal{C}^{2}$ e $r(x^{*})$, $s(x^{*})$, $\mathcal{J}(x^{*})$ e $B$ definidos como anteriormente. Se $x^{*} \in \Omega$ verifica
 \begin{enumerate}
 	\item[(i)] Existem $\boldsymbol{\lambda} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que 
 	\[
-	\nabla f(x^{*}) = A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu}, \ \mu_{k} \leq 0 \ \text{para todo} \ k\in \{ 1,2, \ldots , s(x^{*}) \} ;
+	\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} =0 \ \text{e} \ \mu_{k} \geq 0 \ \text{para todo} \ k\in \{ 1,2, \ldots , s(x^{*}) \} ;
 	\]
-	\item[(ii)] Se $y^{T}\nabla^{2} f(x^{*})y \succ 0$ para todo $y\in \mathcal{N}(\tilde{B})$, em que
+	\item[(ii)] Se $y^{T}\nabla^{2} f(x^{*})y >0$ para todo $y\in \mathcal{N}(\tilde{B})$, em que
 	\[
 	\tilde{B} = \begin{bmatrix*} A \\ W_{\mathcal{K}} \end{bmatrix*} 
 	\]
 	e
 	\[
-	\mathcal{K} = \{ j\in \mathcal{J} \mid \mu_{j} <0 \};
+	\mathcal{K} = \{ j\in \mathcal{J} \mid \mu_{j} >0 \};
 	\]
 \end{enumerate}
-Então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_igualdade_desigualdade}.
+então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_igualdade_desigualdade}.
 \end{teo}
 \begin{proof}
 Por demonstrar.
@@ -1688,19 +1718,6 @@ Por demonstrar.
 
 --------------------------------------
 
-\begin{defi} 
-Um ponto $x^{*} \in \RR^{n} $ é dito \emph{estacionário} para o problema \eqref{problema_geral_otimizacao} quando existirem $\boldsymbol{\mu}^{*} \in \RR^{p} $, $\boldsymbol{\lambda}^{*} \in \RR^{m} $ (\emph{multiplicadores de Lagrange}) tais que
-\begin{align} \label{eq:1_ponto_estacionario}
-\nabla f(x^{*})+\sum_{i=1}^{m} \mu_{i}^{*} \nabla g_{i}(x^{*})+\sum_{i=1}^{p} \lambda_{i}^{*} \nabla h_{i}(x^{*}) & =0, \\ 
-g(x^{*}) \leq 0, h(x^{*}) & =0,  \label{eq:2_ponto_estacionario} \\ 
-\mu_{i}^{*} & \geq 0, \quad i= 1, \ldots , m,   \label{eq:3_ponto_estacionario} \\ 
-\mu_{i}^{*} g_{i}(x^{*}) & =0, \quad i= 1, \ldots , m.  \label{eq:4_ponto_estacionario}
-\end{align}
-
-
-\end{defi}
-%ver como enumerar cada condição separadamente, pois não está aceitando
-As condições \eqref{eq:1_ponto_estacionario} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). Assim, em outras palavras, $x$ é dito estacionário quando satisfaz as condições KKT. 
 
 
 Para que as condições KKT possam ser consideradas uma condição de otimalidade, isto é, que sejam satisfeitas por um ponto que é minimizador, é necessário assumir alguma hipótese adicional às restrições do problema, que será chamada de condição de qualificação.
@@ -1731,32 +1748,6 @@ Outra condição interessante aos nossos estudos, pois menciona a convexidade, �
 
 
 
-\begin{teo}(\emph{KKT}) Seja $x^{*} \in \RR^{n}$ um minimizador local do problema \eqref{problema_geral_otimizacao} e suponha que seja satisfeita uma condição de qualificação. Então existem vetores $\boldsymbol{\mu}^{*} \in \RR^{p}$ e $\boldsymbol{\lambda}^{*} \in \RR^{m}$ tais que $(x^{*} , \boldsymbol{\mu}^{*} , \boldsymbol{\lambda}^{*} )$ cumpre \eqref{eq:1_ponto_estacionario}.
-\end{teo}
-
-É importante observar que se não for verificada nenhuma condição de qualificação podemos ter minimizadores que não cumprem KKT, o que dificulta a caracterização de tais pontos. Vejamos a seguir um exemplo que justifica essa afirmação.
-
-\begin{exem}
-Considere o problema 
-\[
-\begin{aligned}
-\min_{x} & \quad f(x)=x_{1} \\
-\text{s.a} & \quad g_{1}(x)=-x_{1}^{3} + x_{2} \leq 0 , \\
-& \quad g_{2}(x) = -x_{2} \leq 0.
-\end{aligned}
-\]
-
-O ponto $x^{*} = 0$ é o minimizador deste problema, mas não cumpre as condições KKT. De fato, observe que $0\leq x_{2} \leq x_{1}^{3}$, o que implica em $f(x)= x_{1} \geq 0 = f(x^{*})$, para todo ponto factível $x$.
-
-No entanto, 
-\[
-\nabla f(x^{*}) = \begin{bmatrix*} 1 \\ 0 \end{bmatrix*} , \nabla g_{1}(x^{*}) = \begin{bmatrix*} 0 \\ 1 \end{bmatrix*} \ \text{e} \ \nabla g_{2}(x^{*}) = \begin{bmatrix*} 0 \\ -1 \end{bmatrix*},
-\]
-ou seja, os gradientes das restrições não são LI e, portanto, $x^{*}$ não é um ponto regular. Assim, as condições KKT não são satisfeitas, pois não existem $\mu_{1}^{*} , \mu_{2}^{*} \in \RR^{+}$ tais que 
-\[
-\begin{bmatrix*} 1 \\ 0 \end{bmatrix*} + \mu_{1}^{*} \begin{bmatrix*} 0 \\ 1 \end{bmatrix*} + \mu_{2}^{*} \begin{bmatrix*} 0 \\ -1 \end{bmatrix*} = \begin{bmatrix*} 0 \\ 0 \end{bmatrix*}.
-\]
-\end{exem}
 
 %Uma classe especial de problemas de otimização se refere ao caso em que o conjunto viável $\Omega$ é um conjunto poliedral.
 
