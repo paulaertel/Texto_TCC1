@@ -825,21 +825,32 @@ Um vetor $v \in \mathcal{N}(A)$ se, e somente se, $Av=0$. Mas isso ocorre se, e 
 Assim, $\mathcal{N}(A)$ e $Im(A^{T})$ são subespaços vetoriais ortogonais e verificam
 \[ \label{eq:nucleo_imagem_subespacos_geram_Rn} \mathcal{N}(A) \cap Im(A^{T}) = \{ 0 \} \quad \text{e} \quad \RR^{n} = \mathcal{N}(A) \oplus Im(A^{T}) .\]
 \begin{obs} 
-A demonstração de \eqref{eq:nucleo_imagem_subespacos_geram_Rn} está disponível em \textcite{Elon2014}.
+A demonstração de \eqref{eq:nucleo_imagem_subespacos_geram_Rn} pode ser encontrada em \textcite{Elon2014}.
 \end{obs}
 
-A partir disso, se $d \in \mathcal{N}(A)$ e $\tilde{x}$ é uma solução da restrição \eqref{eq:restricao_de_igualdade}, então $x\coloneqq  \tilde{x} + \alpha d$ também é solução de \eqref{eq:restricao_de_igualdade}, pois
+Em vista disso, o teorema a seguir nos dá uma caracterização para o conjunto das direções factíveis em $\Omega$
+\begin{teo} \label{teo:direcao_factivel_igualdade}
+Seja $\tilde{x} \in \Omega$. Um vetor $d \in \RR^{n}$ é uma direção factível a partir de $\tilde{x}$ se, e somente se, $d \in \mathcal{N}(A)$.
+\end{teo}
+\begin{proof}
+Seja $d \in \RR^{n}$ uma direção factível em $\tilde{x}$, então $x \coloneqq \tilde{x} + \alpha d \in \Omega$ , isto é, $Ax=b$. Assim, 
 \[
-A(\tilde{x} + \alpha d) = A\tilde{x}
- + \alpha Ad = A\tilde{x} = b
-\]
- e portanto, qualquer $d \in \mathcal{N}(A)$ é uma direção no espaço na qual podemos nos deslocar a partir de uma solução factível sem correr o risco de abandonar a região de factibilidade. 
+A(\tilde{x} + \alpha d) = b,
+\] 
+e como $A\tilde{x} = b$ e $\alpha >0$, temos que 
+\[
+Ad = 0,
+\] 
+e portanto, $d \in \mathcal{N}(A)$.
 
-A recíproca também é verdadeira, pois se a partir de uma solução factível $\tilde{x}$, andando numa direção $d \in \RR^{n}$ obtemos
+A recíproca também é verdadeira, pois se $d \in \mathcal{N}(A)$ e $\tilde{x} \in \Omega$, então $x= \tilde{x} + \alpha d \in \Omega$, pois
 \[
-x=\tilde{x} + \alpha d \quad \text{e} \quad Ax=b ,
+A(\tilde{x} + \alpha d) = A\tilde{x} + \alpha Ad = A\tilde{x} = b ,
 \]
-então $A(\tilde{x} + \alpha d) = b$ implica em $Ad = 0$ e, portanto, $d \in \mathcal{N}(A)$. Dessa forma, concluímos que $\mathcal{N}(A)$ é o conjunto de direções factíveis em $\Omega$.
+e portanto, qualquer $d \in \mathcal{N}(A)$ é uma direção factível a partir de $\tilde{x}$. 
+\end{proof}
+
+Dessa forma, concluímos que $\mathcal{N}(A)$ é o conjunto de direções factíveis em $\Omega$, ou seja, qualquer $d \in \mathcal{N}(A)$ é uma direção no espaço na qual podemos nos deslocar a partir de uma solução factível sem correr o risco de abandonar a região de factibilidade.
 
 A partir disso, é possível construir uma parametrização que caracterize o conjunto factível. Se $\{ z_{1}, z_{2}, \ldots , z_{n-m} \}$ é uma base de $\mathcal{N}(A)$ e $Z$ a matriz de dimensão $n\times (n-m)$ cujas colunas são os vetores $z_{i}$, então para todo $d \in \mathcal{N}(A)$, existe $\boldsymbol{\gamma} \in \RR^{n-m}$ tal que $d=Z\boldsymbol{\gamma}$, ou seja, $d$ é escrito como combinação linear dos vetores da base do núcleo de A. Assim, se $\tilde{x}$ é uma solução de \eqref{eq:restricao_de_igualdade}, podemos caracterizar o conjunto factível da seguinte forma
 \[ \label{parametrizacao_de_Omega}
@@ -1204,9 +1215,6 @@ Dado $\xbar \in \Omega$, dizemos que a restrição de desigualdade $w_{i}^{T}\ba
 \]
 \end{defi} 
 
-%\begin{obs}
-%Por convenção, qualquer restrição de igualdade é considerada ativa em todo ponto factível.
-%\end{obs}
 
 A cada $x\in \Omega$ podemos associar um número $r(x)$, com $0\leq r(x) \leq m$, que representa a quantidade de restrições ativas em $x$. Assim, na \Cref{fig:restricoes_ativas} temos que $r(x^{1}) = 1$, $r(x^{2}) = 2$, $r(x^{3}) = 1$, $r(x^{4}) = 0$ e $r(x^{5}) = 2$.
 
@@ -1588,25 +1596,30 @@ e portanto, $x^{*}$ é minimizador local do problema \eqref{problema_geral_minim
 %------------------------------------------------------------------------------------------------------------------------
 \subsection{Minimização com Restrições Lineares de Igualdade e Desigualdade}
 
-Por fim, trataremos do caso mais geral do problema de minimização de funções sujeitas a restrições lineares, isto é, com restrições de igualdade e desigualdade. Em vista disso, utilizando os argumentos das \Cref{section:restricoes_igualdade,section:restricoes_desigualdade}, desenvolveremos as condições de otimalidade para o problema
+Nesta seção abordaremos o problema geral de otimização, isto é, com restrições de igualdade e desigualdade. Em vista disso, utilizando os argumentos das \Cref{section:restricoes_igualdade,section:restricoes_desigualdade}, pretendemos obter as condições de otimalidade de Karush-Kuhn-Tucker e as condições necessárias e suficientes de segunda ordem para o problema
 \[ \label{problema_geral_minimizacao_igualdade_desigualdade}
 \begin{aligned}
 \min_{x} & \quad f(x) \\
 \text{s.a} & \quad Ax = b, \ Wx \leq c,
 \end{aligned}
 \]
-em que $A\in \RR^{m\times n}$ com $m<n$ e $\posto (A) = m$, $W\in \RR^{p\times n}$, $b\in \RR^{m}$ e $c\in \RR^{p}$. Neste caso, o conjunto de factibilidade $\Omega$ é um poliedro em $\RR^{n}$ definido por 
+em que $A\in \RR^{m\times n}$, com $m<n$ e $\posto (A) = m$, $W\in \RR^{p\times n}$, $b\in \RR^{m}$ e $c\in \RR^{p}$. 
+
+Para o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade}, o conjunto de factibilidade $\Omega$ é um poliedro em $\RR^{n}$ definido por 
 \[
-\Omega = \{ x\in \RR^{n} \mid Ax =b \ \text{e} \ Wx \leq c \}.
+\Omega \coloneqq \{ x\in \RR^{n} \mid Ax =b \ \text{e} \ Wx \leq c \}.
 \]
 
-Como já mencionado, as restrições de igualdade correspondentes às linhas de $A$ são sempre ativas e assim, dado $x\in \Omega$, o conjunto das restrições ativas em $x$ é
+Por convenção, as restrições de igualdade são consideradas ativas em todo ponto factível, e em decorrência disso, as restrições correspondentes às linhas de $A$ são sempre ativas. Assim, dado $x^{*} \in \Omega$, o conjunto dos índices das restrições ativas em $x^{*}$ é dado por
 \[
-\mathcal{I}(x) = \{ 1,2, \ldots ,m,i_{1} , i_{2} , \ldots , i_{s(x)} \} ,
+\mathcal{I}(x^{*}) = \{ 1,2, \ldots ,m,i_{1} , i_{2} , \ldots , i_{s(x)} \} ,
 \]
-em que $\mathcal{J}(x) \coloneqq \{ i_{1} , i_{2} , \ldots , i_{s(x)} \}$ é o conjunto de índices que correspondem às restrições de desigualdade, isto é, linhas de $W$, que são ativas em $x$. Ademais, temos que $0\leq s(x) \leq p$, e se $r(x)$ é o número total de restrições ativas em $x$, temos que $m \leq r(x) \leq m+p$.
+em que $\mathcal{J}(x^{*}) \coloneqq \{ i_{1} , i_{2} , \ldots , i_{s(x)} \}$ será o conjunto de índices que correspondem às restrições de desigualdade que são ativas em $x$. Ademais, temos que $s(x^{*})$, com $0\leq s(x^{*}) \leq p$, é a quantidade de restrições de desigualdade ativas em $x^{*}$, enquanto que $r(x^{*})$, com $m \leq r(x^{*}) \leq m+p$, é o número total de restrições ativas em $x^{*}$.
 
-Por conseguinte, a partir das caracterizações das direções factíveis propostas nas \Cref{section:restricoes_igualdade,section:restricoes_desigualdade} concluímos que, dado um ponto factível $x$, o vetor $d\in \RR^{n}$ é uma direção factível em $x$ se, e somente se, $Ad =0$ e $w_{j}^{T}d \leq 0$ para todo $j\in \mathcal{J}(x)$.
+Por conseguinte, as caracterizações das direções factíveis propostas nos \Cref{teo:direcao_factivel_igualdade,teo:direcoes_factiveis_restricao_desigualdade} nos permitem enunciar o seguinte teorema. 
+\begin{teo} \label{teo:direcao_factivel_desigualdade_e_igualdade}
+Dado um ponto $x^{*} \in \Omega$, o vetor $d\in \RR^{n}$ é uma direção factível em $x^{*}$ se, e somente se, $Ad =0$ e $w_{j}^{T}d \leq 0$ para todo $j\in \mathcal{J}(x^{*})$.
+\end{teo}
 
 
 \subsubsection{Condições Necessárias de Primeira Ordem}
