@@ -1499,13 +1499,12 @@ para todo $k$ tal que $1 \leq k \leq r(x^{*})$, ou seja, $d$ é uma direção fa
 
 \subsubsection{Condições Necessárias e Suficientes de Segunda Ordem}
 
-
 Desenvolveremos agora as condições necessárias e as condições suficientes de segunda ordem para o problema \eqref{problema_geral_minimizacao_desigualdade}.
 
 \begin{teo}(\textbf{Condição necessária de segunda ordem}) \label{teo:condicao_necessaria_2ordem_desigualdade}
-Sejam $f \in \mathcal{C}^{2}$, $x^{*}$ um minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}, e $r(x^{*})$ e $\mathcal{I}(x^{*})$ definidos como anteriormente. Então
+Considere o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{2}$ e $r(x^{*})$ e $\mathcal{I}(x^{*})$ definidos como anteriormente. Se $x^{*}$ é um minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade},  então
 \begin{enumerate}
-	\item[(i)] Existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0$ e $\mu_{i} \geq 0$ para todo $i \in \mathcal{I}(x^{*})$;
+	\item[(i)] Existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0$ e $\mu_{i_k} \geq 0$ para todo $i_{k} \in \mathcal{I}(x^{*})$;
 
 	\item[(ii)] Para todo $y \in \mathcal{N}(W_{\mathcal{I}})$ temos que $y^{T} \nabla^{2} f(x^{*})y \geq 0$.
 \end{enumerate}
@@ -1513,9 +1512,9 @@ Sejam $f \in \mathcal{C}^{2}$, $x^{*}$ um minimizador local do problema \eqref{p
 \begin{proof}
 Perceba que se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, então pelo \Cref{teo:condicao_necessaria_1ordem_restricao_desigualdade}, existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que 
 \[
-\nabla f(x^{*}) W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0 \quad \text{e} \quad \mu_{i} \geq 0,
+\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0 \quad \text{e} \quad \mu_{i_k} \geq 0,
 \] 
-para todo $i \in \mathcal{I}(x^{*})$.
+para todo $i_k \in \mathcal{I}(x^{*})$.
 
 Por conseguinte, se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_desigualdade}, em particular, ele é solução do seguinte problema com restrições de igualdade
 \[ 
@@ -1532,15 +1531,55 @@ y^{T}\nabla^{2} f(x^{*})y \geq 0 \ \text{para todo} \ y \in \mathcal{N}(W_{\math
 
 
 \begin{teo}(\textbf{Condição suficiente de segunda ordem}) \label{teo:condicao_suficiente_2ordem_desigualdade}
-Sejam $f \in \mathcal{C}^{2}$, $x^{*} \in \Omega$, e $r(x^{*})$ e $\mathcal{I}(x^{*})$ definidos como anteriormente. Se 
+Considere o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{2}$ e $r(x^{*})$ e $\mathcal{I}(x^{*})$ definidos como anteriormente. Se $x^{*} \in \Omega$ satisfaz 
 \begin{enumerate}
-	\item[(i)] $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0$ com $\mu_{i} \geq 0$ para todo $i \in \mathcal{I}(x^{*})$, e 
-	\item[(ii)] $y^{T} \nabla^{2} f(x^{*})y > 0$ para todo $y \in \mathcal{N}(W_{\mathcal{J}})$, $y\neq 0$, em que $\mathcal{J} = \{ i\in \{ 1,2, \ldots , r(x^{*}) \} \mid \mu_{i} >0 \}$,
+	\item[(i)] $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0$ com $\mu_{i_{k}} \geq 0$ para todo $i_{k} \in \mathcal{I}(x^{*})$, e 
+	\item[(ii)] $y^{T} \nabla^{2} f(x^{*})y > 0$ para todo $y \in \mathcal{N}(W_{\mathcal{J}})$, $y\neq 0$, em que $\mathcal{J} = \{ k\in \{ 1,2, \ldots , r(x^{*}) \} \mid \mu_{i_{k}} >0 \}$,
 \end{enumerate}
 então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
 \end{teo}
 \begin{proof}
-Por demonstrar.
+Primeiramente, se $\mu_{i_k} >0$ para todo $i_k \in \mathcal{I}(x^{*})$, então
+\[
+W_{\mathcal{I}} = W_{\mathcal{J}}.
+\]
+Assim, como $x^{*} \in \Omega$ satisfaz
+\[
+\nabla f(x^{*}) + W_{\mathcal{J}}^{T} \boldsymbol{\mu} =0
+\]
+e
+\[
+y^{T} \nabla^{2} f(x^{*})y > 0,
+\]
+para todo $y \in \mathcal{N}(W_{\mathcal{J}})$ e $y\neq 0$, então, pelo \Cref{teo:condicao_suficiente_2ordem_igualdade}, $x^{*}$ é minimizador local do problema
+\[ 
+\begin{aligned}
+\min_{x} & \quad f(x) \\
+\text{s.a} & \quad W_{\mathcal{J}}x=c_{\mathcal{J}} ,
+\end{aligned}
+\]
+e consequentemente, é minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}.
+
+Agora, suponha que existe pelo menos um $k$ tal que $\mu_{i_k} =0$. Neste caso, observe que
+\[
+W_{\mathcal{I}}^{T} \boldsymbol{\mu} = W_{\mathcal{J}}^{T} \boldsymbol{\mu}_{\mathcal{J}},
+\]
+em que $\boldsymbol{\mu}_{\mathcal{J}}$ é um subvetor de $\boldsymbol{\mu}$ cujas componentes $\mu_{i_k}$ são as que possuem índice em $\mathcal{J} = \{ k\in \{ 1,2, \ldots , r(x^{*}) \} \mid \mu_{i_{k}} >0 \}$. Desse modo, temos que $x^{*} \in \Omega$ satisfaz
+\[
+\nabla f(x^{*}) + W_{\mathcal{J}}^{T} \boldsymbol{\mu}_{\mathcal{J}} =0
+\]
+e
+\[
+y^{T} \nabla^{2} f(x^{*})y > 0,
+\]
+para todo $y \in \mathcal{N}(W_{\mathcal{J}})$ e $y\neq 0$. Assim, o \Cref{teo:condicao_suficiente_2ordem_igualdade} nos garante que $x^{*}$ é minimizador local do problema
+\[ 
+\begin{aligned}
+\min_{x} & \quad f(x) \\
+\text{s.a} & \quad W_{\mathcal{J}}x=c_{\mathcal{J}} ,
+\end{aligned}
+\]
+e portanto, $x^{*}$ é minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}.
 \end{proof}
 
 
