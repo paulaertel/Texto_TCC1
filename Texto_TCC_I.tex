@@ -1420,7 +1420,7 @@ w_{i_{j}}^{T} d <0.
 \]
 Assim, de \eqref{eq:3_condicao_necessaria_1ordem_restricao_desigualdade} e \eqref{eq:4_condicao_necessaria_1ordem_restricao_desigualdade}, conluímos que
 \[
-w_{i_{k}}^{T} d \leq 0
+w_{i_{k}}^{T} d \leq 0,
 \]
 para todo $k$ tal que $1 \leq k \leq r(x^{*})$, ou seja, $d$ é uma direção factível. Portanto, $d$ é uma direção factível e de descida a partir de $x^{*}$, o que contradiz o fato de $x^{*}$ ser minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
 \end{enumerate}
@@ -1596,7 +1596,7 @@ e portanto, $x^{*}$ é minimizador local do problema \eqref{problema_geral_minim
 %------------------------------------------------------------------------------------------------------------------------
 \subsection{Minimização com Restrições Lineares de Igualdade e Desigualdade}
 
-Nesta seção abordaremos o problema geral de otimização, isto é, com restrições de igualdade e desigualdade. Em vista disso, utilizando os argumentos das \Cref{section:restricoes_igualdade,section:restricoes_desigualdade}, pretendemos obter as condições de otimalidade de Karush-Kuhn-Tucker e as condições necessárias e suficientes de segunda ordem para o problema
+Nesta seção abordaremos o problema geral de otimização, isto é, com restrições de igualdade e desigualdade. Para tanto, utilizando os argumentos das \Cref{section:restricoes_igualdade,section:restricoes_desigualdade}, pretendemos obter as condições de otimalidade de Karush-Kuhn-Tucker (KKT) e as condições necessárias e suficientes de segunda ordem para o problema
 \[ \label{problema_geral_minimizacao_igualdade_desigualdade}
 \begin{aligned}
 \min_{x} & \quad f(x) \\
@@ -1614,9 +1614,9 @@ Por convenção, as restrições de igualdade são consideradas ativas em todo p
 \[
 \mathcal{I}(x^{*}) = \{ 1,2, \ldots ,m,i_{1} , i_{2} , \ldots , i_{s(x)} \} ,
 \]
-em que $\mathcal{J}(x^{*}) \coloneqq \{ i_{1} , i_{2} , \ldots , i_{s(x)} \}$ será o conjunto de índices que correspondem às restrições de desigualdade que são ativas em $x$. Ademais, temos que $s(x^{*})$, com $0\leq s(x^{*}) \leq p$, é a quantidade de restrições de desigualdade ativas em $x^{*}$, enquanto que $r(x^{*})$, com $m \leq r(x^{*}) \leq m+p$, é o número total de restrições ativas em $x^{*}$.
+em que $\mathcal{J}(x^{*}) \coloneqq \{ i_{1} , i_{2} , \ldots , i_{s(x)} \}$ será o conjunto de índices que correspondem às restrições de desigualdade que são ativas em $x^{*}$. Ademais, temos que $s(x^{*})$, com $0\leq s(x^{*}) \leq p$, é a quantidade de restrições de desigualdade ativas em $x^{*}$, enquanto que $r(x^{*})$, com $m \leq r(x^{*}) \leq m+p$, é o número total de restrições ativas em $x^{*}$.
 
-Por conseguinte, as caracterizações das direções factíveis propostas nos \Cref{teo:direcao_factivel_igualdade,teo:direcoes_factiveis_restricao_desigualdade} nos permitem enunciar o seguinte teorema. 
+Por conseguinte, as caracterizações das direções factíveis estabelecidas pelos \Cref{teo:direcao_factivel_igualdade,teo:direcoes_factiveis_restricao_desigualdade} implicam no seguinte teorema. 
 \begin{teo} \label{teo:direcao_factivel_desigualdade_e_igualdade}
 Dado um ponto $x^{*} \in \Omega$, o vetor $d\in \RR^{n}$ é uma direção factível em $x^{*}$ se, e somente se, $Ad =0$ e $w_{j}^{T}d \leq 0$ para todo $j\in \mathcal{J}(x^{*})$.
 \end{teo}
@@ -1624,7 +1624,7 @@ Dado um ponto $x^{*} \in \Omega$, o vetor $d\in \RR^{n}$ é uma direção factí
 
 \subsubsection{Condições Necessárias de Primeira Ordem}
 
-Nos teoremas a seguir vamos considerar $\mathcal{I}(x^{*})$ e $\mathcal{J}(x^{*})$ como definidos anteriormente e denotaremos por $W_{\mathcal{J}}$ a submatriz de $W$ cujas linhas são as que têm os índices em $\mathcal{J}(x^{*})$, por $c_{\mathcal{J}} \in \RR^{s(x^{*})}$ o vetor formado pelas componentes de $c$ correspondentes a $\mathcal{J}(x^{*})$ e por $B \in \RR^{r(x^{*})\times n}$ a matriz dada por
+Para enunciar os teoremas a seguir vamos considerar os conjuntos $\mathcal{I}(x^{*})$ e $\mathcal{J}(x^{*})$ como definidos anteriormente. Além disso, denotaremos por $W_{\mathcal{J}}$ a submatriz de $W$ cujas linhas são as que têm os índices em $\mathcal{J}(x^{*})$, por $c_{\mathcal{J}} \in \RR^{s(x^{*})}$ o vetor formado pelas componentes de $c$ correspondentes a $\mathcal{J}(x^{*})$ e por $B \in \RR^{r(x^{*})\times n}$ a matriz dada por
 \[
 B = \begin{bmatrix*} A \\ W_{\mathcal{J}} \end{bmatrix*} ,
 \]
@@ -1633,21 +1633,66 @@ em que $\posto (B)= r(x^{*})$.
 Considere o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} com $f\in \mathcal{C}^{1}$ e $x^{*} \in \Omega$ tal que $m\leq r(x^{*}) \leq n$ e $s(x^{*}) \geq 1$.
 Se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_igualdade_desigualdade}, e $\posto (B)= r(x^{*})$, então existe $\boldsymbol{\lambda} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que
 \[ \label{eq:1_teo_KKT}
-\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} = 0
-\]
-e
-\[ \label{eq:2_teo_KKT}
-\mu_{k} \geq 0 \ \text{para todo} \ k \ \text{tal que} \ 1 \leq k \leq s(x^{*}).
+\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} = 0 \ \ \text{e} \ \ \mu_{k} \geq 0, \ 1 \leq k \leq s(x^{*})
 \]
 \end{teo}
 \begin{proof}
-Por demonstrar.
+Suponhamos por contradição que \eqref{eq:1_teo_KKT} não ocorre. Isso pode acontecer por dois motivos:
+\begin{enumerate}
+\item[(i)] $\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} \neq 0$ para todo $\boldsymbol{\mu} \in \RR^{s(x^{*})}$.
+
+Assim, temos que $x^{*}$ não é minimizador local do problema
+\[ \label{eq:1_proof_KKT}
+\begin{aligned}
+\min_{x} & \quad f(x) \\
+\text{s.a} & \quad Ax=b, W_{\mathcal{J}}x=c_{\mathcal{J}} ,
+\end{aligned}
+\]
+pois $x^{*}$ não satisfaz a condição necessária de primeira ordem para o problema \eqref{eq:1_proof_KKT} dada pelo \Cref{teo:multiplicadores_de_lagrange}. Em virtude disso, $x^{*}$ não é minimizador local do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade}, o que é uma contradição.
+
+
+\item[(ii)] $\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} = 0$, mas existe $j$ tal que $\mu_{j} <0$. 
+
+Considere $\tilde{W}_{\mathcal{J}}$ a matriz obtida retirando a linha $w_{i_j}$ que corresponde ao multiplicador $\mu_{j}$, e a matriz $\tilde{B}$ dada por $\tilde{B} = \begin{bmatrix*} A \\ \tilde{W}_{\mathcal{J}} \end{bmatrix*}$. Então, tomando $d = \proj_{\mathcal{N}(\tilde{B})} (-\nabla f(x^{*}))$, temos que
+\[
+(-\nabla f(x^{*}) -d)^{T} d =0,
+\]
+pois são ortogonais, e isso implica que
+\[ \label{eq:2_proof_KKT}
+\nabla f(x^{*})^{T} d = - d^{T}d = -\Vert d \Vert^{2} <0.
+\]
+Portanto, $d$ é uma direção de descida. Agora, vejamos que $d$ é uma direção factível. De \eqref{eq:1_teo_KKT} temos que
+\[
+\nabla f(x^{*}) + \lambda_{1} a_{1} + \ldots + \lambda_{m} a_{m} + \mu_{1} w_{i_{1}} + \ldots + \mu_{j} w_{i_{j}} + \ldots + \mu_{s(x^{*})} w_{i_{s(x^{*})}} =0,
+\]
+com $\mu_{j} <0$. Como tomamos $d\in \mathcal{N}(\tilde{B})$, temos que 
+\[ \label{eq:3_proof_KKT}
+Ad=0 \quad \text{e} \quad w_{i_k}^{T}d = 0,
+\]
+para todo $k\neq j$. Então, 
+\[
+\nabla f(x^{*})^{T}d + \mu_{j} w_{i_{j}}^{T}d =0,
+\]
+e reescrevendo obtemos
+\[
+\nabla f(x^{*})^{T}d = -\mu_{j} w_{i_{j}}^{T} d.
+\]
+Agora, utilizando \eqref{eq:2_proof_KKT} e o fato de $\mu_{j} <0$, concluímos que
+\[ \label{eq:4_proof_KKT}
+w_{i_{j}}^{T} d <0.
+\]
+Desse modo, de \eqref{eq:3_proof_KKT} e \eqref{eq:4_proof_KKT} resulta que 
+\[ 
+Ad=0 \quad \text{e} \quad w_{i_k}^{T}d \leq 0,
+\]
+para todo $k$ tal que $1 \leq k \leq s(x^{*})$. Logo, $d$ é uma direção factível. Portanto, $d$ é uma direção factível e de descida a partir de $x^{*}$, contradizendo a hipótese de $x^{*}$ ser minimizador local de \eqref{problema_geral_minimizacao_igualdade_desigualdade}.
+\end{enumerate}	
 \end{proof}
 
-As condições \eqref{eq:1_teo_KKT} e \eqref{eq:2_teo_KKT} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). A partir delas podemos definir \emph{ponto estacionário}.
+As condições \eqref{eq:1_teo_KKT} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). A partir delas podemos definir \emph{ponto estacionário}.
 
 \begin{defi} 
-Um ponto $x^{*} \in \RR^{n} $ é um \emph{ponto estacionário} do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} (ou ainda, um \emph{ponto de Karush-Kuhn-Tucker(KKT)}), quando $x^{*} \in \Omega$ e existem $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}$, tais que as condições \eqref{eq:1_teo_KKT} e \eqref{eq:2_teo_KKT} são satisfeitas. Os elementos $\boldsymbol{\mu}^{*}$ e $\boldsymbol{\lambda}^{*}$ são chamados os \emph{multiplicadores de Lagrange} associados ao ponto estacionário $x^{*}$.
+Um ponto $x^{*} \in \RR^{n} $ é um \emph{ponto estacionário} do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} (ou ainda, um \emph{ponto de Karush-Kuhn-Tucker(KKT)}), quando $x^{*} \in \Omega$ e existem $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}$, tais que as condições \eqref{eq:1_teo_KKT} são satisfeitas. Os elementos $\boldsymbol{\mu}^{*}$ e $\boldsymbol{\lambda}^{*}$ são chamados os \emph{multiplicadores de Lagrange} associados ao ponto estacionário $x^{*}$.
 \end{defi}
 Em outras palavras, $x^{*}$ é dito estacionário quando satisfaz as condições KKT. 
 
@@ -1662,14 +1707,12 @@ Considere o problema
 & \quad g_{2}(x) = -x_{2} \leq 0.
 \end{aligned}
 \]
-
 O ponto $x^{*} = 0$ é o minimizador deste problema, mas não cumpre as condições KKT. De fato, observe que $0\leq x_{2} \leq x_{1}^{3}$, o que implica em $f(x)= x_{1} \geq 0 = f(x^{*})$, para todo ponto factível $x$.
-
 No entanto, 
 \[
 \nabla f(x^{*}) = \begin{bmatrix*} 1 \\ 0 \end{bmatrix*} , \nabla g_{1}(x^{*}) = \begin{bmatrix*} 0 \\ 1 \end{bmatrix*} \ \text{e} \ \nabla g_{2}(x^{*}) = \begin{bmatrix*} 0 \\ -1 \end{bmatrix*},
 \]
-ou seja, os gradientes das restrições não são LI e, portanto, $x^{*}$ não é um ponto regular. Assim, as condições KKT não são satisfeitas, pois não existem $\mu_{1}^{*} , \mu_{2}^{*} \in \RR^{+}$ tais que 
+ou seja, os gradientes das restrições não são LI. Assim, as condições KKT não são satisfeitas, pois não existem $\mu_{1}^{*} , \mu_{2}^{*} \in \RR^{+}$ tais que 
 \[
 \begin{bmatrix*} 1 \\ 0 \end{bmatrix*} + \mu_{1}^{*} \begin{bmatrix*} 0 \\ 1 \end{bmatrix*} + \mu_{2}^{*} \begin{bmatrix*} 0 \\ -1 \end{bmatrix*} = \begin{bmatrix*} 0 \\ 0 \end{bmatrix*}.
 \]
