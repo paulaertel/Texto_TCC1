@@ -1084,8 +1084,8 @@ Isso significa que $\nabla^{2} f(x^{*})$ é semidefinida positiva para todo $y\i
 \begin{teo}(\textbf{Condição necessária de segunda ordem}) \label{teo:condicao_necessaria_2ordem_igualdade}
 Se $x^{*} \in \RR^{n}$ é minimizador local de \eqref{problema_geral_minimizacao_igualdade}, então  
 \begin{enumerate}
-	\item[(i)] Existe $\boldsymbol{\lambda}^{*} \in \RR^{m}$ tal que $\nabla f(x^{*}) = A^{T} \boldsymbol{\lambda}^{*}$;
-	\item[(ii)] Para todo $y \in \mathcal{N}(A)$ temos que $y^{T}\nabla^{2} f(x^{*})y \geq 0$.
+	\item[(i)] existe $\boldsymbol{\lambda}^{*} \in \RR^{m}$ tal que $\nabla f(x^{*}) = A^{T} \boldsymbol{\lambda}^{*}$;
+	\item[(ii)] para todo $y \in \mathcal{N}(A)$ temos que $y^{T}\nabla^{2} f(x^{*})y \geq 0$.
 \end{enumerate}
 \end{teo}
 
@@ -1110,8 +1110,8 @@ Portanto, se $x^{*} \in \Omega$ satisfaz \eqref{eq:3_condicao_suficiente_igualda
 \begin{teo}(\textbf{Condição suficiente de segunda ordem}) \label{teo:condicao_suficiente_2ordem_igualdade}
 Se ${x}^{*} \in \RR^{n}$ verifica $A{x}^{*} = b$ e 
 \begin{enumerate}
-	\item[(i)] Existe $\boldsymbol{\lambda}^{*} \in \RR^{m}$ tal que $\nabla f({x}^{*}) = A^{T}\boldsymbol{\lambda}^{*}$;
-	\item[(ii)] Para todo $y \in \mathcal{N}(A)$, com $y\neq 0$, temos que $y^{T}\nabla^{2} f(x^{*})y > 0$; 
+	\item[(i)] existe $\boldsymbol{\lambda}^{*} \in \RR^{m}$ tal que $\nabla f({x}^{*}) = A^{T}\boldsymbol{\lambda}^{*}$;
+	\item[(ii)] para todo $y \in \mathcal{N}(A)$, com $y\neq 0$, temos que $y^{T}\nabla^{2} f(x^{*})y > 0$; 
 \end{enumerate}
 então ${x}^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_igualdade}.
 \end{teo}
@@ -1286,7 +1286,7 @@ Denotamos por $\mathcal{D}_{f}(\xbar)$ o conjunto de todas as direções de desc
 
 
 \begin{lema} \label{lema:direcao_de_descida}
-Seja $f:\RR^{n} \rightarrow \RR$ uma função diferenciável no ponto $\xbar \in \RR^{n}$. Então
+Seja $f:\RR^{n} \rightarrow \RR$ uma função diferenciável no ponto $\xbar \in \RR^{n}$. Então:
 \begin{enumerate}
 	\item[(i)] Para todo $d \in \mathcal{D}_{f}(\xbar)$, tem-se que $\nabla f(\xbar)^{T}d \leq 0$.
 
@@ -1512,9 +1512,9 @@ Desenvolveremos agora as condições necessárias e as condições suficientes d
 \begin{teo}(\textbf{Condição necessária de segunda ordem}) \label{teo:condicao_necessaria_2ordem_desigualdade}
 Considere o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{2}$ e $r(x^{*})$ e $\mathcal{I}(x^{*})$ definidos como anteriormente. Se $x^{*}$ é um minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade},  então
 \begin{enumerate}
-	\item[(i)] Existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0$ e $\mu_{k} \geq 0$ para todo $i_{k} \in \mathcal{I}(x^{*})$;
+	\item[(i)] existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0$ e $\mu_{k} \geq 0$ para todo $i_{k} \in \mathcal{I}(x^{*})$;
 
-	\item[(ii)] Para todo $y \in \mathcal{N}(W_{\mathcal{I}})$ temos que $y^{T} \nabla^{2} f(x^{*})y \geq 0$.
+	\item[(ii)] para todo $y \in \mathcal{N}(W_{\mathcal{I}})$ temos que $y^{T} \nabla^{2} f(x^{*})y \geq 0$.
 \end{enumerate}
 \end{teo}
 \begin{proof}
@@ -1533,16 +1533,17 @@ Por conseguinte, se $x^{*}$ é minimizador local de \eqref{problema_geral_minimi
 \]
 em que $W_{\mathcal{I}}$ é a submatriz de $W$ cujas linhas correspondem às restrições ativas em $x^{*}$. Então, pelo \Cref{teo:condicao_necessaria_2ordem_igualdade}, concluímos que
 \[
-y^{T}\nabla^{2} f(x^{*})y \geq 0 \ \text{para todo} \ y \in \mathcal{N}(W_{\mathcal{I}}) .
+y^{T}\nabla^{2} f(x^{*})y \geq 0, 
 \]
+para todo $y \in \mathcal{N}(W_{\mathcal{I}})$. 
 \end{proof}
 
 
 \begin{teo}(\textbf{Condição suficiente de segunda ordem}) \label{teo:condicao_suficiente_2ordem_desigualdade}
 Considere o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{2}$ e $r(x^{*})$ e $\mathcal{I}(x^{*})$ definidos como anteriormente. Se $x^{*} \in \Omega$ satisfaz 
 \begin{enumerate}
-	\item[(i)] $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0$ com $\mu_{k} \geq 0$ para todo $i_{k} \in \mathcal{I}(x^{*})$, e 
-	\item[(ii)] $y^{T} \nabla^{2} f(x^{*})y > 0$ para todo $y \in \mathcal{N}(W_{\mathcal{J}})$, $y\neq 0$, em que $\mathcal{J} = \{ k\in \{ 1,2, \ldots , r(x^{*}) \} \mid \mu_{k} >0 \}$,
+	\item[(i)] $\nabla f(x^{*}) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} =0$ com $\mu_{k} \geq 0$ para todo $i_{k} \in \mathcal{I}(x^{*})$; 
+	\item[(ii)] $y^{T} \nabla^{2} f(x^{*})y > 0$ para todo $y \in \mathcal{N}(W_{\mathcal{J}})$, $y\neq 0$, em que $\mathcal{J} = \{ k\in \{ 1,2, \ldots , r(x^{*}) \} \mid \mu_{k} >0 \}$;
 \end{enumerate}
 então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_desigualdade}.
 \end{teo}
@@ -1631,9 +1632,9 @@ B = \begin{bmatrix*} A \\ W_{\mathcal{J}} \end{bmatrix*} ,
 em que $\posto (B)= r(x^{*})$.
 \begin{teo}(\textbf{Condição necessária de primeira ordem}) \label{teo:KKT}
 Considere o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} com $f\in \mathcal{C}^{1}$ e $x^{*} \in \Omega$ tal que $m\leq r(x^{*}) \leq n$ e $s(x^{*}) \geq 1$.
-Se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_igualdade_desigualdade}, e $\posto (B)= r(x^{*})$, então existe $\boldsymbol{\lambda} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que
+Se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_igualdade_desigualdade}, e $\posto (B)= r(x^{*})$, então existem $\boldsymbol{\lambda} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que
 \[ \label{eq:1_teo_KKT}
-\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} = 0 \ \ \text{e} \ \ \mu_{k} \geq 0, \ 1 \leq k \leq s(x^{*})
+\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} = 0 \ \ \text{e} \ \ \mu_{k} \geq 0, \ 1 \leq k \leq s(x^{*}) .
 \]
 \end{teo}
 \begin{proof}
@@ -1692,7 +1693,7 @@ para todo $k$ tal que $1 \leq k \leq s(x^{*})$. Logo, $d$ é uma direção fact�
 As condições \eqref{eq:1_teo_KKT} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). A partir delas podemos definir \emph{ponto estacionário}.
 
 \begin{defi} 
-Um ponto $x^{*} \in \RR^{n} $ é um \emph{ponto estacionário} do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} (ou ainda, um \emph{ponto de Karush-Kuhn-Tucker(KKT)}), quando $x^{*} \in \Omega$ e existem $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}$, tais que as condições \eqref{eq:1_teo_KKT} são satisfeitas. Os elementos $\boldsymbol{\mu}^{*}$ e $\boldsymbol{\lambda}^{*}$ são chamados os \emph{multiplicadores de Lagrange} associados ao ponto estacionário $x^{*}$.
+Um ponto $x^{*} \in \RR^{n} $ é um \emph{ponto estacionário} do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} (ou ainda, um \emph{ponto de Karush-Kuhn-Tucker(KKT)}), quando $x^{*} \in \Omega$ e existem $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}$, tais que as condições \eqref{eq:1_teo_KKT} são satisfeitas. Os elementos $\boldsymbol{\lambda}^{*}$ e $\boldsymbol{\mu}^{*}$ são chamados os \emph{multiplicadores de Lagrange} associados ao ponto estacionário $x^{*}$.
 \end{defi}
 Em outras palavras, $x^{*}$ é dito estacionário quando satisfaz as condições KKT. 
 
@@ -1720,32 +1721,44 @@ ou seja, os gradientes das restrições não são LI. Assim, as condições KKT 
 
 \subsubsection{Condições Necessárias e Suficientes de Segunda Ordem}
 
+As condições necessárias e suficientes de segunda ordem para problemas com restrições de igualdade e desigualdade podem ser obtidas considerando-se essencialmente o problema com restrições de igualdade ao considerar apenas as restrições ativas.
 
 \begin{teo}(\textbf{Condição necessária de segunda ordem}) \label{teo:condicao_necessaria_2ordem_igualdade_desigualdade}
 Considere o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} com $f \in \mathcal{C}^{2}$ e $r(x^{*})$, $s(x^{*})$, $\mathcal{J}(x^{*})$ e $B$ definidos como anteriormente. Se $x^{*}$ é um minimizador local do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade}, então
 \begin{enumerate}
-	\item[(i)] Existem $\boldsymbol{\lambda} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que 
-	\[
-	\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} =0 \ \text{e} \ \mu_{k} \geq 0 \ \text{para todo} \ k\in \{ 1,2, \ldots , s(x^{*}) \} ;
-	\]
-	\item[(ii)] $y^{T}\nabla^{2} f(x^{*})y \geq 0$ para todo $y\in \mathcal{N}(B)$.
+	\item[(i)] existem $\boldsymbol{\lambda} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que $\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} =0$ e $\mu_{k} \geq 0$ para todo $k\in \{ 1,2, \ldots , s(x^{*}) \}$;
+	\item[(ii)] para todo $y\in \mathcal{N}(B)$ temos que $y^{T}\nabla^{2} f(x^{*})y \geq 0$ .
 \end{enumerate}	
 \end{teo}
 \begin{proof}
-Por demonstrar.
+Primeiramente, se $x^{*}$ é minimizador local do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} então, pelo \Cref{teo:KKT}, existem $\boldsymbol{\lambda} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que
+\[
+\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} =0 \ \ \text{e} \ \ \mu_{k} \geq 0, \ k\in \{ 1,2, \ldots , s(x^{*}) \} .
+\]
+
+Ademais, se $x^{*}$ é minimizador local de \eqref{problema_geral_minimizacao_igualdade_desigualdade} então ele é solução do seguinte problema obtido considerando apenas as restrições ativas em $x^{*}$
+\[
+\begin{aligned}
+\min_{x} & \quad f(x) \\
+\text{s.a} & \quad Ax=b, W_{\mathcal{J}}x = c_{\mathcal{J}} .
+\end{aligned}
+\]
+Assim, como $B = \begin{bmatrix*} A \\ W_{\mathcal{J}} \end{bmatrix*}$, concluímos pelo \Cref{teo:condicao_necessaria_2ordem_igualdade} que 
+\[
+y^{T}\nabla^{2} f(x^{*})y \geq 0 ,
+\] 
+para todo $y\in \mathcal{N}(B)$.
 \end{proof}
 
+Agora, para saber se um determinado ponto é um mínimo local do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade}, é necessário que ele cumpra certas condições suficientes que são estabelecidas pelo teorema a seguir. 
 
 \begin{teo}(\textbf{Condição suficiente de segunda ordem}) \label{teo:condicao_suficiente_igualdade_desigualdade}
 Considere o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} com $f \in \mathcal{C}^{2}$ e $r(x^{*})$, $s(x^{*})$, $\mathcal{J}(x^{*})$ e $B$ definidos como anteriormente. Se $x^{*} \in \Omega$ verifica
 \begin{enumerate}
-	\item[(i)] Existem $\boldsymbol{\lambda} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que 
+	\item[(i)] existem $\boldsymbol{\lambda} \in \RR^{m}$ e $\boldsymbol{\mu} \in \RR^{s(x^{*})}$ tais que $\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} =0$ e $\mu_{k} \geq 0$ para todo $k\in \{ 1,2, \ldots , s(x^{*}) \}$;
+	\item[(ii)] se $y^{T}\nabla^{2} f(x^{*})y >0$ para todo $y\in \mathcal{N}(\tilde{B})$, em que
 	\[
-	\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{J}} \boldsymbol{\mu} =0 \ \text{e} \ \mu_{k} \geq 0 \ \text{para todo} \ k\in \{ 1,2, \ldots , s(x^{*}) \} ;
-	\]
-	\item[(ii)] Se $y^{T}\nabla^{2} f(x^{*})y >0$ para todo $y\in \mathcal{N}(\tilde{B})$, em que
-	\[
-	\tilde{B} = \begin{bmatrix*} A \\ W_{\mathcal{K}} \end{bmatrix*} 
+	\tilde{B} = \begin{bmatrix*} A \\ W_{\mathcal{K}} \end{bmatrix*}
 	\]
 	e
 	\[
@@ -1755,7 +1768,47 @@ Considere o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} c
 então $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_igualdade_desigualdade}.
 \end{teo}
 \begin{proof}
-Por demonstrar.
+Suponhamos, inicialmente, que $\mu_{j} >0$ para todo $j\in \mathcal{J}(x^{*})$, então $W_{\mathcal{J}} = W_{\mathcal{K}}$ e, consequentemente, 
+\[
+B = \tilde{B} .
+\]
+Desse modo, se $x^{*} \in \Omega$ satisfaz
+\[
+\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{K}} \boldsymbol{\mu} =0
+\]
+e
+\[
+y^{T}\nabla^{2} f(x^{*})y >0,
+\]
+para todo $y\in \mathcal{N}(\tilde{B})$ tal que $y\neq 0$, então, pelo \Cref{teo:condicao_suficiente_2ordem_igualdade}, $x^{*}$ é minimizador local do problema
+\[ 
+\begin{aligned}
+\min_{x} & \quad f(x) \\
+\text{s.a} & \quad Ax=b, \ W_{\mathcal{K}}x=c_{\mathcal{K}} ,
+\end{aligned}
+\]
+e consequentemente, é minimizador local do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade}.
+
+Agora, suponhamos que existe pelo menos um $j$ tal que $\mu_{j} =0$. Assim, 
+\[
+W_{\mathcal{J}}^{T}\boldsymbol{\mu} = W_{\mathcal{K}}^{T}\boldsymbol{\mu}_{\mathcal{K}} ,
+\]
+em que $\boldsymbol{\mu}_{\mathcal{K}}$ é o vetor formado pelas componentes $\mu_{j}$ que possuem índices em $\mathcal{K} = \{ j\in \mathcal{J}(x^{*}) \mid \mu_{j} >0 \}$. Então, se $x^{*} \in \Omega$ satisfaz
+\[
+\nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{K}} \boldsymbol{\mu} =0
+\]
+e
+\[
+y^{T}\nabla^{2} f(x^{*})y >0,
+\]
+para todo $y\in \mathcal{N}(\tilde{B})$ e $y\neq 0$, então, pelo \Cref{teo:condicao_suficiente_2ordem_igualdade}, temos que $x^{*}$ é minimizador local do problema
+\[ 
+\begin{aligned}
+\min_{x} & \quad f(x) \\
+\text{s.a} & \quad Ax=b, \ W_{\mathcal{K}}x=c_{\mathcal{K}} .
+\end{aligned}
+\]
+Portanto, $x^{*}$ é minimizador local do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade}.
 \end{proof}
 
 
