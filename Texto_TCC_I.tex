@@ -1016,7 +1016,7 @@ A solução de \eqref{problema_geral_minimizacao_igualdade} é necessariamente s
 
 Vejamos a seguir um exemplo em que as condições de otimalidade de primeira ordem nos permitem determinar a expressão geral para uma solução de um problema.
 
-\begin{exem}
+\begin{exem} \label{exem:exemplo_minimizar_norma}
 Queremos encontrar uma solução do sistema linear $Ax =b$, em que $m<n$, (portanto um sistema linear com infinitas soluções), com a menor norma possível. Podemos descrever matematicamente este problema da seguinte forma
 \[\begin{aligned} \label{exem:minimizar_norma}
 \min_{x} & \quad \dfrac{1}{2}\Vert x \Vert^{2} \\
@@ -1507,7 +1507,7 @@ para todo $k$ tal que $1 \leq k \leq r(x^{*})$, ou seja, $d$ é uma direção fa
 
 \subsubsection{Condições Necessárias e Suficientes de Segunda Ordem}
 
-Desenvolveremos agora as condições necessárias e as condições suficientes de segunda ordem para o problema \eqref{problema_geral_minimizacao_desigualdade}.
+Desenvolveremos a seguir as condições necessárias e as condições suficientes de segunda ordem para o problema \eqref{problema_geral_minimizacao_desigualdade} com restrições de desigualdade.
 
 \begin{teo}(\textbf{Condição necessária de segunda ordem}) \label{teo:condicao_necessaria_2ordem_desigualdade}
 Considere o problema \eqref{problema_geral_minimizacao_desigualdade} com $f \in \mathcal{C}^{2}$ e $r(x^{*})$ e $\mathcal{I}(x^{*})$ definidos como anteriormente. Se $x^{*}$ é um minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade},  então
@@ -1573,7 +1573,7 @@ Agora, suponha que existe pelo menos um $k$ tal que $\mu_{k} =0$. Neste caso, ob
 \[
 W_{\mathcal{I}}^{T} \boldsymbol{\mu} = W_{\mathcal{J}}^{T} \boldsymbol{\mu}_{\mathcal{J}},
 \]
-em que $\boldsymbol{\mu}_{\mathcal{J}}$ é vetor formado pelas componentes $\mu_{k}$ de $\boldsymbol{\mu}$ que possuem índice em $\mathcal{J} = \{ k\in \{ 1,2, \ldots , r(x^{*}) \} \mid \mu_{k} >0 \}$. Desse modo, temos que $x^{*} \in \Omega$ satisfaz
+em que $\boldsymbol{\mu}_{\mathcal{J}}$ é vetor formado pelas componentes $\mu_{k}$ que possuem índice em $\mathcal{J} = \{ k\in \{ 1,2, \ldots , r(x^{*}) \} \mid \mu_{k} >0 \}$. Desse modo, temos que $x^{*} \in \Omega$ satisfaz
 \[
 \nabla f(x^{*}) + W_{\mathcal{J}}^{T} \boldsymbol{\mu}_{\mathcal{J}} =0
 \]
@@ -1591,6 +1591,56 @@ para todo $y \in \mathcal{N}(W_{\mathcal{J}})$ e $y\neq 0$. Assim, o \Cref{teo:c
 e portanto, $x^{*}$ é minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}.
 \end{proof}
 
+Vejamos no exemplo a seguir as condições de otimalidade de segunda ordem para um problema de minimização em que a função objetivo é uma quadrática.
+
+\begin{exem}
+Considere o problema de programação quadrática
+\[ \label{exem:problema_quadratica_restricao_desigualdade}
+\begin{aligned}
+\min_{x} & \quad \dfrac{1}{2} x^{T}Qx + p^{T}x \\
+\text{s.a} & \quad Wx \leq c,
+\end{aligned}
+\]
+em que $Q\in \RR^{n\times n}$ é simétrica, $p\in \RR^{n}$, $W\in \RR^{m\times n}$ e $c\in \RR^{m}$.
+De acordo com o \Cref{teo:condicao_necessaria_2ordem_desigualdade}, as condições necessárias de segunda ordem a serem satisfeitas por um ponto $x^{*}$ que é um minimizador local do problema \eqref{exem:problema_quadratica_restricao_desigualdade} são
+\begin{enumerate}
+\item[(i)] existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que
+\[
+(Qx^{*} +p) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} = 0 \quad \text{e} \quad \mu_{k} \geq 0,
+\]
+para todo $i_{k} \in \mathcal{I}(x^{*})$, em que $\mathcal{I}(x^{*})$ é o conjunto dos índices das restrições ativas em $x^{*}$ já definido anteriormente, e $\nabla f(x^{*}) = Qx^{*} +p$;
+
+\item[(ii)] para todo $y\in \mathcal{N}(W_{\mathcal{I}})$, isto é, tal que $W_{\mathcal{I}} y=0$, devemos ter
+\[
+y^{T}Qy \geq 0,
+\]
+em que $\nabla^{2} f(x^{*}) =Q$.
+\end{enumerate}
+
+Por outro lado, para que $x^{*}$ seja minimizador local do problema \eqref{exem:problema_quadratica_restricao_desigualdade}, pelo \Cref{teo:condicao_suficiente_2ordem_desigualdade} é suficiente que $x^{*}$ satisfaça a restrição de desigualdade $Wx \leq b$ e também
+\begin{enumerate}
+\item[(i)] existe $\boldsymbol{\mu} \in \RR^{r(x^{*})}$ tal que
+\[
+(Qx^{*} +p) + W_{\mathcal{I}}^{T} \boldsymbol{\mu} = 0 \quad \text{e} \quad \mu_{k} \geq 0,
+\]
+para todo $i_{k} \in \mathcal{I}(x^{*})$;
+
+\item[(ii)] para todo $y\in \mathcal{N}(W_{\mathcal{J}})$, com $y\neq 0$, temos que
+\[
+y^{T}Qy >0,
+\]
+em que $\mathcal{J} = \{ k\in \{1,2, \ldots , r(x^{*}) \} \mid \mu_{k} >0 \}$.
+\end{enumerate}	
+
+Além disso, é interessante observar que se tomarmos $Q=I$ e $p=0$, o problema \eqref{exem:problema_quadratica_restricao_desigualdade} pode ser reescrito da seguinte forma
+\[ 
+\begin{aligned}
+\min_{x} & \quad \dfrac{1}{2} \Vert x \Vert^{2} \\
+\text{s.a} & \quad Wx \leq b.
+\end{aligned}
+\]
+Tal problema consiste em encontrar uma solução do sistema linear $Wx \leq b$ com a menor norma possível, e como as condições de otimalidade para problemas com restrições de desigualdade consideram, essencialmente, as restrições que são ativas em uma solução do problema, sua solução pode ser caracterizada de modo análogo ao realizado no \Cref{exem:exemplo_minimizar_norma}.
+\end{exem}
 
 
 
@@ -1690,30 +1740,38 @@ para todo $k$ tal que $1 \leq k \leq s(x^{*})$. Logo, $d$ é uma direção fact�
 \end{enumerate}	
 \end{proof}
 
-As condições \eqref{eq:1_teo_KKT} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). A partir delas podemos definir \emph{ponto estacionário}.
+As condições em \eqref{eq:1_teo_KKT} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). A partir delas podemos definir \emph{ponto estacionário}.
 
 \begin{defi} 
-Um ponto $x^{*} \in \RR^{n} $ é um \emph{ponto estacionário} do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} (ou ainda, um \emph{ponto de Karush-Kuhn-Tucker(KKT)}), quando $x^{*} \in \Omega$ e existem $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}$, tais que as condições \eqref{eq:1_teo_KKT} são satisfeitas. Os elementos $\boldsymbol{\lambda}^{*}$ e $\boldsymbol{\mu}^{*}$ são chamados os \emph{multiplicadores de Lagrange} associados ao ponto estacionário $x^{*}$.
+Um ponto $x^{*} \in \RR^{n} $ é um \emph{ponto estacionário} do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} (ou ainda, um \emph{ponto de Karush-Kuhn-Tucker(KKT)}), quando $x^{*} \in \Omega$ e existem $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}$, tais que as condições \eqref{eq:1_teo_KKT} são satisfeitas. Os elementos $\boldsymbol{\lambda}^{*}$ e $\boldsymbol{\mu}^{*}$ são chamados de \emph{multiplicadores de Lagrange} associados ao ponto estacionário $x^{*}$.
 \end{defi}
-Em outras palavras, $x^{*}$ é dito estacionário quando satisfaz as condições KKT. 
+Em outras palavras, $x^{*}$ é dito estacionário quando satisfaz as condições KKT. Outro conceito importante e que está implícito no enunciado do \Cref{teo:KKT} é o de \emph{ponto regular}.
 
-É importante observar que se não for verificada a hipóstese de a matriz $B$ ser posto completo, podemos ter minimizadores que não cumprem KKT, o que dificulta a caracterização de tais pontos. Vejamos a seguir um exemplo que justifica essa afirmação.
+\begin{defi} \label{defi:ponto_regular}
+Seja $x^{*}$ um ponto que satisfaz as restrições
+\[
+h(x^{*}) = 0, \quad g(x^{*}) \leq 0, \label{eq:1_ponto_regular}
+\]
+e seja $\mathcal{J}(x^{*})$ o conjunto dos índices $j$ tais que $g_{j}(x^{*}) = 0$. Então $x^{*}$ é chamado \emph{ponto regular} das restrições \eqref{eq:1_ponto_regular} se os gradientes das restrições de igualdade e desigualdade ativas, isto é, $\nabla h_{i}(x^{*})$ e $\nabla g_{j}(x^{*})$, com $1 \leq i \leq m$ e $j \in \mathcal{J}(x^{*})$, são linearmente independentes.
+\end{defi}
+
+Note que, se as restrições $h$ e $g$, dadas por $h(x) = Ax-b$ e $g(x) = Wx-c$, são funções afim, um ponto ser regular é equivalente a dizer que as matrizes $A$ e $W_{\mathcal{J}}$ são posto completo, condição esta que independe de $x$. Assim, é importante observar que se não for verificada a hipóstese de regularidade, podemos ter minimizadores que não cumprem KKT, o que dificulta a caracterização de tais pontos. Vejamos a seguir um exemplo que justifica essa afirmação.
 
 \begin{exem}
 Considere o problema 
-\[
+\[ \label{exem:minimizador_nao_satisfaz_KKT}
 \begin{aligned}
 \min_{x} & \quad f(x)=x_{1} \\
 \text{s.a} & \quad g_{1}(x)=-x_{1}^{3} + x_{2} \leq 0 , \\
 & \quad g_{2}(x) = -x_{2} \leq 0.
 \end{aligned}
 \]
-O ponto $x^{*} = 0$ é o minimizador deste problema, mas não cumpre as condições KKT. De fato, observe que $0\leq x_{2} \leq x_{1}^{3}$, o que implica em $f(x)= x_{1} \geq 0 = f(x^{*})$, para todo ponto factível $x$.
-No entanto, 
+O ponto $x^{*} = (0,0)$ é o minimizador do problema \eqref{exem:minimizador_nao_satisfaz_KKT}, no entanto não cumpre as condições KKT. Com efeito, manipulando as restrições de desigualdade temos que $0\leq x_{2} \leq x_{1}^{3}$, o que implica em $f(x^{*}) =0 \leq x_{1} = f(x)$, para todo ponto factível $x$.
+Contudo, como
 \[
 \nabla f(x^{*}) = \begin{bmatrix*} 1 \\ 0 \end{bmatrix*} , \nabla g_{1}(x^{*}) = \begin{bmatrix*} 0 \\ 1 \end{bmatrix*} \ \text{e} \ \nabla g_{2}(x^{*}) = \begin{bmatrix*} 0 \\ -1 \end{bmatrix*},
 \]
-ou seja, os gradientes das restrições não são LI. Assim, as condições KKT não são satisfeitas, pois não existem $\mu_{1}^{*} , \mu_{2}^{*} \in \RR^{+}$ tais que 
+temos que os gradientes das restrições ativas em $x^{*}$ não são LI, e portanto, $x^{*}$ não é um ponto regular. Assim, as condições KKT não são satisfeitas, pois não existem $\mu_{1}^{*} , \mu_{2}^{*} \in \RR^{+}$ tais que 
 \[
 \begin{bmatrix*} 1 \\ 0 \end{bmatrix*} + \mu_{1}^{*} \begin{bmatrix*} 0 \\ 1 \end{bmatrix*} + \mu_{2}^{*} \begin{bmatrix*} 0 \\ -1 \end{bmatrix*} = \begin{bmatrix*} 0 \\ 0 \end{bmatrix*}.
 \]
@@ -1721,7 +1779,7 @@ ou seja, os gradientes das restrições não são LI. Assim, as condições KKT 
 
 \subsubsection{Condições Necessárias e Suficientes de Segunda Ordem}
 
-As condições necessárias e suficientes de segunda ordem para problemas com restrições de igualdade e desigualdade podem ser obtidas considerando-se essencialmente o problema com restrições de igualdade ao considerar apenas as restrições ativas.
+As condições necessárias e suficientes de segunda ordem para problemas com restrições de igualdade e desigualdade podem ser obtidas considerando-se essencialmente as restrições ativas.
 
 \begin{teo}(\textbf{Condição necessária de segunda ordem}) \label{teo:condicao_necessaria_2ordem_igualdade_desigualdade}
 Considere o problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} com $f \in \mathcal{C}^{2}$ e $r(x^{*})$, $s(x^{*})$, $\mathcal{J}(x^{*})$ e $B$ definidos como anteriormente. Se $x^{*}$ é um minimizador local do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade}, então
@@ -1812,41 +1870,25 @@ Portanto, $x^{*}$ é minimizador local do problema \eqref{problema_geral_minimiz
 \end{proof}
 
 
---------------------------------------
+%Para que as condições KKT possam ser consideradas uma condição de otimalidade, isto é, que sejam satisfeitas por um ponto que é minimizador, é necessário assumir alguma hipótese adicional às restrições do problema, que será chamada de condição de qualificação.
 
+%\begin{defi}
+%Dizemos que as restrições $g(x) \leq 0$ e $h(x)=0$ cumprem uma \emph{condição de qualificação} em $x^{*} \in \Omega$ quando, dada qualquer função diferenciável $f$ que tenha mínimo em $x^{*}$, relativamente a $\Omega$, sejam satisfeitas as condições de otimalidade de KKT.
+%\end{defi}
+%Logo, um ponto $x \in \RR^{n}$ é dito qualificado quando atende uma condição de qualificação. Vejamos primeiramente a condição de regularidade.
 
+%A \Cref{defi:ponto_regular} também é conhecida como condição de qualificação de independência linear dos gradientes das restrições ativas (LICQ, do inglês \emph{Linear Independence Constraint Qualification}).
 
-Para que as condições KKT possam ser consideradas uma condição de otimalidade, isto é, que sejam satisfeitas por um ponto que é minimizador, é necessário assumir alguma hipótese adicional às restrições do problema, que será chamada de condição de qualificação.
+%\textbf{Condição de Qualificação de Independência Linear:} Dizemos que a condição de qualificação de independência linear (LICQ) é satisfeita em $\xbar$ quando o conjunto formado pelos gradientes das restrições de igualdade e das restrições de desigualdade ativas é linearmente independente, isto é, 
+%\[
+%\{ \nabla g_{i}(\xbar) \mid i \in \mathcal{I}(\xbar) \} \cup \{ \nabla h_{i}(\xbar), i=1, \ldots , m \} \ \text{é LI}.
+%\] 
 
-\begin{defi}
-Dizemos que as restrições $g(x) \leq 0$ e $h(x)=0$ cumprem uma \emph{condição de qualificação} em $x^{*} \in \Omega$ quando, dada qualquer função diferenciável $f$ que tenha mínimo em $x^{*}$, relativamente a $\Omega$, sejam satisfeitas as condições de otimalidade de KKT.
-\end{defi}
-Logo, um ponto $x \in \RR^{n}$ é dito qualificado quando atende uma condição de qualificação. Vejamos primeiramente a condição de regularidade.
+%Outra condição interessante aos nossos estudos, pois menciona a convexidade, é a \emph{Condição de Qualificação de Slater}.
 
-\begin{defi} \label{defi:ponto_regular}
-Seja $x^{*}$ um ponto que satisfaz as restrições
-\[
-h(x^{*}) = 0, \quad g(x^{*}) \leq 0, \label{eq:1_ponto_regular}
-\]
-e seja $\mathcal{I}(x^{*})$ o conjunto dos índices $i$ tais que $g_{i}(x^{*}) = 0$. Então $x^{*}$ é chamado \emph{ponto regular} das restrições \eqref{eq:1_ponto_regular} se os gradientes das restrições de igualdade e desigualdade ativas, isto é, $\nabla h_{j}(x^{*})$ e $\nabla g_{i}(x^{*})$, com $1 \leq j \leq m$ e $i \in \mathcal{I}(x^{*})$, são linearmente independentes.
-\end{defi}
-
-A \Cref{defi:ponto_regular} também é conhecida como condição de qualificação de independência linear dos gradientes das restrições ativas (LICQ, do inglês \emph{Linear Independence Constraint Qualification}).
-
-\textbf{Condição de Qualificação de Independência Linear:} Dizemos que a condição de qualificação de independência linear (LICQ) é satisfeita em $\xbar$ quando o conjunto formado pelos gradientes das restrições de igualdade e das restrições de desigualdade ativas é linearmente independente, isto é, 
-\[
-\{ \nabla g_{i}(\xbar) \mid i \in \mathcal{I}(\xbar) \} \cup \{ \nabla h_{i}(\xbar), i=1, \ldots , m \} \ \text{é LI}.
-\] 
-
-Outra condição interessante aos nossos estudos, pois menciona a convexidade, é a \emph{Condição de Qualificação de Slater}.
-
-\textbf{Condição de Qualificação de Slater:} Dizemos que a condição de qualificação de Slater é satisfeita quando $h$ é linear, cada componente $g_{i}$, $i=1, \ldots , p$, é convexa e existe $\tilde{x} \in \Omega$ tal que $h(\tilde{x})=0$ e $g(\tilde{x})<0$.
-
-
-
+%\textbf{Condição de Qualificação de Slater:} Dizemos que a condição de qualificação de Slater é satisfeita quando $h$ é linear, cada componente $g_{i}$, $i=1, \ldots , p$, é convexa e existe $\tilde{x} \in \Omega$ tal que $h(\tilde{x})=0$ e $g(\tilde{x})<0$.
 
 %Uma classe especial de problemas de otimização se refere ao caso em que o conjunto viável $\Omega$ é um conjunto poliedral.
-
 
 %\begin{defi}(\textbf{Conjunto viável poliedral:}) Um conjunto viável é \emph{poliedral} quando as restrições $g$ e $h$ são afins. Ou seja, o problema terá o seguinte formato
 %\[
@@ -1861,9 +1903,6 @@ Outra condição interessante aos nossos estudos, pois menciona a convexidade, �
 %\end{defi}
 
 %Portanto, se $x^{*}$ é um minimizador local do problema \eqref{eq:conjunto_viavel_poliedral}, então $x^{*}$ satisfaz as condições KKT.
-
-
-
 
 
 %-------------------------------------------------------------------------------------------------------------------------
