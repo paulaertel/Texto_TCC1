@@ -12,7 +12,14 @@
 \usepackage[brazilian]{cleveref}
 
 \usepackage{float}
-\usepackage[table]{xcolor}
+\usepackage[pdftex,dvipsnames]{xcolor}
+\usepackage{xargs}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
 \usepackage{indentfirst}
 \usepackage{dsfont}
 \usepackage{caption}
@@ -368,7 +375,7 @@ em que $w\in \RR^{n}$ e $b\in \RR$.
 
 O problema \eqref{eq:problemageralSVM} possui função objetivo 
 \[ f(w,b)=\dfrac{1}{2}\Vert w\Vert^{2} \]
-convexa, e restrições lineares (DEMONSTRAR)
+convexa, e restrições lineares
 \[ g_i(w,b)=1-y_i(w^{T}x^{i}+b) \leq 0, \quad i=1, \ldots, m, \]
 em que a função $g:\RR^{n+1} \rightarrow \RR^{m}$ pode ser escrita da forma 
 \[ g(w,b)= e - (YX^{T}w+by) \leq 0, \]
@@ -444,7 +451,7 @@ Portanto, para reformular o problema original de maximizar a margem é preciso t
 \begin{aligned}
 \min_{w,b,\xi} & \quad \dfrac{1}{2} \Vert w\Vert^{2} + C \sum_{i=1}^{m} \xi_{i} \\
 \text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1 - \xi_{i}, \quad i=1, \ldots , m, \\
-& \xi_{i} \geq 0, \quad i=1, \ldots , m,\end{aligned}
+& \quad \xi_{i} \geq 0, \quad i=1, \ldots , m,\end{aligned}
 \]
 %não consegui alinhar a última linha às duas primeiras
 em que $C>0$ é um parâmetro de regularização que tem o objetivo de controlar a importância das variáveis de folga. O valor do parâmetro $C$ que fornece uma boa classificação dos dados é escolhido de maneira heurística na fase de treinamento, geralmente a partir da natureza do problema.É devido a utilização desse parâmetro esta modelagem de SVM também é conhecida como C-SVM.
@@ -528,7 +535,7 @@ Em particular, as soluções locais e globais de ambos os problemas são as mesm
 
 Ademais, quando o conjunto factível $\Omega = \RR^{n}$ dizemos que o problema \eqref{problema_geral_otimizacao} é irrestrito. No caso em que $\Omega$ é definido por um sistema de igualdades ou desigualdades como
 \[
-\Omega = \{ x\in \RR^{n} \mid h(x)=0, g(x) \leq 0 \},
+\Omega = \{ x\in \RR^{n} \mid h(x)=0, \ g(x) \leq 0 \},
 \]
 falamos em otimização com restrições.
 
@@ -566,15 +573,15 @@ Pela definição de ínfimo, temos que para todo $k\in \mathds{N}$ existe $x^{k}
 \]
 Passando ao limite quando $k \rightarrow \infty $, e usando o Teorema do Sanduíche concluímos que
 \[\label{eq:teo_weierstrass}
-\lim_{k \rightarrow \infty} f(x^{k}) = \bar{v}.
+\displaystyle\lim_{k \rightarrow \infty} f(x^{k}) = \bar{v}.
 \]
 Como $\{ x^{k} \} \in \Omega$ e $\Omega$ é compacto, temos que $\{ x^{k} \}$ é uma sequência limitada. Logo, ela possui uma subsequência convergente em $\Omega$, isto é, existe uma subsequência $\{ x^{k_{j}} \}$ que converge para um ponto $\bar{x} \in \Omega$,
 \[
-\lim_{j \rightarrow \infty} x^{k_{j}} = \bar{x} \in \Omega .
+\displaystyle\lim_{j \rightarrow \infty} x^{k_{j}} = \bar{x} \in \Omega .
 \]
 Como $f$ é contínua, temos que
 \[
-\lim_{j \rightarrow \infty} f(x^{k_{j}}) = f(\bar{x}).
+\displaystyle\lim_{j \rightarrow \infty} f(x^{k_{j}}) = f(\bar{x}).
 \]
 Usando \eqref{eq:teo_weierstrass}, temos que $f(\bar{x}) = \bar{v}$ e portanto, $f$ assume valor mínimo no ponto $\bar{x} \in \Omega$. Em outras palavras, $\bar{x}$ é um minimizador global de $f$ em $\Omega$.
 \end{proof}
@@ -599,7 +606,7 @@ Seja $f:\RR^{n} \rightarrow \RR$ uma função diferenciável e $\xbar \in \RR^{n
 \[
 f(x) = f(\xbar) + \nabla f(\xbar)^{T}(x-\xbar) + o(x),
 \]
-com $\lim_{x \rightarrow \xbar}\dfrac{o(x)}{\Vert x-\xbar \Vert} = 0$.
+com $\displaystyle\lim_{x \rightarrow \xbar}\dfrac{o(x)}{\Vert x-\xbar \Vert} = 0$.
 \end{fato}
 
 \begin{fato}(\textbf{Taylor de Segunda Ordem}) \label{fato:Taylor_segunda_ordem}
@@ -607,7 +614,7 @@ Seja $f:\RR^{n} \rightarrow \RR$ uma função duas vezes diferenciável e $\xbar
 \[
 f(x) = f(\xbar) + \nabla f(\xbar)^{T}(x-\xbar) + \dfrac{1}{2}(x-\xbar)^{T}\nabla^{2} f(\xbar)(x-\xbar) + o(x),
 \] 
-com $\lim_{x \rightarrow \xbar}\dfrac{o(x)}{\Vert x - \xbar \Vert^{2}} = 0$.
+com $\displaystyle\lim_{x \rightarrow \xbar}\dfrac{o(x)}{\Vert x - \xbar \Vert^{2}} = 0$. 
 \end{fato}
 
 Agora, nos teoremas que seguem, mostraremos as condições de otimalidade de primeira e de segunda ordem para o problema irrestrito.
@@ -627,7 +634,7 @@ para todo $t\in (0,\varepsilon ]$. Pela diferenciabilidade de $f$ em $x^{*}$, ap
 \[
 f(x^{*}+td) = f(x^{*}) + t\nabla f(x^{*})^{T}d + o(t),
 \] 
-com $\lim_{t\rightarrow 0} \dfrac{o(t)}{t} =0$. Utilizando \eqref{eq:1_condicao_1_ordem_irrestrito}, temos
+com $\displaystyle\lim_{t\rightarrow 0} \dfrac{o(t)}{t} =0$. Utilizando \eqref{eq:1_condicao_1_ordem_irrestrito}, temos
 \[
 0 \leq t\nabla f(x^{*})^{T}d + o(t),
 \]
@@ -669,7 +676,7 @@ Aplicando o \Cref{fato:Taylor_segunda_ordem},
 \[
 f(x^{*}+td) = f(x^{*}) + t\nabla f(x^{*})^{T}d + \dfrac{t^{2}}{2} d^{T}\nabla^{2} f(x^{*})d + o(t^{2}),
 \]
-com $\lim_{t\rightarrow 0} \dfrac{o(t^{2})}{t^{2}} =0$, e  \eqref{eq:1_condicao_2_ordem_irrestrito} implica em
+com $\displaystyle\lim_{t\rightarrow 0} \dfrac{o(t^{2})}{t^{2}} =0$, e  \eqref{eq:1_condicao_2_ordem_irrestrito} implica em
 \[ \label{eq:2_condicao_2_ordem_irrestrito}
 0 \leq \dfrac{t^{2}}{2} d^{T}\nabla^{2} f(x^{*})d + o(t^{2}),
 \]
@@ -699,9 +706,9 @@ Seja $B \coloneqq \{ h\in \RR^{n} \mid \Vert h \Vert =1 \}$ e consideremos a fun
 \[
 \phi (h) = h^{T} \nabla^{2} f(x^{*})h.
 \]
-A função $\phi$ é contínua e $B$ é um conjunto compacto, portanto, pelo \Cref{teo:weierstrass}, $\phi$ atinge um valor máximo e um valor mínimo em $B$. Considere $a = \phi(h^{*})$ o valor mínimo de $\phi$ em $B$. Como $\nabla^{2} f(x^{*}) \succ 0$, então $\phi(h) >0$, para todo $h\in B$ e, em particular,
+A função $\phi$ é contínua e $B$ é um conjunto compacto, portanto, pelo \Cref{teo:weierstrass}, $\phi$ atinge um valor máximo e um valor mínimo em $B$. Considere $\phi_{\min} \coloneqq \phi(h^{*})$ o valor mínimo de $\phi$ em $B$. Como $\nabla^{2} f(x^{*}) \succ 0$, então $\phi(h) >0$, para todo $h\in B$ e, em particular,
 \[
-\phi(h) \geq a >0.
+\phi(h) \geq \phi_{\min} >0.
 \]
 Agora, consideremos $d\in \RR^{n}$, arbitrário não-nulo. Como $\dfrac{d}{\Vert d \Vert} \in B$, temos que
 \[
@@ -721,11 +728,11 @@ f(x^{*}+d) - f(x^{*}) = \dfrac{1}{2} d^{T}\nabla^{2} f(x^{*})d + o(\Vert d \Vert
 \]
 e assim, 
 \[ \label{eq:3_condicao_suficiente_irrestrito}
-f(x^{*}+d) - f(x^{*}) \geq \dfrac{a}{2}\Vert d \Vert^{2} + o(\Vert d \Vert^{2})
+f(x^{*}+d) - f(x^{*}) \geq \dfrac{\phi_{\min}}{2}\Vert d \Vert^{2} + o(\Vert d \Vert^{2}) .
 \]
 Então, para todo $d$ tal que $\Vert d \Vert$ é suficientemente pequena, o primeiro termo do membro direito da desigualdade \eqref{eq:3_condicao_suficiente_irrestrito} define o sinal deste lado. Além disso,
 \[
-\dfrac{a}{2}\Vert d \Vert^{2} >0.
+\dfrac{\phi_{\min}}{2}\Vert d \Vert^{2} >0.
 \]
 Portanto, para $\Vert d \Vert$ suficientemente pequeno não-nulo, temos que 
 \[
@@ -798,13 +805,13 @@ O conjunto
 \]
 é chamado \emph{conjunto de factibilidade} de \eqref{problema_geral_minimizacao_igualdade}. Este conjunto é a variedade afim de soluções do sistema linear
 \[ \label{eq:restricao_de_igualdade}
-Ax=b,
+Ax=b.
 \]
-e de modo geral, $\Omega$ é uma reta se $m=n-1$, um plano se $m=n-2$ e uma variedade de dimensão $n-m$ para $m$ genérico. No caso em que $n>2$ e $m=1$ dizemos que $\Omega$ é um hiperplano. 
+Note que $\Omega$ é uma reta se $m=n-1$, um plano se $m=n-2$ e uma variedade de dimensão $n-m$ para $m$ genérico. No caso em que $n>2$ e $m=1$ dizemos que $\Omega$ é um hiperplano. 
 
-Para obter as condições de otimalidade para um ponto de mínimo $x^{*}$ do problema \eqref{problema_geral_minimizacao_igualdade}, a ideia central é considerar o movimento para longe do ponto em uma determinada direção, desde que possamos continuar, pelo menos inicialmente, no conjunto $\Omega$. Desse modo, dado $x \in \Omega$ dizemos que um vetor $d$ é uma \emph{direção factível} de $x$ se existe $\bar{\alpha} >0$ tal que $x + \alpha d \in \Omega$, para todo $\alpha$ com $0 \leq \alpha \leq \bar{\alpha}$. Em vista disso, o primeiro passo será determinar o conjunto de direções factíveis em $\Omega$. 
+Para obter as condições de otimalidade para um ponto de mínimo $x^{*}$ do problema \eqref{problema_geral_minimizacao_igualdade}, a ideia central é considerar o movimento para longe do ponto $x^{*}$ em uma determinada direção, desde que possamos continuar, pelo menos inicialmente, no conjunto $\Omega$. Desse modo, dado $x \in \Omega$ dizemos que um vetor $d$ é uma \emph{direção factível} de $x$ se existe $\bar{\alpha} >0$ tal que $x + \alpha d \in \Omega$, para todo $\alpha$ com $0 \leq \alpha \leq \bar{\alpha}$. Em vista disso, o primeiro passo será determinar o conjunto de direções factíveis em $\Omega$. 
 
-Para tanto, associado a $\Omega$ temos o conjunto de soluções do sistema homogêneo $Ax=0$, que é chamado de Núcleo de $A$ e denotado por $\mathcal{N}(A)$. Este conjunto é um subespaço de $\RR^{n}$ de dimensão $n-m$, pois $\posto (A)=m$, e é interessante observar que $\mathcal{N}(A)$ é um subespaço paralelo à variedade afim $\Omega$ e passa pela origem. Esta noção é representada na \Cref{fig:nucleoA_paralelo_Omega}.
+Para tanto, associado a $\Omega$ temos o conjunto de soluções do sistema homogêneo $Ax=0$, que é chamado de Núcleo de $A$ e denotado por $\mathcal{N}(A)$. Este conjunto é um subespaço de $\RR^{n}$ de dimensão $n-m$, pois $\posto (A)=m$. É interessante observar que $\mathcal{N}(A)$ é um subespaço paralelo à variedade afim $\Omega$ e passa pela origem. Esta noção é representada na \Cref{fig:nucleoA_paralelo_Omega}.
 
 \begin{figure}[!ht] 
 	\centering
@@ -896,9 +903,9 @@ temos que
 \[
 x_{2} = 1 - 2x_{1} ,
 \]
-e escolhendo $x_{1} =1$ obtemos $x_{2} = -1$, isto é, $\tilde{x} = (1,-1)$. E assim, podemos reescrever o conjunto factível $\Omega$ como proposto em \eqref{parametrizacao_de_Omega}:
+e escolhendo $x_{1} =1$ obtemos $x_{2} = -1$, isto é, $\tilde{x} = (1,-1)$. Assim, podemos reescrever o conjunto factível $\Omega$ como proposto em \eqref{parametrizacao_de_Omega}:
 \[
-\Omega = \left\{ x\in \RR^{2} \mid x = \begin{bmatrix*} 1 \\ -1 \end{bmatrix*} + \begin{bmatrix*} 1 \\ -2 \end{bmatrix*} \gamma , \ \gamma \in \RR \right\} .
+\Omega = \left\{ x\in \RR^{2} \mid x = \begin{bmatrix*} 1 \\ -1 \end{bmatrix*} + \gamma \begin{bmatrix*} 1 \\ -2 \end{bmatrix*} , \ \gamma \in \RR \right\} .
 \]
 A partir dessa caracterização de $\Omega$ definimos a função $\varphi : \RR \rightarrow \RR$ dada por 
 \[
@@ -927,7 +934,7 @@ x^{*} = \begin{bmatrix*} 1 \\ -1 \end{bmatrix*}  -\dfrac{7}{13}\begin{bmatrix*} 
 é minimizador local do problema \eqref{exem:parametrizacao_omega}.
 \end{exem}
 
-Assim, para determinar a solução do problema \eqref{exem:parametrizacao_omega} utilizamos o fato de haver uma equivalência entre sua solução e a solução do problema irrestrito \eqref{exem:parametrizacao_omega_funcao_phi}. Essa equivalência entre as soluções é garantida pela proposição a seguir.
+Com efeito, para determinar a solução do problema \eqref{exem:parametrizacao_omega} utilizamos o fato de haver uma equivalência entre sua solução e a solução do problema irrestrito \eqref{exem:parametrizacao_omega_funcao_phi}. Essa equivalência entre as soluções é garantida pela proposição a seguir.
 
 \begin{prop} \label{prop:equivalencia_problema_restricoes_igualdade_irrestrito}
 O vetor $\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de $\varphi$ em $\RR^{n-m}$ se, e somente se, $x^{*} \coloneqq  \tilde{x} + Z\boldsymbol{\gamma}^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
@@ -937,7 +944,7 @@ Seja $\boldsymbol{\gamma}^{*}$ um minimizador local (global) de $\varphi$ em $\R
 \[
 \varphi (\boldsymbol{\gamma}^{*}) \leq \varphi (\boldsymbol{\gamma}) ,
 \]
-para todo $\boldsymbol{\gamma} \in B( \boldsymbol{\gamma}^{*} , \delta ) \cap \RR^{n-m}$, em que $\delta \coloneqq \dfrac{\varepsilon}{\Vert Z \Vert}$. Logo, chamando $x^{*}\coloneqq \tilde{x} + Z\boldsymbol{\gamma}^{*} \in \Omega$, temos para $\boldsymbol{\gamma} \in B( \boldsymbol{\gamma}^{*} , \delta ) \cap \RR^{n-m}$ que
+para todo $\boldsymbol{\gamma} \in B( \boldsymbol{\gamma}^{*} , \delta ) \cap \RR^{n-m}$, em que $\delta \coloneqq \dfrac{\varepsilon}{\Vert Z \Vert}$. Logo, definindo $x^{*}\coloneqq \tilde{x} + Z\boldsymbol{\gamma}^{*} \in \Omega$ temos, para $\boldsymbol{\gamma} \in B( \boldsymbol{\gamma}^{*} , \delta ) \cap \RR^{n-m}$, que
 \[
  f(x^{*}) = f(\tilde{x} + Z\boldsymbol{\gamma}^{*} ) = \varphi (\boldsymbol{\gamma}^{*}) \leq \varphi (\boldsymbol{\gamma}) = f(\tilde{x} + Z\boldsymbol{\gamma}) = f(x) ,
 \]
@@ -950,7 +957,7 @@ em que $x = \tilde{x} + Z\boldsymbol{\gamma} \in \Omega$. Note que
 &< \Vert Z\Vert \dfrac{\varepsilon}{\Vert Z \Vert} = \varepsilon , 
 \end{aligned}
 \]
-em que na linha \eqref{eq:teste} usamos a consistência de norma. Portanto, $x\in B(x^{*}, \varepsilon ) \cap \Omega$, e assim,  $x^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
+em que na primeira desigualdade usamos a consistência da norma-2. Portanto, $x\in B(x^{*}, \varepsilon ) \cap \Omega$, e assim,  $x^{*}$ é um minimizador local (global) de \eqref{problema_geral_minimizacao_igualdade}.
 
 Reciprocamente, suponhamos que $\boldsymbol{\gamma}^{*} \in \RR^{n-m}$ não é mínimo local (global) de $\varphi$. Então, dado $\varepsilon >0$ existe $\boldsymbol{\bar{\gamma}} \in B(\boldsymbol{\gamma}^{*} , \delta )$, com $\delta \coloneqq \dfrac{\varepsilon}{\Vert Z\Vert}$, tal que 
 \[ \label{eq:1_prop:equivalencia_problema_restricoes_igualdade_irrestrito}
@@ -988,11 +995,11 @@ Desse modo, da condição \eqref{condicao_1_ordem_phi}, resulta que
 0 = \nabla \varphi (\boldsymbol{\gamma}^{*}) = Z^{T} \nabla f(\tilde{x} + Z\boldsymbol{\gamma}^{*}) = Z^{T} \nabla f(x^{*}).
 \]
 
-Portanto, uma condição necessária de primeira ordem para que $x^{*}$ seja minimizador local de \eqref{problema_geral_minimizacao_igualdade} é que
+Consequentemente, uma condição necessária de primeira ordem para que $x^{*}$ seja minimizador local de \eqref{problema_geral_minimizacao_igualdade} é que
 \[ \label{condicao_1_ordem_f}
 Z^{T} \nabla f(x^{*}) = 0,
 \]
-ou seja, que $(z_{i})^{T} \nabla f(x^{*}) =0$, para todo $i=1, \ldots , n-m$. Como $\{ z_{1}, \ldots , z_{n-m} \}$ é uma base de $\mathcal{N}(A)$, tal condição implica que $\nabla f(x^{*})$ seja ortogonal a $\mathcal{N}(A)$. Logo, pelas considerações feitas anteriormente, temos que $\nabla f(x^{*}) \in Im(A^{T})$, em outras palavras, $\nabla f(x^{*})$ deve ser uma combinação linear das linhas de $A$. Portanto, existe $\boldsymbol{\lambda}^{*} \in \RR^{m}$ tal que
+ou seja, que $(z_{i})^{T} \nabla f(x^{*}) =0$, para todo $i=1, \ldots , n-m$. Como $\{ z_{1}, \ldots , z_{n-m} \}$ é uma base de $\mathcal{N}(A)$, tal condição implica que $\nabla f(x^{*})$ seja ortogonal a $\mathcal{N}(A)$. Logo, pelas considerações feitas anteriormente (\Cref{prop:complemento_ortogonal_nucleo}), temos que $\nabla f(x^{*}) \in Im(A^{T})$, em outras palavras, $\nabla f(x^{*})$ deve ser uma combinação linear das linhas de $A$. Portanto, existe $\boldsymbol{\lambda}^{*} \in \RR^{m}$ tal que
 \[ \label{condicao_1_ordem_gradiente}
 \nabla f(x^{*}) = A^{T} \boldsymbol{\lambda}^{*} .
 \] 
@@ -1012,7 +1019,7 @@ Se $x^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_igualdad
 
 O vetor $\boldsymbol{\lambda}^{*} \in \RR^{m}$ é chamado vetor de \emph{multiplicadores de Lagrange} associado a $x^{*}$.
 
-A solução de \eqref{problema_geral_minimizacao_igualdade} é necessariamente solução de \eqref{problema_restricoes_igualdade_dual}, porém para a recíproca ser verdadeira é necessária a informação de segunda ordem.
+A solução de \eqref{problema_geral_minimizacao_igualdade} é necessariamente solução de \eqref{problema_restricoes_igualdade_dual}, porém para que a recíproca seja verdadeira é necessária informação de segunda ordem.
 
 Vejamos a seguir um exemplo em que as condições de otimalidade de primeira ordem nos permitem determinar a expressão geral para uma solução de um problema.
 
@@ -1105,7 +1112,7 @@ e de \eqref{eq:2_condicao_suficiente_igualdade} resulta que para todo $y \in \ma
 \[ \label{eq:4_condicao_suficiente_igualdade}
 y^{T}\nabla^{2} f(x^{*})y > 0.
 \]
-Portanto, se $x^{*} \in \Omega$ satisfaz \eqref{eq:3_condicao_suficiente_igualdade} e \eqref{eq:4_condicao_suficiente_igualdade}, então ele é um minimizador local de \eqref{problema_geral_minimizacao_igualdade}. Assim, podemos enunciar o seguinte teorema.
+Portanto, se $x^{*} \in \Omega$ satisfaz \eqref{eq:3_condicao_suficiente_igualdade} e \eqref{eq:4_condicao_suficiente_igualdade}, então ele é um minimizador local de \eqref{problema_geral_minimizacao_igualdade}. Assim, usando os mesmos argumentos dos \Cref{teo:multiplicadores_de_lagrange,teo:condicao_necessaria_2ordem_igualdade}, segue o \Cref{teo:condicao_suficiente_2ordem_igualdade}. 
 
 \begin{teo}(\textbf{Condição suficiente de segunda ordem}) \label{teo:condicao_suficiente_2ordem_igualdade}
 Se ${x}^{*} \in \RR^{n}$ verifica $A{x}^{*} = b$ e 
@@ -1115,17 +1122,17 @@ Se ${x}^{*} \in \RR^{n}$ verifica $A{x}^{*} = b$ e
 \end{enumerate}
 então ${x}^{*}$ é um minimizador local de \eqref{problema_geral_minimizacao_igualdade}.
 \end{teo}
-\begin{proof}
-Para provar que $\tilde{x}$ é minimizador local de $f$ vamos verificar se ele satisfaz as condições suficientes de segunda ordem. Por hipótese temos que $\tilde{x} \in \RR^{n}$ satisfaz a restrição $A\tilde{x} = b$. Por conseguinte, existe $\boldsymbol{\lambda} \in \RR^{m}$ tal que $\nabla f(\tilde{x}) = A^{T}\boldsymbol{\lambda}$. Assim, seja Z a matriz cujas colunas são os vetores de uma base do $\mathcal{N}(A)$. Sabemos que as linhas de $A$ são ortogonais a $\mathcal{N}(A)$ e portanto,
-\[
-Z^{T}\nabla f(\tilde{x}) = Z^{T}A^{T}\boldsymbol{\lambda} = 0.
-\]
-Além disso, como $\nabla^{2} f(\tilde{x})$ é definida positiva e a matriz $Z$ é posto completo, temos que 
-\[
-Z^{T}\nabla^{2} f(\tilde{x}) Z \succ 0.
-\]
-Portanto, $\tilde{x}$ é minimizador local de $f$.
-\end{proof}
+%\begin{proof}
+%Para provar que $\tilde{x}$ é minimizador local de $f$ vamos verificar se ele satisfaz as condições suficientes de segunda ordem. Por hipótese temos que $\tilde{x} \in \RR^{n}$ satisfaz a restrição $A\tilde{x} = b$. Por conseguinte, existe $\boldsymbol{\lambda} \in \RR^{m}$ tal que $\nabla f(\tilde{x}) = A^{T}\boldsymbol{\lambda}$. Assim, seja Z a matriz cujas colunas são os vetores de uma base do $\mathcal{N}(A)$. Sabemos que as linhas de $A$ são ortogonais a $\mathcal{N}(A)$ e portanto,
+%\[
+%Z^{T}\nabla f(\tilde{x}) = Z^{T}A^{T}\boldsymbol{\lambda} = 0.
+%\]
+%Além disso, como $\nabla^{2} f(\tilde{x})$ é definida positiva e a matriz $Z$ é posto completo, temos que 
+%\[
+%Z^{T}\nabla^{2} f(\tilde{x}) Z \succ 0.
+%\]
+%Portanto, $\tilde{x}$ é minimizador local de $f$.
+%\end{proof}
 
 Vejamos um exemplo em que as condições suficientes nos permitem determinar uma solução para o problema de minimizar uma função quadrática sujeita a restrições de igualdade.
 
@@ -1144,18 +1151,18 @@ Para provar que \eqref{exem:minimizar_quadratica_solucao} é solução é precis
 \begin{enumerate}
 	\item[(i)] $\tilde{x}$ cumpre a restrição de igualdade. De fato,
 	\[ \begin{aligned}
-	A\tilde{x} = & A(x^{0} - Z(Z^{T}QZ)^{-1} Z^{T}(Qx^{0} + p)) \\
-	= & Ax^{0} - AZ(Z^{T}QZ)^{-1} Z^{T}(Qx^{0} + p) \\
-	= & b,
+	A\tilde{x} &= A(x^{0} - Z(Z^{T}QZ)^{-1} Z^{T}(Qx^{0} + p)) \\
+	&= Ax^{0} - AZ(Z^{T}QZ)^{-1} Z^{T}(Qx^{0} + p) \\
+	&= b,
 	\end{aligned} \]
 	pois $AZ=0$ pelo fato de cada coluna de $Z$ pertencer ao $\mathcal{N}(A)$ e portanto, serem ortogonais as linhas de $A$.
 
 	\item[(ii)] É preciso verificar se $Z^{T}\nabla f(\tilde{x}) = 0$. Como $\nabla f(\tilde{x}) = Q\tilde{x} + p$, temos que
 	\[ \begin{aligned}
-	Z^{T}(Q\tilde{x} +p) =& Z^{T} Q (x^{0} - Z(Z^{T}QZ)^{-1}Z^{T}(Qx^{0} +p)) + Z^{T}p \\
-	=& Z^{T} Qx^{0} - Z^{T}QZ(Z^{T}QZ)^{-1}Z^{T}(Qx^{0} +p) + Z^{T}p \\
-	=& Z^{T} Qx^{0} - Z^{T} Qx^{0} - Z^{T} p + Z^{T} p \\
-	=& 0.
+	Z^{T}(Q\tilde{x} +p) &= Z^{T} Q (x^{0} - Z(Z^{T}QZ)^{-1}Z^{T}(Qx^{0} +p)) + Z^{T}p \\
+	&= Z^{T} Qx^{0} - Z^{T}QZ(Z^{T}QZ)^{-1}Z^{T}(Qx^{0} +p) + Z^{T}p \\
+	&= Z^{T} Qx^{0} - Z^{T} Qx^{0} - Z^{T} p + Z^{T} p \\
+	&= 0.
 	\end{aligned} \]
 
 	\item[(iii)] Por fim, $Z^{T}\nabla^{2} f(\tilde{x})Z$ deve ser definida positiva. Assim, como $\nabla^{2} f(\tilde{x}) = Q$, temos que 
@@ -1224,7 +1231,7 @@ A cada $x\in \Omega$ podemos associar um número $r(x)$, com $0\leq r(x) \leq m$
 	\caption{Restrições ativas e inativas. \label{fig:restricoes_ativas}}
 \end{figure}
 
-Para $x^{*} \in \Omega$, com $1 \leq r(x^{*}) \leq m$, vamos denotar por $\mathcal{I}(x^{*}) = \{ i_{1}, i_{2}, \ldots , i_{r(x^{*})} \}$ o conjunto dos índices das restrições ativas em $x^{*}$, e por $W_{\mathcal{I}} \in \RR^{r(x^{*})\times n}$ a submatriz de $W$ cujas linhas são as que tem índices em $\mathcal{I}(x^{*})$ e 
+Para $x^{*} \in \Omega$, com $1 \leq r(x^{*}) \leq m$, vamos denotar por $\mathcal{I}(x^{*}) = \{ i_{1}, i_{2}, \ldots , i_{r(x^{*})} \}$ o conjunto dos índices das restrições ativas em $x^{*}$, e por $W_{\mathcal{I}} \in \RR^{r(x^{*})\times n}$ a submatriz de $W$ cujas linhas são as que tem índices em $\mathcal{I}(x^{*})$ e, consequentemente, 
 \[
 c_{\mathcal{I}} = \begin{bmatrix*} c_{i_{1}} \\ c_{i_{2}} \\ \vdots \\ c_{i_{r(x^{*})}} \end{bmatrix*} .
 \]
@@ -1251,7 +1258,7 @@ Por outro lado, se $i \notin \mathcal{I}(x)$, temos que $w_{i}^{T} x < c_{i}$. N
 \begin{enumerate}
 	\item[(i)] Se $w_{i}^{T}d \leq 0$, então $w_{i}^{T}(x + \alpha d) \leq c_{i}$, para qualquer $\alpha >0$             ;
 
-	\item[(ii)]Se $w_{i}^{T}d >0$ podemos encontrar $\alpha_{i} >0$ de modo que $w_{i}^{T}x + w_{i}^{T}(\alpha_{i} d) = c_{i}$. Considere que como $w_{i}^{T}x < c_{i}$ existe $\beta >0$, tal que $w_{i}^{T}x + \beta_{i} = c_{i}$. Desse modo, temos que escolher $\alpha_{i}$ tal que $\beta_{i} = \alpha_{i} w_{i}^{T} d$, isto é,
+	\item[(ii)]Se $w_{i}^{T}d >0$ podemos encontrar $\alpha_{i} >0$ de modo que $w_{i}^{T}x + w_{i}^{T}(\alpha_{i} d) = c_{i}$. Considere que como $w_{i}^{T}x < c_{i}$ existe $\beta_{i} >0$, tal que $w_{i}^{T}x + \beta_{i} = c_{i}$. Desse modo, temos que escolher $\alpha_{i}$ tal que $\beta_{i} = \alpha_{i} w_{i}^{T} d$, isto é,
 	\[
 	w_{i}^{T}x + \alpha_{i} w_{i}^{T}d = c_{i} ,
 	\]
@@ -1268,7 +1275,7 @@ Por outro lado, se $i \notin \mathcal{I}(x)$, temos que $w_{i}^{T} x < c_{i}$. N
 Portanto, de (i) e (ii), $d$ será uma direção factível a partir de $x$.
 \end{proof}
 
-A demonstração do \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos dá, na equação \eqref{eq:2_teo_direcoes_factiveis_restricao_desigualdade}, o quanto podemos andar em uma direção factível $d$ a partir de $x \in \Omega$ e ainda continuarmos sobre o conjunto factível. Este critério é também chamado \emph{teste da razão}.
+A demonstração do \Cref{teo:direcoes_factiveis_restricao_desigualdade} nos dá, na equação \eqref{eq:2_teo_direcoes_factiveis_restricao_desigualdade}, o quanto podemos andar em uma direção factível $d$ a partir de $x \in \Omega$ e ainda continuarmos sobre o conjunto factível. Este critério é também chamado \emph{Teste da razão}.
 
 
 \subsubsection{Condições Necessárias de Primeira Ordem}
@@ -1302,7 +1309,7 @@ Pelo \Cref{fato:Taylor_primeira_ordem}, temos
 \[ \label{eq:2_lema_direcao_de_descida}
 f(\xbar + td) - f(\xbar) = t\nabla f(\xbar)^{T} d + o(t),
 \] 
-com $\lim_{t\rightarrow 0} \dfrac{o(t)}{t} =0$, e de \eqref{eq:1_lema_direcao_de_descida} e \eqref{eq:2_lema_direcao_de_descida}, obtemos
+com $\displaystyle\lim_{t\rightarrow 0} \dfrac{o(t)}{t} =0$, e de \eqref{eq:1_lema_direcao_de_descida} e \eqref{eq:2_lema_direcao_de_descida}, obtemos
 \[ \label{eq:3_lema_direcao_de_descida}
 t\nabla f(\xbar)^{T}d + o(t) < 0.
 \]
@@ -1334,7 +1341,7 @@ Assim, a partir de um ponto $\xbar \in \Omega$, estamos interessados em saber se
 pois se existe uma direção $d$ que satisfaz \eqref{eq:caracterizacao_direcao_descida}, decorre do \Cref{lema:direcao_de_descida} e da \Cref{defi:direcao_de_descida} que $\xbar$ não é minimizador local do problema \eqref{problema_geral_minimizacao_desigualdade}.
 
 \begin{obs}
-Novamente, a análise dependerá das restrição ativas em $\xbar$. Se $r(\xbar) =0$, o ponto está no interior de $\Omega$ e as condições necessárias e suficientes são as mesmas do caso em que o problema é irrestrito, pois qualquer direção é factível nesse ponto.
+Novamente, a análise dependerá das restrição ativas em um dado ponto $\xbar$. Em particular, se $r(\xbar) =0$, o ponto está no interior de $\Omega$ e as condições necessárias e suficientes são as mesmas do caso em que o problema é irrestrito, pois qualquer direção é factível nesse ponto.
 \end{obs}
 
 Agora, já possuímos os ferramentais necessários para determinar a condição necessária de primeira ordem a ser satisfeita por uma solução do problema \eqref{problema_geral_minimizacao_desigualdade}.
@@ -1418,7 +1425,7 @@ Agora, utilizando \eqref{eq:2_condicao_necessaria_1ordem_restricao_desigualdade}
 \[ \label{eq:4_condicao_necessaria_1ordem_restricao_desigualdade}
 w_{i_{j}}^{T} d <0.
 \]
-Assim, de \eqref{eq:3_condicao_necessaria_1ordem_restricao_desigualdade} e \eqref{eq:4_condicao_necessaria_1ordem_restricao_desigualdade}, conluímos que
+Assim, de \eqref{eq:3_condicao_necessaria_1ordem_restricao_desigualdade} e \eqref{eq:4_condicao_necessaria_1ordem_restricao_desigualdade}, concluímos que
 \[
 w_{i_{k}}^{T} d \leq 0,
 \]
@@ -1745,37 +1752,39 @@ As condições em \eqref{eq:1_teo_KKT} são conhecidas como condições de Karus
 \begin{defi} 
 Um ponto $x^{*} \in \RR^{n} $ é um \emph{ponto estacionário} do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} (ou ainda, um \emph{ponto de Karush-Kuhn-Tucker(KKT)}), quando $x^{*} \in \Omega$ e existem $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}$, tais que as condições \eqref{eq:1_teo_KKT} são satisfeitas. Os elementos $\boldsymbol{\lambda}^{*}$ e $\boldsymbol{\mu}^{*}$ são chamados de \emph{multiplicadores de Lagrange} associados ao ponto estacionário $x^{*}$.
 \end{defi}
-Em outras palavras, $x^{*}$ é dito estacionário quando satisfaz as condições KKT. Outro conceito importante e que está implícito no enunciado do \Cref{teo:KKT} é o de \emph{ponto regular}.
+Em outras palavras, $x^{*}$ é dito estacionário quando satisfaz as condições KKT. 
 
-\begin{defi} \label{defi:ponto_regular}
-Seja $x^{*}$ um ponto que satisfaz as restrições
-\[
-h(x^{*}) = 0, \quad g(x^{*}) \leq 0, \label{eq:1_ponto_regular}
-\]
-e seja $\mathcal{J}(x^{*})$ o conjunto dos índices $j$ tais que $g_{j}(x^{*}) = 0$. Então $x^{*}$ é chamado \emph{ponto regular} das restrições \eqref{eq:1_ponto_regular} se os gradientes das restrições de igualdade e desigualdade ativas, isto é, $\nabla h_{i}(x^{*})$ e $\nabla g_{j}(x^{*})$, com $1 \leq i \leq m$ e $j \in \mathcal{J}(x^{*})$, são linearmente independentes.
-\end{defi}
+%Outro conceito importante e que está implícito no enunciado do \Cref{teo:KKT} é o de \emph{ponto regular}.
 
-Note que, se as restrições $h$ e $g$, dadas por $h(x) = Ax-b$ e $g(x) = Wx-c$, são funções afim, um ponto ser regular é equivalente a dizer que as matrizes $A$ e $W_{\mathcal{J}}$ são posto completo, condição esta que independe de $x$. Assim, é importante observar que se não for verificada a hipóstese de regularidade, podemos ter minimizadores que não cumprem KKT, o que dificulta a caracterização de tais pontos. Vejamos a seguir um exemplo que justifica essa afirmação.
+%\begin{defi} \label{defi:ponto_regular}
+%Seja $x^{*}$ um ponto que satisfaz as restrições
+%\[
+%h(x^{*}) = 0, \quad g(x^{*}) \leq 0, \label{eq:1_ponto_regular}
+%\]
+%e seja $\mathcal{J}(x^{*})$ o conjunto dos índices $j$ tais que $g_{j}(x^{*}) = 0$. Então $x^{*}$ é chamado \emph{ponto regular} das restrições \eqref{eq:1_ponto_regular} se os gradientes das restrições de igualdade e desigualdade ativas, isto é, $\nabla h_{i}(x^{*})$ e $\nabla g_{j}(x^{*})$, com $1 \leq i \leq m$ e $j \in \mathcal{J}(x^{*})$, são linearmente independentes.
+%\end{defi}
 
-\begin{exem}
-Considere o problema 
-\[ \label{exem:minimizador_nao_satisfaz_KKT}
-\begin{aligned}
-\min_{x} & \quad f(x)=x_{1} \\
-\text{s.a} & \quad g_{1}(x)=-x_{1}^{3} + x_{2} \leq 0 , \\
-& \quad g_{2}(x) = -x_{2} \leq 0.
-\end{aligned}
-\]
-O ponto $x^{*} = (0,0)$ é o minimizador do problema \eqref{exem:minimizador_nao_satisfaz_KKT}, no entanto não cumpre as condições KKT. Com efeito, manipulando as restrições de desigualdade temos que $0\leq x_{2} \leq x_{1}^{3}$, o que implica em $f(x^{*}) =0 \leq x_{1} = f(x)$, para todo ponto factível $x$.
-Contudo, como
-\[
-\nabla f(x^{*}) = \begin{bmatrix*} 1 \\ 0 \end{bmatrix*} , \nabla g_{1}(x^{*}) = \begin{bmatrix*} 0 \\ 1 \end{bmatrix*} \ \text{e} \ \nabla g_{2}(x^{*}) = \begin{bmatrix*} 0 \\ -1 \end{bmatrix*},
-\]
-temos que os gradientes das restrições ativas em $x^{*}$ não são LI, e portanto, $x^{*}$ não é um ponto regular. Assim, as condições KKT não são satisfeitas, pois não existem $\mu_{1}^{*} , \mu_{2}^{*} \in \RR^{+}$ tais que 
-\[
-\begin{bmatrix*} 1 \\ 0 \end{bmatrix*} + \mu_{1}^{*} \begin{bmatrix*} 0 \\ 1 \end{bmatrix*} + \mu_{2}^{*} \begin{bmatrix*} 0 \\ -1 \end{bmatrix*} = \begin{bmatrix*} 0 \\ 0 \end{bmatrix*}.
-\]
-\end{exem}
+%Note que, se as restrições $h$ e $g$, dadas por $h(x) = Ax-b$ e $g(x) = Wx-c$, são funções afim, um ponto ser regular é equivalente a dizer que as matrizes $A$ e $W_{\mathcal{J}}$ são posto completo, condição esta que independe de $x$. Assim, é importante observar que se não for verificada a hipótese de regularidade, podemos ter minimizadores que não cumprem KKT, o que dificulta a caracterização de tais pontos. Vejamos a seguir um exemplo que justifica essa afirmação.
+
+%\begin{exem}
+%Considere o problema 
+%\[ \label{exem:minimizador_nao_satisfaz_KKT}
+%\begin{aligned}
+%\min_{x} & \quad f(x)=x_{1} \\
+%\text{s.a} & \quad g_{1}(x)=-x_{1}^{3} + x_{2} \leq 0 , \\
+%& \quad g_{2}(x) = -x_{2} \leq 0.
+%\end{aligned}
+%\]
+%O ponto $x^{*} = (0,0)$ é o minimizador do problema \eqref{exem:minimizador_nao_satisfaz_KKT}, no entanto não cumpre as condições KKT. Com efeito, manipulando as restrições de desigualdade temos que $0\leq x_{2} \leq x_{1}^{3}$, o que implica em $f(x^{*}) =0 \leq x_{1} = f(x)$, para todo ponto factível $x$.
+%Contudo, como
+%\[
+%\nabla f(x^{*}) = \begin{bmatrix*} 1 \\ 0 \end{bmatrix*} , \nabla g_{1}(x^{*}) = \begin{bmatrix*} 0 \\ 1 \end{bmatrix*} \ \text{e} \ \nabla g_{2}(x^{*}) = \begin{bmatrix*} 0 \\ -1 \end{bmatrix*},
+%\]
+%temos que os gradientes das restrições ativas em $x^{*}$ não são LI, e portanto, $x^{*}$ não é um ponto regular. Assim, as condições KKT não são satisfeitas, pois não existem $\mu_{1}^{*} , \mu_{2}^{*} \in \RR^{+}$ tais que 
+%\[
+%\begin{bmatrix*} 1 \\ 0 \end{bmatrix*} + \mu_{1}^{*} \begin{bmatrix*} 0 \\ 1 \end{bmatrix*} + \mu_{2}^{*} \begin{bmatrix*} 0 \\ -1 \end{bmatrix*} = \begin{bmatrix*} 0 \\ 0 \end{bmatrix*}.
+%\]
+%\end{exem}
 
 \subsubsection{Condições Necessárias e Suficientes de Segunda Ordem}
 
@@ -2105,7 +2114,7 @@ para todo $t\geq 0$ suficientemente pequeno. Pelo \Cref{fato:Taylor_primeira_ord
 \[ \label{eq:2_lema_associa_projecao_minimizador}
 f(x^{*}+t(x-x^{*})) = f(x^{*}) + t\nabla f(x^{*})^{T}(x-x^{*}) + o(t) ,
 \]
-em que $\lim_{t\rightarrow 0} \dfrac{o(t)}{t} = 0$. Dessa forma, por \eqref{eq:1_lema_associa_projecao_minimizador} e \eqref{eq:2_lema_associa_projecao_minimizador}, temos
+em que $\displaystyle\lim_{t\rightarrow 0} \dfrac{o(t)}{t} = 0$. Dessa forma, por \eqref{eq:1_lema_associa_projecao_minimizador} e \eqref{eq:2_lema_associa_projecao_minimizador}, temos
 \[
 0 \leq f(x^{*}+t(x-x^{*})) - f(x^{*}) = t\nabla f(x^{*})^{T}(x-x^{*}) + o(t) ,
 \]
@@ -2143,7 +2152,7 @@ f((1-t)x + ty) < (1-t)f(x) + tf(y),
 \]
 dizemos que $f$ é \emph{estritamente convexa}.
 \end{defi}
-Na \Cref{fig:funcao_convexa} temos um exemplo de função convexa, enquanto que na \Cref{fig:funcao_nao_convexa} podemos vizualizar uma função não-convexa.
+Na \Cref{fig:funcao_convexa} temos um exemplo de função convexa, enquanto que na \Cref{fig:funcao_nao_convexa} podemos visualizar uma função não-convexa.
 
 \begin{figure}[!ht] 
 \centering
@@ -2173,7 +2182,7 @@ Seja $C \subset \RR^{n}$ um conjunto convexo. Uma função $f: C \rightarrow \RR
 
 Assim, maximizar uma função côncava num conjunto convexo equivale a minimizar uma função convexa num conjunto convexo.
 
-Por conseguinte, a proposição a seguir nos garante que a combinação de funções convexas também é uma função convexa. Além disso, quando as funções da restrição de um roblema de otimização são convexas, o conjunto de restrições resultante é convexo.
+Por conseguinte, a proposição a seguir nos garante que a combinação de funções convexas também é uma função convexa. Além disso, quando as funções da restrição de um problema de otimização são convexas, o conjunto de restrições resultante é convexo.
 
 \begin{prop} \label{prop:combinacao_funcoes_convexa}
 Sejam $f$ e $g$ funções convexas no conjunto convexo $C$, $\alpha \geq 0$ e $c$ um número real qualquer. Então
@@ -2261,7 +2270,7 @@ para todos $x, y \in C$.
 \end{teo}
 
 \begin{proof}
-Primeiramente, suponha que $f$ é uma função convexa. Para quaiquer $x,y \in C$ e $t \in (0,1]$ temos que $(1-t)x + ty = x + t(y-x)$. Então, tomando $d = y-x$, temos que $x + td \in C$ e, pela convexidade de $f$,
+Primeiramente, suponha que $f$ é uma função convexa. Para quaisquer $x,y \in C$ e $t \in (0,1]$ temos que $(1-t)x + ty = x + t(y-x)$. Então, tomando $d = y-x$, temos que $x + td \in C$ e, pela convexidade de $f$,
 \[ \label{eq:1_diferenciabilidade_e_convexidade}
 f(x+td) = f((1-t)x + ty) \leq (1-t)f(x) + tf(y).
 \]
@@ -2275,7 +2284,7 @@ f(y)-f(x) \geq \dfrac{f(x+td)-f(x)}{t} .
 \]
 Passando o limite quando $t \rightarrow 0^{+}$, temos
 \[
-f(y)-f(x) \geq \lim_{t \rightarrow 0^{+}} \dfrac{f(x+td)-f(x)}{t} = \nabla f(x)^{T} d = \nabla f(x)^{T} (y-x) ,
+f(y)-f(x) \geq \displaystyle\lim_{t \rightarrow 0^{+}} \dfrac{f(x+td)-f(x)}{t} = \nabla f(x)^{T} d = \nabla f(x)^{T} (y-x) ,
 \]
 e, portanto,
 \[
@@ -2345,7 +2354,7 @@ e substituindo em \eqref{eq:1_teo_hessiana_convexidade}, obtemos
 \[
 \dfrac{t^{2}}{2}d^{T} \nabla^{2} f(x)d + o(t^{2}) \geq 0 ,
 \]
-com $\lim_{t \rightarrow 0} \dfrac{o(t^{2})}{t^{2}} = 0$. 
+com $\displaystyle\lim_{t \rightarrow 0} \dfrac{o(t^{2})}{t^{2}} = 0$. 
 Dividindo por $t^{2}$ e passando o limite com $t \rightarrow 0$, temos
 \[
 d^{T} \nabla^{2} f(x)d \geq 0 .
