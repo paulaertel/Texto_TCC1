@@ -1749,7 +1749,7 @@ para todo $k$ tal que $1 \leq k \leq s(x^{*})$. Logo, $d$ é uma direção fact�
 
 As condições em \eqref{eq:1_teo_KKT} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). A partir delas podemos definir \emph{ponto estacionário}.
 
-\begin{defi} 
+\begin{defi} \label{defi:ponto_estacionario_KKT}
 Um ponto $x^{*} \in \RR^{n} $ é um \emph{ponto estacionário} do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} (ou ainda, um \emph{ponto de Karush-Kuhn-Tucker(KKT)}), quando $x^{*} \in \Omega$ e existem $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}$, tais que as condições \eqref{eq:1_teo_KKT} são satisfeitas. Os elementos $\boldsymbol{\lambda}^{*}$ e $\boldsymbol{\mu}^{*}$ são chamados de \emph{multiplicadores de Lagrange} associados ao ponto estacionário $x^{*}$.
 \end{defi}
 Em outras palavras, $x^{*}$ é dito estacionário quando satisfaz as condições KKT. 
@@ -2182,7 +2182,7 @@ Seja $C \subset \RR^{n}$ um conjunto convexo. Uma função $f: C \rightarrow \RR
 
 Assim, maximizar uma função côncava num conjunto convexo equivale a minimizar uma função convexa num conjunto convexo.
 
-Por conseguinte, a proposição a seguir nos garante que a combinação de funções convexas também é uma função convexa. Além disso, quando as funções da restrição de um problema de otimização são convexas, o conjunto de restrições resultante é convexo.
+Ademais, a proposição a seguir nos garante que a combinação de funções convexas também é uma função convexa. Além disso, quando as funções da restrição de um problema de otimização são convexas, o conjunto de restrições resultante é convexo.
 
 \begin{prop} \label{prop:combinacao_funcoes_convexa}
 Sejam $f$ e $g$ funções convexas no conjunto convexo $C$, $\alpha \geq 0$ e $c$ um número real qualquer. Então
@@ -2197,17 +2197,17 @@ Sejam $x_{1}, x_{2} \in C$ e $t\in (0,1)$. Então
 \item[(i)] 
 \[
 \begin{aligned}
-(f+g)((1-t)x_{1} + tx_{2}) =& f((1-t)x_{1} + tx_{2}) + g((1-t)x_{1} + tx_{2}) \\
-\leq & (1-t)f(x_{1}) + tf(x_{2}) + (1-t)g(x_{1}) + tg(x_{2}) \\
-=& (1-t)[f(x_{1}) + g(x_{1})] + t[f(x_{2}) + g(x_{2})] .
+(f+g)((1-t)x_{1} + tx_{2}) &= f((1-t)x_{1} + tx_{2}) + g((1-t)x_{1} + tx_{2}) \\
+&\leq (1-t)f(x_{1}) + tf(x_{2}) + (1-t)g(x_{1}) + tg(x_{2}) \\
+&= (1-t)[f(x_{1}) + g(x_{1})] + t[f(x_{2}) + g(x_{2})] .
 \end{aligned}
 \]
 Portanto, $f+g$ é convexa em $C$.
 \item[(ii)] 
 \[
 \begin{aligned}
-\alpha f((1-t)x_{1} + tx_{2}) \leq & \alpha [(1-t)f(x_{1}) + tf(x_{2})] \\
-=& (1-t)\alpha f(x_{1}) + t\alpha f(x_{2}) .
+\alpha f((1-t)x_{1} + tx_{2}) &\leq \alpha [(1-t)f(x_{1}) + tf(x_{2})] \\
+&= (1-t)\alpha f(x_{1}) + t\alpha f(x_{2}) .
 \end{aligned}
 \]
 Portanto, $\alpha f$ é convexa em $C$.
@@ -2235,30 +2235,7 @@ g_{1}(x) \leq c_{1}, \ g_{2}(x) \leq c_{2}, \ \ldots, \ g_{m}(x) \leq c_{m} ,
 \]
 em que cada $g_{i}$ é uma função convexa, define um conjunto convexo. Esta consideração é importante, pois o conjunto de restrições dos problemas de otimização que estamos interessados em resolver são definidos dessa forma. 
 
-O \Cref{teo:convexidade_e_minimizador} a seguir justifica o fato da convexidade ser uma propriedade tão importante em otimização.
-
-\begin{teo} \label{teo:convexidade_e_minimizador}
-Sejam $C \subset \RR^{n}$ um conjunto convexo e $f:C \rightarrow \RR$ uma função convexa. Se $x^{*} \in C$ é minimizador local de $f$, então $x^{*}$ é minimizador global de $f$.
-\end{teo}
-\begin{proof}
-Seja $x^{*}$ um minimizador local de $f$. Então, existe $\delta > 0$ tal que 
-\[
-f(x^{*}) \leq f(x), 
-\]
-para todo $x \in B(x^{*}, \delta) \cap C$. Considere $y \in C$, tal que $y \notin B(x^{*}, \delta)$, e tome $t \in (0,1]$ de modo que $t \Vert y-x^{*} \Vert < \delta$. Assim, o ponto $x = (1-t)x^{*} + ty$ satisfaz
-\[
-\Vert x - x^{*} \Vert = \Vert (1-t)x^{*} + ty - x^{*} \Vert = \Vert x^{*} - tx^{*} + ty - x^{*} \Vert = t \Vert y - x^{*} \Vert < \delta ,
-\]
-e, portanto, $x \in B(x^{*}, \delta) \cap C$.
-Desse modo, como $f$ é uma função convexa, temos
-\[
-f(x^{*}) \leq f(x) \leq (1-t)f(x^{*}) + tf(y) = f(x^{*}) + t(f(y)-f(x^{*})),
-\]
-donde segue que $f(x^{*}) \leq f(y)$.
-Portanto, $x^{*}$ é minimizador global de $f$.
-\end{proof}
-
-A seguir apresentamos outra forma de caracterizar a convexidade de uma função quando temos hipóteses de diferenciabilidade.
+Por conseguinte, quando uma função é diferenciável, a convexidade pode ser caracterizada de diferentes formas. Tais caracterizações são úteis para determinar se uma função é convexa, de modo a não depender apenas da definição usual de função convexa. O teorema a seguir apresenta outra forma de caracterizar a convexidade de uma função quando temos hipótese de diferenciabilidade.
 
 \begin{teo}  \label{teo:diferenciabilidade_e_convexidade}
 Sejam $f: \RR^{n} \rightarrow \RR $ uma função diferenciável e $C \in \RR^{n}$ um conjunto convexo. A função $f$ é convexa em $C$ se, e somente se, 
@@ -2294,7 +2271,7 @@ Reciprocamente, fixe $x, y \in C$ e $t \in (0,1)$. Tomando $z = (1-t)x + ty$, ob
 \[
 f(x) \geq f(z) + \nabla f(z)^{T}(x-z) \quad \text{e} \quad f(y) \geq f(z) + \nabla f(z)^{T}(y-z) .
 \]
-Agora, multiplicando a primeira desigualdade por $(1-t)$ e a segunda por $t$, obtemos
+Agora, multiplicando a primeira desigualdade por $(1-t)$, a segunda por $t$ e somando, obtemos
 \begin{align}
 (1-t)f(x) + tf(y) & \geq (1-t)(f(z) + \nabla f(z)^{T}(x-z)) + t(f(z) + \nabla f(z)^{T}(y-z)) \\
 & \geq f(z) + \nabla f(z)^{T}(x-z) - tf(z) -t\nabla f(z)^{T}(x-z) + tf(z) + t\nabla f(z)^{T}(y-z) \\
@@ -2308,30 +2285,25 @@ Agora, multiplicando a primeira desigualdade por $(1-t)$ e a segunda por $t$, ob
 Portanto, a função $f$ é convexa em $C$.
 \end{proof}
 
-O \Cref{teo:diferenciabilidade_e_convexidade} afirma que a aproximação linear baseada na derivada local subestima a função convexa. Este resultado é ilustrado na \Cref{fig:funcao_convexa_aproximacao_linear_derivada} a seguir. 
+O \Cref{teo:diferenciabilidade_e_convexidade} afirma que a aproximação linear através da derivada local de uma função convexa está sempre abaixo do gráfico da função. Tal resultado está ilustrado na \Cref{fig:funcao_convexa_aproximacao_linear_derivada}. 
 \begin{figure}[!ht] 
 	\centering
 	\includegraphics[width=0.50\textwidth]{funcao_convexa_aproximacao_linear_derivada}
 	\caption{Ilustração da \Cref{teo:diferenciabilidade_e_convexidade}. \label{fig:funcao_convexa_aproximacao_linear_derivada} \\ Fonte: \textcite{luenberger2008linear}}
 \end{figure}
 
-Para os resultados que vem a seguir vamos utilizar o \Cref{fato:Taylor_com_resto_lagrange}, que fornece a fórmula de Taylor com resto de Lagrange. Sua demonstração pode ser encontrada em \textcite[p.196]{Elon2019}.
+Para funções convexas duas vezes diferenciáveis, existe outra forma de caracterizá-las que é apresentada no \Cref{teo:hessiana_convexidade}. Para a demonstração desse resultado vamos utilizar o \Cref{fato:Taylor_com_resto_lagrange}, que fornece a fórmula de Taylor com resto de Lagrange. Sua demonstração pode ser encontrada em \textcite[p.196]{Elon2019}.
 
 \begin{fato}(\textbf{Taylor com Resto de Lagrange}) \label{fato:Taylor_com_resto_lagrange}
 Considere $f: \RR^{n} \rightarrow \RR$ uma função de classe $\mathcal{C}^{1}$ e $\xbar, d \in \RR^{n}$. Se $f$ é duas vezes diferenciável no segmento $(\xbar , \xbar + d)$, então existe $t \in (0,1)$ tal que
-\[
+\[{}
 f(\xbar + d) = f(\xbar) + \nabla f(\xbar)^{T} d + \dfrac{1}{2}d^{T}\nabla^{2} f(\xbar + td)d .
 \]
 \end{fato}
 
-
 \begin{lema} \label{lema:auxiliar_para_teo_hessiana_convexidade}
 Sejam $C \subset \RR^{n}$ convexo, $x \in \bar{C}$ e $y \in \interior C$. Então, $(x,y] \subset \interior C$.
 \end{lema}
-\begin{proof}
-Por demonstrar.
-\end{proof}
-
 
 \begin{teo} \label{teo:hessiana_convexidade}
 Sejam $f:\RR^{n} \rightarrow \RR $ uma função de classe $\mathcal{C}^{2}$ e $C \subset \RR^{n}$ um conjunto convexo com interior não vazio. A função $f$ é convexa em $C$ se, e somente se, a Hessiana $\nabla^{2} f(x)$ é semidefinida positiva para todo $x \in C$.
@@ -2379,7 +2351,68 @@ f(x+d) \geq f(x) + \nabla f(x)^{T}d .
 Logo, pelo \Cref{teo:diferenciabilidade_e_convexidade}, $f$ é convexa.
 \end{proof}
 
-Tendo em vista que a função objetivo dos problemas de SVM são funções quadráticas, é necessário avaliar sob quais condições uma função quadrática é convexa. Tal resultado é apresentado a seguir e sua demonstração decorre do \Cref{teo:hessiana_convexidade}.
+O teorema a seguir estabelece que no caso em que a função objetivo é convexa, então todo minimizador local é global. Esta afirmação é muito importante e justifica o fato da convexidade ser uma propriedade tão importante em otimização.
+
+\begin{teo} \label{teo:convexidade_e_minimizador}
+Sejam $C \subset \RR^{n}$ um conjunto convexo e $f:C \rightarrow \RR$ uma função convexa. Se $x^{*} \in C$ é minimizador local de $f$, então $x^{*}$ é minimizador global de $f$.
+\end{teo}
+\begin{proof}
+Seja $x^{*}$ um minimizador local de $f$. Então, existe $\delta > 0$ tal que 
+\[
+f(x^{*}) \leq f(x), 
+\]
+para todo $x \in B(x^{*}, \delta) \cap C$. Considere $y \in C$, tal que $y \notin B(x^{*}, \delta)$, e tome $t \in (0,1]$ de modo que $t \Vert y-x^{*} \Vert < \delta$. Assim, o ponto $x = (1-t)x^{*} + ty$ satisfaz
+\[
+\Vert x - x^{*} \Vert = \Vert (1-t)x^{*} + ty - x^{*} \Vert = \Vert x^{*} - tx^{*} + ty - x^{*} \Vert = t \Vert y - x^{*} \Vert < \delta ,
+\]
+e, portanto, $x \in B(x^{*}, \delta) \cap C$.
+Desse modo, como $f$ é uma função convexa, temos
+\[
+f(x^{*}) \leq f(x) \leq (1-t)f(x^{*}) + tf(y) = f(x^{*}) + t(f(y)-f(x^{*})),
+\]
+donde segue que $f(x^{*}) \leq f(y)$.
+Portanto, $x^{*}$ é minimizador global de $f$.
+\end{proof}
+
+Agora, considere o problema geral de otimização dado em \eqref{problema_geral_minimizacao_igualdade_desigualdade}, em que as restrições são definidas pelas funções $g(x) = Wx - c \leq 0$ e $h(x) = Ax - b = 0$. O teorema a seguir estabelece que pontos estacionários de problemas convexos são minimizadores globais.
+
+\begin{teo} \label{teo:pontoestacionario_minimizadorglobal_convexidade}
+Seja $x^{*} \in \RR^{n}$ um ponto estacionário do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade}, no sentido da \Cref{defi:ponto_estacionario_KKT}. Sejam $f$ e $g$ funções convexas e seja $h$ uma função afim. Então, $x^{*}$ é minimizador global do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade}.
+\end{teo}
+\begin{proof}
+Sejam $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}_{+}$ um par de multiplicadores associados ao ponto estacionário $x^{*}$. Além disso, para todo $x\in \Omega$, temos que $h(x) = 0$ e $g(x) \leq 0$. Pela convexidade de $g_{i}$, usando o \Cref{teo:diferenciabilidade_e_convexidade}, obtemos
+\[
+\nabla g_{i}(x^{*})^{T} (x - x^{*}) = g_{i}(x^{*}) + \nabla g_{i}(x^{*})^{T}(x - x^{*}) \leq g_{i}(x) \leq 0,
+\]
+para todo $i \in \mathcal{I}(x^{*})$ e $x\in \Omega$. Ademais, como $h$ é afim podemos escrever $h_{i}(x) = a_{i}^{T}x - b$, e disso segue que
+\[
+\nabla h_{i}(x^{*})^{T}(x - x^{*}) = v_{i}^{T}(x - x^{*}) = (v_{i}^{T}x - b) - (v_{i}^{T}x^{*} - b) = 0,
+\]
+para todo $i = 1, \ldots , m$ e $x \in \Omega$. Como $x^{*}$ é um ponto estacionário,
+\[
+\nabla f(x^{*}) = - \sum_{i\in \mathcal{I}(x^{*})} \mu_{i}^{*} \nabla g_{i}(x^{*}) - \sum_{i=1}^{m} \lambda_{i}^{*} \nabla h_{i}(x^{*}) ,
+\]
+e fazendo o produto interno por $(x - x^{*})$ em ambos os lados da igualdade, obtemos
+\[
+\nabla f(x^{*})^{T} (x - x^{*}) = - \sum_{i\in \mathcal{I}(x^{*})} \mu_{i}^{*} \nabla g_{i}(x^{*})^{T} (x - x^{*}) - \sum_{i=1}^{m} \lambda_{i}^{*} \nabla h_{i}(x^{*})^{T} (x - x^{*}) \geq 0.
+\]
+Desse modo, pela convexidade de $f$ e usando o \Cref{teo:diferenciabilidade_e_convexidade}, temos que
+\[
+f(x^{*}) \leq f(x^{*}) + \nabla f(x^{*})^{T} (x - x^{*}) \leq f(x),
+\]
+e portanto,
+\[
+f(x^{*}) \leq f(x),
+\]
+para todo $x \in \Omega$.
+\end{proof}
+
+O \Cref{teo:pontoestacionario_minimizadorglobal_convexidade} se constitui num resultado de grande relevância, pois no caso em que o problema de otimização é convexo, isto é, a função objetivo é convexa e o conjunto factível determinado pelas restrições é convexo, então as condições de KKT são necessárias e suficientes para $x^{*}$ ser minimizador global.
+
+
+\section{Programação quadrática}
+
+Por conseguinte, tendo em vista que a função objetivo dos problemas de SVM são funções quadráticas, é necessário avaliar sob quais condições uma função quadrática é convexa. Tal resultado é apresentado a seguir e sua demonstração decorre do \Cref{teo:hessiana_convexidade}.
 
 %\cite{Gondzio2018}
 \begin{teo} \label{teo:funcao_quadratica_e_convexa}
@@ -2389,7 +2422,7 @@ Seja $C \in \RR^{n}$ um conjunto convexo e $Q \in \RR^{n\times n}$ uma matriz qu
 Primeiramente, suponhamos que $f$ é convexa em $C$. Então, pelo \Cref{teo:hessiana_convexidade}, a Hessiana $\nabla^{2} f(x)$ é semidefinida positiva para todo $x\in C$, e como $\nabla^{2} f(x) = 2Q$, concluímos que $Q$ é semidefinida positiva. Reciprocamente, se $\nabla^{2} f(x) = 2Q$ é semidefinida positiva, então, pelo \Cref{teo:hessiana_convexidade}, a função $f$ é convexa em $C$.
 \end{proof}
 
-Desse modo, nos problemas de minimização irrestrita em que a função objetivo é uma quadrática da forma
+Consequentemente, nos problemas de minimização irrestrita em que a função objetivo é uma quadrática da forma
 \[
 f(x) = \dfrac{1}{2}x^{T}Qx - b^{T}x,
 \]
