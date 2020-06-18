@@ -454,7 +454,6 @@ Portanto, para reformular o problema original de maximizar a margem é preciso t
 \text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1 - \xi_{i}, \quad i=1, \ldots , m, \\
 & \quad \xi_{i} \geq 0, \quad i=1, \ldots , m,\end{aligned}
 \]
-%não consegui alinhar a última linha às duas primeiras
 em que $C>0$ é um parâmetro de regularização que tem o objetivo de controlar a importância das variáveis de folga. O valor do parâmetro $C$ que fornece uma boa classificação dos dados é escolhido de maneira heurística na fase de treinamento, geralmente a partir da natureza do problema. É devido a utilização desse parâmetro esta modelagem de SVM também é conhecida como C-SVM.
 
 O termo $C \sum_{i=1}^{m} \xi_{i}$ na função objetivo do problema \eqref{eq:problemaCSVM} pode ser pensado como uma medida de erro de classificação, pois minimiza o valor das variáveis de folga e reduz desse modo o número de pontos classificados incorretamente. De fato, aumentando o valor do parâmetro $C$ aumenta-se a penalização sobre a violação da restrição original do problema SVM. Por outro lado, diminuindo o valor de $C$ o modelo se torna mais flexível a esse tipo de violação. 
