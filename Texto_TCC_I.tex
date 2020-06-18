@@ -183,7 +183,7 @@ O hiperplano $\Hset(w,b)$ divide o espaço $\RR^n$ em dois semiespaços, dados p
 \]
 
 
-Considere dois conjuntos de dados de treinamento representados no $\RR^2$ como na \Cref{fig:dados_e_hiperplanos:dados_treinamento}, em que os pontos em azul representam a classe positiva, e os pontos em vermelho a classe negativa. Perceba na \Cref{fig:dados_e_hiperplanos:hiperplanos_separadores} que todos os hiperplanos representados separam corretamente os dados, porém nosso objetivo será encontrar o hiperplano que melhor separa esses dados, o qual está representado na \Cref{fig:dados_e_hiperplano_otimo:hiperplano_otimo} pela cor violeta. Logo, desejamos encontrar o hiperplano que possibilita a maior faixa que não contém nenhum dado, pois caso a faixa seja muito estreita pequenas perturbações no hiperplano ou no conjunto de dados podem resultar uma classificação incorreta. 
+Considere dois conjuntos de dados de treinamento representados no $\RR^2$ como na \Cref{fig:dados_e_hiperplanos:dados_treinamento}, em que os pontos em azul representam a classe positiva, e os pontos em laranja a classe negativa. Perceba na \Cref{fig:dados_e_hiperplanos:hiperplanos_separadores} que todos os hiperplanos representados separam corretamente os dados, porém nosso objetivo será encontrar o hiperplano que melhor separa esses dados, o qual está representado na \Cref{fig:dados_e_hiperplano_otimo:hiperplano_otimo} pela cor vermelha. Logo, desejamos encontrar o hiperplano que possibilita a maior faixa que não contém nenhum dado, pois caso a faixa seja muito estreita pequenas perturbações no hiperplano ou no conjunto de dados podem resultar uma classificação incorreta. 
 \begin{figure}[htbp] 
 	\centering
 	\begin{subfigure}[h]{0.38\textwidth}
@@ -369,8 +369,9 @@ Portanto, o problema de encontrar o hiperplano ótimo pode ser formulado da segu
 \[ \label{eq:problemageralSVM}
 \begin{aligned}
 \min_{w,b} & \quad \dfrac{1}{2} \Vert w\Vert^{2} \\
-\text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1, \quad i=1, \ldots , m, \end{aligned}
- \]
+\text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1, \quad i=1, \ldots , m, 
+\end{aligned}
+\]
 em que $w\in \RR^{n}$ e $b\in \RR$. 
 
 O problema \eqref{eq:problemageralSVM} possui função objetivo 
@@ -454,7 +455,7 @@ Portanto, para reformular o problema original de maximizar a margem é preciso t
 & \quad \xi_{i} \geq 0, \quad i=1, \ldots , m,\end{aligned}
 \]
 %não consegui alinhar a última linha às duas primeiras
-em que $C>0$ é um parâmetro de regularização que tem o objetivo de controlar a importância das variáveis de folga. O valor do parâmetro $C$ que fornece uma boa classificação dos dados é escolhido de maneira heurística na fase de treinamento, geralmente a partir da natureza do problema.É devido a utilização desse parâmetro esta modelagem de SVM também é conhecida como C-SVM.
+em que $C>0$ é um parâmetro de regularização que tem o objetivo de controlar a importância das variáveis de folga. O valor do parâmetro $C$ que fornece uma boa classificação dos dados é escolhido de maneira heurística na fase de treinamento, geralmente a partir da natureza do problema. É devido a utilização desse parâmetro esta modelagem de SVM também é conhecida como C-SVM.
 
 O termo $C \sum_{i=1}^{m} \xi_{i}$ na função objetivo do problema \eqref{eq:problemaCSVM} pode ser pensado como uma medida de erro de classificação, pois minimiza o valor das variáveis de folga e reduz desse modo o número de pontos classificados incorretamente. De fato, aumentando o valor do parâmetro $C$ aumenta-se a penalização sobre a violação da restrição original do problema SVM. Por outro lado, diminuindo o valor de $C$ o modelo se torna mais flexível a esse tipo de violação. 
 
