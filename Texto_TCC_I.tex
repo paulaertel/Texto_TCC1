@@ -483,17 +483,18 @@ f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m}
 \newpage
 \section{Conceitos de Otimização} \label{chap:conceitos_de_otimizacao}
 
-
-Tendo em vista que o problema de classificação trata-se de um problema de Otimização, neste capítulo pretendemos discutir alguns conceitos e resultados para o problema 
+Neste capítulo pretendemos discutir alguns conceitos e resultados para o problema 
 \[ \label{problema_geral_otimizacao}
 \begin{aligned}
 \min_{x} & \quad f(x) \\
 \text{s.a} & \quad x \in \Omega ,
 \end{aligned}
 \]
-em que $f: \RR^{n} \rightarrow \RR$ é chamada \emph{função objetivo}, $\Omega \subset \RR^{n}$ é chamado \emph{conjunto factível} do problema \eqref{problema_geral_otimizacao} e os pontos de $\Omega$ são chamados de \emph{pontos factíveis}. Para o desenvolvimento deste capítulo, em particular da teoria de otimização irrestrita, as principais referências utilizadas foram \textcite{Izmailov2014ac,Ademir2013}. Já os conceitos e resultados da teoria de otimização com restrições foram desenvolvidos, principalmente, com base em \textcite{Ana1994,luenberger2008linear}.  
+em que $f: \RR^{n} \rightarrow \RR$ é chamada \emph{função objetivo}, $\Omega \subset \RR^{n}$ é chamado \emph{conjunto factível} do problema \eqref{problema_geral_otimizacao} e os pontos de $\Omega$ são chamados de \emph{pontos factíveis}. 
 
-Inicialmente, faz-se necessário caracterizar os pontos que são solução do problema \eqref{problema_geral_otimizacao}.
+Como o problema de classificação \eqref{eq:problemageralSVM} trata-se de um problema de otimização que possui restrições lineares apenas, toda a teoria de condições de otimalidade somente será estudada para problemas desse tipo: com restrições lineares. Para o desenvolvimento da teoria de otimização irrestrita, as principais referências utilizadas foram \textcite{Izmailov2014ac,Ademir2013}. Já os conceitos e resultados da teoria de otimização com restrições foram desenvolvidos, principalmente, com base em \textcite{Ana1994,luenberger2008linear}.  
+
+Inicialmente, vamos caracterizar os pontos que são solução do problema \eqref{problema_geral_otimizacao}.
 
 \begin{defi} \label{defi:minimizador_local_global}
 Dizemos que um ponto $x^{*} \in \Omega$ é
@@ -1749,8 +1750,8 @@ para todo $k$ tal que $1 \leq k \leq s(x^{*})$. Logo, $d$ é uma direção fact�
 
 As condições em \eqref{eq:1_teo_KKT} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). A partir delas podemos definir \emph{ponto estacionário}.
 
-\begin{defi} \label{defi:ponto_estacionario_KKT}
-Um ponto $x^{*} \in \RR^{n} $ é um \emph{ponto estacionário} do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} (ou ainda, um \emph{ponto de Karush-Kuhn-Tucker(KKT)}), quando $x^{*} \in \Omega$ e existem $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}$, tais que as condições \eqref{eq:1_teo_KKT} são satisfeitas. Os elementos $\boldsymbol{\lambda}^{*}$ e $\boldsymbol{\mu}^{*}$ são chamados de \emph{multiplicadores de Lagrange} associados ao ponto estacionário $x^{*}$.
+\begin{defi}(Ponto estacionário ou KKT) \label{defi:ponto_estacionario_KKT}
+Um ponto $x^{*} \in \RR^{n} $ é um \emph{ponto estacionário}, ou ainda, um \emph{ponto KKT} do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} quando $x^{*} \in \Omega$ e existem $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}$, tais que as condições \eqref{eq:1_teo_KKT} são satisfeitas. Os elementos $\boldsymbol{\lambda}^{*}$ e $\boldsymbol{\mu}^{*}$ são chamados de \emph{multiplicadores de Lagrange} associados ao ponto estacionário $x^{*}$.
 \end{defi}
 Em outras palavras, $x^{*}$ é dito estacionário quando satisfaz as condições KKT. 
 
@@ -1860,7 +1861,7 @@ Agora, suponhamos que existe pelo menos um $j$ tal que $\mu_{j} =0$. Assim,
 \[
 W_{\mathcal{J}}^{T}\boldsymbol{\mu} = W_{\mathcal{K}}^{T}\boldsymbol{\mu}_{\mathcal{K}} ,
 \]
-em que $\boldsymbol{\mu}_{\mathcal{K}}$ é o vetor formado pelas componentes $\mu_{j}$ que possuem índices em $\mathcal{K} = \{ j\in \mathcal{J}(x^{*}) \mid \mu_{j} >0 \}$. Então, se $x^{*} \in \Omega$ satisfaz
+em que $\boldsymbol{\mu}_{\mathcal{K}}$ é o vetor formado pelas componentes $\mu_{j}$ que possuem índices em $\mathcal{K}$. Então, se $x^{*} \in \Omega$ satisfaz
 \[
 \nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{K}} \boldsymbol{\mu} =0
 \]
@@ -1925,7 +1926,7 @@ Neste capítulo o objetivo principal é apresentar alguns resultados e definiç�
 \subsection{Conjuntos Convexos}
 
 \begin{defi} 
-Um \emph{conjunto} $C \subset \RR^{n}$ é dito \emph{convexo} quando dados $x,y \in C$, o segmento $[x,y] = \{ (1-t)x + ty \mid t\in [0,1] \}$ estiver inteiramente contido em $C$.
+Um \emph{conjunto} $C \subset \RR^{n}$ é dito \emph{convexo} quando dados $x,y \in C$, o segmento $[x,y] \coloneqq \{ (1-t)x + ty \mid t\in [0,1] \}$ estiver inteiramente contido em $C$.
 \end{defi}
 
 Esta definição pode ser interpretada geometricamente afirmando que um conjunto é convexo se, dados dois pontos no conjunto, cada ponto no segmento de linha que une esses dois pontos também for um membro do conjunto. A \Cref{fig:conjuntos_convexos} ilustra a noção de convexidade de conjuntos, em que o conjunto $C_{1}$ representa um conjunto convexo e o conjunto $C_{2}$ não é convexo.
@@ -1939,9 +1940,10 @@ Esta definição pode ser interpretada geometricamente afirmando que um conjunto
 \end{figure}
 
 
-Alguns exemplos de conjuntos convexos são o conjunto vazio, o espaço $\RR^{n}$, qualquer hiperplano do $\RR^{n}$ e um conjunto que contém um ponto só. A seguir, apresentamos alguns resultados importantes da análise convexa.
+Alguns exemplos de conjuntos convexos são o conjunto vazio, o espaço $\RR^{n}$, qualquer hiperplano do $\RR^{n}$ e um conjunto que contém um ponto só. 
 
-%{\cite[p. 50]{Ademir2013}}
+No próximo lema veremos que se dois vetores têm a mesma norma euclidiana, então qualquer combinação linear que não seja a trivial ($t=0$ ou $t=1$) terá norma estritamente menor.
+
 \begin{lema} \label{lema:1_convexidade}
 Considere $\Vert \cdot \Vert$ a norma euclidiana em $\RR^{n}$. Sejam $u,v \in \RR^{n}$ com $u\neq v$. Se $\Vert u \Vert = \Vert v \Vert = r$, então $\Vert (1-t)u + tv \Vert < r$, para todo $t \in (0,1)$.
 \end{lema}
@@ -1991,7 +1993,7 @@ Seja $\alpha = \inf \{\Vert z-x \Vert \mid x \in S\}$. Então, para cada $n \in 
 \[ \label{eq:1_lema_existencia_projecao}
 \alpha \leq \Vert z-x^{n} \Vert \leq \alpha + \dfrac{1}{n}. 
 \]
-Em particular, $\Vert z-x^{n} \Vert \leq \alpha + 1$, para todo $n \in \mathds{N}$. Logo, existe uma subsequência $(x^{n^{k}})$ convergente, com $k \in \mathds{N}'$, tal que $x^{n^{k}} \longrightarrow \bar{z}$. Como $S$ é fechado temos que $\bar{z} \in S$. Além disso, 
+Em particular, $\Vert z-x^{n} \Vert \leq \alpha + 1$, para todo $n \in \mathds{N}$. Logo, pelo Teorema de Bolzano-Weierstrass, existe uma subsequência $(x^{n^{k}})$ convergente, com $k \in \mathds{N}'$, tal que $x^{n^{k}} \longrightarrow \bar{z}$. Como $S$ é fechado temos que $\bar{z} \in S$. Além disso, 
 \[
 \Vert z-x^{n} \Vert \longrightarrow \Vert z-\bar{z} \Vert .
 \]
@@ -2095,7 +2097,7 @@ para todo $x\in S$. Portanto, $\bar{z} = \proj_{S} (z)$.
 \end{proof}
 
 
-O \Cref{lema:defineprojecao_convexidade} fornece uma condição necessária de otimalidade ao minimizar uma função em um conjunto convexo fechado.
+Uma aplicação do \Cref{lema:defineprojecao_convexidade} relacionada à otimização é que o mesmo fornece uma condição necessária de otimalidade para minimizadores de uma função diferenciável restrita a um conjunto convexo fechado.
 
 
 \begin{lema} \label{lema:associa_projecao_minimizador}
@@ -2214,9 +2216,9 @@ Portanto, $\alpha f$ é convexa em $C$.
 \end{enumerate}	
 \end{proof}
 
-Observe também que, se aplicarmos os itens (i) e (ii) da \Cref{prop:combinacao_funcoes_convexa} repetidamente, a combinação positiva de funções convexas $\alpha_{1} f_{1} +\alpha_{2} f_{2} + \ldots +\alpha_{m} f_{m}$ também é convexa. 
+Observe também que, se aplicarmos os itens (i) e (ii) da \Cref{prop:combinacao_funcoes_convexa} de maneira indutiva, a combinação positiva de funções convexas $\alpha_{1} f_{1} +\alpha_{2} f_{2} + \ldots +\alpha_{m} f_{m}$ também é convexa. 
 
-Agora, vamos analisar conjuntos definidos por restrições de desigualdade convexas.
+Agora, vamos analisar conjuntos definidos por restrições de desigualdade, quando as funções que as definem são convexas.
 
 \begin{prop}
 Seja $g$ uma função convexa em $C$. O conjunto $S_{c} = \{ x \mid x\in C, g(x)\leq c \}$ é convexo para todo número real $c$.
@@ -2229,7 +2231,7 @@ g((1-t)x_{1} + tx_{2}) \leq (1-t)g(x_{1}) + tg(x_{2}) \leq (1-t)c + tc = c.
 Portanto, $(1-t)x_{1} + tx_{2} \in S_{c}$.
 \end{proof}
 
-Dessa forma, desde que a intersecção de conjuntos convexos é também um conjunto convexo, concluímos que o conjunto de pontos que satisfaz simultaneamente
+Dessa forma, considerando que a intersecção de conjuntos convexos é também um conjunto convexo, concluímos que o conjunto de pontos que satisfaz simultaneamente
 \[
 g_{1}(x) \leq c_{1}, \ g_{2}(x) \leq c_{2}, \ \ldots, \ g_{m}(x) \leq c_{m} ,
 \]
@@ -2274,7 +2276,7 @@ f(x) \geq f(z) + \nabla f(z)^{T}(x-z) \quad \text{e} \quad f(y) \geq f(z) + \nab
 Agora, multiplicando a primeira desigualdade por $(1-t)$, a segunda por $t$ e somando, obtemos
 \begin{align}
 (1-t)f(x) + tf(y) & \geq (1-t)(f(z) + \nabla f(z)^{T}(x-z)) + t(f(z) + \nabla f(z)^{T}(y-z)) \\
-& \geq f(z) + \nabla f(z)^{T}(x-z) - tf(z) -t\nabla f(z)^{T}(x-z) + tf(z) + t\nabla f(z)^{T}(y-z) \\
+%& \geq f(z) + \nabla f(z)^{T}(x-z) - tf(z) -t\nabla f(z)^{T}(x-z) + tf(z) + t\nabla f(z)^{T}(y-z) \\
 & \geq f(z) + \nabla f(z)^{T}(x-z) + t\nabla f(z)^{T}(-x+z+y-z) \\
 & \geq f(z) + \nabla f(z)^{T}(x-z) + t\nabla f(z)^{T}(y-x) \\
 & \geq f(z) + \nabla f(z)^{T}(x-z) + t\nabla f(z)^{T} \dfrac{(z-x)}{t} \\
@@ -2285,7 +2287,7 @@ Agora, multiplicando a primeira desigualdade por $(1-t)$, a segunda por $t$ e so
 Portanto, a função $f$ é convexa em $C$.
 \end{proof}
 
-O \Cref{teo:diferenciabilidade_e_convexidade} afirma que a aproximação linear através da derivada local de uma função convexa está sempre abaixo do gráfico da função. Tal resultado está ilustrado na \Cref{fig:funcao_convexa_aproximacao_linear_derivada}. 
+Uma interpretação geométrica do \Cref{teo:diferenciabilidade_e_convexidade} é que a aproximação linear através da derivada local de uma função convexa diferenciável está sempre abaixo do gráfico da função. Tal resultado está ilustrado na \Cref{fig:funcao_convexa_aproximacao_linear_derivada}. 
 \begin{figure}[!ht] 
 	\centering
 	\includegraphics[width=0.50\textwidth]{funcao_convexa_aproximacao_linear_derivada}
@@ -2410,16 +2412,15 @@ para todo $x \in \Omega$.
 O \Cref{teo:pontoestacionario_minimizadorglobal_convexidade} se constitui num resultado de grande relevância, pois no caso em que o problema de otimização é convexo, isto é, a função objetivo é convexa e o conjunto factível determinado pelas restrições é convexo, então as condições de KKT são necessárias e suficientes para $x^{*}$ ser minimizador global.
 
 
-\section{Programação quadrática}
+\subsection{Convexidade dos problemas de SVM}
 
-Por conseguinte, tendo em vista que a função objetivo dos problemas de SVM são funções quadráticas, é necessário avaliar sob quais condições uma função quadrática é convexa. Tal resultado é apresentado a seguir e sua demonstração decorre do \Cref{teo:hessiana_convexidade}.
+Tendo em vista que a função objetivo dos problemas de SVM são funções quadráticas, é necessário avaliar sob quais condições uma função quadrática é convexa. Tal resultado é apresentado a seguir e sua demonstração decorre do \Cref{teo:hessiana_convexidade}.
 
-%\cite{Gondzio2018}
 \begin{teo} \label{teo:funcao_quadratica_e_convexa}
-Seja $C \in \RR^{n}$ um conjunto convexo e $Q \in \RR^{n\times n}$ uma matriz quadrada e simétrica. Seja $f:C \rightarrow \RR$ tal que $f(x) = x^{T}Qx$ é uma função quadrática. Então, $f$ é convexa se, e somente se, $Q$ é semidefinida positiva.
+Seja $C \in \RR^{n}$ um conjunto convexo e $Q \in \RR^{n\times n}$ uma matriz quadrada e simétrica. Seja $f:C \rightarrow \RR$ tal que $f(x) = \dfrac{1}{2}x^{T}Qx$ é uma função quadrática. Então, $f$ é convexa se, e somente se, $Q$ é semidefinida positiva.
 \end{teo}
 \begin{proof}
-Primeiramente, suponhamos que $f$ é convexa em $C$. Então, pelo \Cref{teo:hessiana_convexidade}, a Hessiana $\nabla^{2} f(x)$ é semidefinida positiva para todo $x\in C$, e como $\nabla^{2} f(x) = 2Q$, concluímos que $Q$ é semidefinida positiva. Reciprocamente, se $\nabla^{2} f(x) = 2Q$ é semidefinida positiva, então, pelo \Cref{teo:hessiana_convexidade}, a função $f$ é convexa em $C$.
+Primeiramente, suponhamos que $f$ é convexa em $C$. Então, pelo \Cref{teo:hessiana_convexidade}, a Hessiana $\nabla^{2} f(x)$ é semidefinida positiva para todo $x\in C$, e como $\nabla^{2} f(x) = Q$, concluímos que $Q$ é semidefinida positiva. Reciprocamente, se $\nabla^{2} f(x) = Q$ é semidefinida positiva, então, pelo \Cref{teo:hessiana_convexidade}, a função $f$ é convexa em $C$.
 \end{proof}
 
 Consequentemente, nos problemas de minimização irrestrita em que a função objetivo é uma quadrática da forma
@@ -2441,25 +2442,25 @@ x^{*} = Q^{-1}b
 \]  
 é o único mínimo global.
 
-Além de quadrática, a função objetivo do problema de classificação \eqref{eq:problemageralSVM} envolve a norma de um vetor $w \in \RR^{n}$. Em vista disso, a proposição a seguir garante a convexidade da norma.
+%lém de quadrática, a função objetivo do problema de classificação \eqref{eq:problemageralSVM} envolve a norma de um vetor $w \in \RR^{n}$. Em vista disso, a proposição a seguir garante a convexidade da norma.
 
-\begin{prop} \label{prop:norma_funcao_convexa}
-Considere a função $f: \RR^{n} \rightarrow \RR$ dada por
-\[
-f(x) = \dfrac{1}{2}\Vert x \Vert,
-\]
-com $x\in \RR^{n}$. Então a função $f$ é uma função convexa.
-\end{prop}
-\begin{proof}
-Seja $\Vert \cdot \Vert$ a norma de um vetor. Para quaisquer $x, y \in \RR^{n}$ e qualquer $\alpha \in [0,1]$, temos que
-\begin{align}
-f(\alpha x + (1-\alpha)y) &= \dfrac{1}{2} \Vert \alpha x + (1-\alpha)y \Vert \\
-&\leq \dfrac{1}{2} \Vert \alpha x\Vert + \dfrac{1}{2}\Vert (1-\alpha)y \Vert \\
-&= \alpha \dfrac{1}{2} \Vert x \Vert + (1-\alpha)\dfrac{1}{2} \Vert y \Vert \\
-&= \alpha f(x) + (1-\alpha)f(y).
-\end{align}
-Portanto, $f$ é uma função convexa.
-\end{proof}
+%\begin{prop} \label{prop:norma_funcao_convexa}
+%Considere a função $f: \RR^{n} \rightarrow \RR$ dada por
+%\[
+%f(x) = \dfrac{1}{2}\Vert x \Vert,
+%\]
+%com $x\in \RR^{n}$. Então a função $f$ é uma função convexa.
+%\end{prop}
+%\begin{proof}
+%Seja $\Vert \cdot \Vert$ a norma de um vetor. Para quaisquer $x, y \in \RR^{n}$ e qualquer $\alpha \in [0,1]$, temos que
+%\begin{align}
+%f(\alpha x + (1-\alpha)y) &= \dfrac{1}{2} \Vert \alpha x + (1-\alpha)y \Vert \\
+%&\leq \dfrac{1}{2} \Vert \alpha x\Vert + \dfrac{1}{2}\Vert (1-\alpha)y \Vert \\
+%&= \alpha \dfrac{1}{2} \Vert x \Vert + (1-\alpha)\dfrac{1}{2} \Vert y \Vert \\
+%&= \alpha f(x) + (1-\alpha)f(y).
+%\end{align}
+%Portanto, $f$ é uma função convexa.
+%\end{proof}
 
 \newpage
 
