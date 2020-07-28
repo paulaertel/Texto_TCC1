@@ -126,11 +126,65 @@ style=numeric-comp, noerroretextools=true, sorting=nty,
 \maketitle
 
 \section{Resumo}
-Elaborar resumo.
+
+O objetivo principal deste trabalho é realizar um estudo teórico matemático, do ponto de vista da Otimização, das Máquinas de Vetores Suporte (SVM), uma técnica supervisionada da Aprendizagem de Máquina, aplicadas ao problema de classificação de dados. Em particular, é apresentada a modelagem matemática da técnica SVM para problemas de classificação com margem rígida e margem flexível. Tendo em vista que tal modelagem resulta num problema de programação quadrática, convexa e com restrições lineares, para sua formulação realizamos um estudo ds principais conceitos relacionados a otimização irrestrita e com restrições lineares de igualdade e desigualdade, apresentando resultados importantes como o Teorema de Karush-Kuhn-Tucker (KKT), além de abordar aspectos relacionados à otimização convexa, que fornece propriedades tão interessantes aos problemas de otimização, como a garantia de que soluções locais são globais. A técnica SVM possui muitas aplicações em problemas práticos de reconhecimento de padrões, como reconhecimento facial, leitura de placas automotivas e detecção de spam. No intuito de compreender um pouco da sua imlementação computacional, realizamos a implementação da técnica SVM para classificação do conjuto de dados flor Iris e de um conjunto de dados sobre células de câncer de mama para classificação do câncer em maligno ou benigno.
+
+\textbf{Palavras-chave:} Apredizagem de Máquina, Classificação, Máquinas de Vetores Suporte, Otimização com restrições, Otimização convexa.
+
+
+\section{Introdução}
+
+A análise inteligente de dados tem se tornado cada vez mais importante para auxiliar na tomada de decisões em diversos campos da ciência. A Aprendizagem de Máquina (AM, do inglês \textit{Machine Learning}) é um campo da inteligência computacional que estuda o uso de técnicas computacionais para automaticamente detectar padrões em dados e utilizá-los para fazer predições e tomar decisões. Ela possui contribuições em diversos campos da ciência e também está presente em diferentes situações do cotidiano como na recomendação de filmes e séries em serviços de Streaming, nos mecanismos de pesquisa do Google e na detecção de spam em emails, por exemplo. 
+
+A Aprendizagem de Máquina também está diretamente relacionada à Otimização, que contribui para a formulação matemática e para a implementação computacional de muitos de seus algoritmos. As técnicas de Aprendizagem de Máquina podem ser divididas em dois tipos principais, a aprendizagem supervisionada, em que através de um conjunto de dados, cujas saídas são previamente conhecidas, o algortimo detecta padrões e produz um modelo capaz de deduzir as saídas corretas para novos dados, e a aprendizagem não-supervisionada, empregada em problemas que não possuem dados previamente rotulados. Nosso objetivo neste trabalho é realizar um estudo teórico, do ponto de vista da Otimização, de uma técnica de aprendizagem supervisionada: as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}).
+
+A técnica SVM é fundamentada na Teoria de Aprendizagem Estatística e foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes \cite{Vladimir1992,Vladimir1995}. Conforme destacado por \textcite{Evelin2017}, as SVM são amplamente empregadas em problemas de regressão e de classificação, possuem um embasamento teórico bem consolidado e apresentam uma boa capacidade de generalização. São indicadas nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos. 
+
+Neste trabalho será abordada a modelagem matemática da técnica SVM aplicada ao problema de classificação, que resulta no seguinte problema de programação quadrática convexa e com restrições lineares
+\[ \label{problema_geral_SVM_introducao}
+\begin{aligned}
+\min_{w,b} & \quad f(w) \\
+\text{s.a.} &  \quad g(w,b) \leq 0, \end{aligned}
+\]
+em que as funções $f:\RR^{n+1} \rightarrow \RR$ e $g:\RR^{n+1} \rightarrow \RR^{m}$ são continuamente diferenciáveis. A resolução do problema \eqref{problema_geral_SVM_introducao} fornece uma solução $(w,b)$, a partir da qual obtém-se um classificador linear. Geometricamente, dado um conjunto de dados, a técnica SVM realiza a separação deste conjunto em diferentes classes através de um hiperplano definido pela equação $w^{T}x + b = 0$ \cite{Evelin2017}, que é construído a partir da solução do problema \eqref{problema_geral_SVM_introducao}.
+
+Dependendo do conjunto de dados e da complexidade do problema, a técnica SVM apresenta três diferentes formulações: SVM com margem rígida (\Cref{fig:hiperplano_margemrigida}), SVM com margem flexível (\Cref{fig:hiperplano_margemflexivel}) e SVM não linear (\Cref{fig:SVM_naolinear}). 
+
+\begin{figure}[!ht] 
+\centering
+\begin{subfigure}[h]{0.3\textwidth}
+\centering
+\includegraphics[width=\textwidth]{hiperplano_SVM_linear}
+\caption{Margem Rígida. \label{fig:hiperplano_margemrigida}}
+\end{subfigure}
+\begin{subfigure}[!ht]{0.3\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{hiperplano_SVM_flexivel}
+	\caption{Margem Flexível. \label{fig:hiperplano_margemflexivel}}
+\end{subfigure}
+\begin{subfigure}[!ht]{0.3\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{hiperplano_SVM_nao_linear}
+	\caption{Não Linear. \label{fig:SVM_naolinear}}
+\end{subfigure}
+\caption{Conjunto de dados para classificação. \label{fig:distribuicao_dados_e_classificacao}}
+\end{figure}
+
+O problema de classificação representado na \Cref{fig:hiperplano_margemrigida} é um exemplo que pode ser modelado pelo problema \eqref{problema_geral_SVM_introducao}. Neste caso os dados são linearmente separáveis, sendo possível encontrar um hiperplano que os classifique corretamente. As \Cref{fig:hiperplano_margemflexivel,fig:SVM_naolinear}, no entanto, apresentam problemas cujos dados não são linearmente separáveis. No primeiro caso temos um exemplo de SVM de margem flexível, em que promovendo um relaxamento das restrições através de variáveis de folga ainda é possível obter um hiperplano que classifique os dados. Já no segundo caso é preciso aplicar a SVM não linear, na qual o hiperplano ótimo é obtido através de um mapeamento dos dados em um espaço de dimensão elevada \cite{Evelin2017}. Neste trabalho abordaremos somente os casos de SVM com margem rígida e margem flexível, pois para a modelagem da técnica SVM não linear são necessários alguns conceitos matemáticos mais complexos que não serão abordados neste trabalho e portanto, ela se constitui numa proposta de estudo a ser desenvolvida em projetos futuros.
+
+Como o problema de classificação \eqref{problema_geral_SVM_introducao} que desejamos formular trata-se de um problema de programação quadrática convexa com restrições lineares, o \Cref{chap:conceitos_de_otimizacao} apresenta os principais conceitos e resultados de otimização irrestrita e com restrições lineares de igualdade e desigualdade. As principais referências consultadas para elaboração deste capítulo foram \textcite{Ana1994,Ademir2013,Izmailov2014ac,luenberger2008linear}.
+
+No \Cref{chap:otimizacao_convexa} são discutidos os conceitos de conjunto convexo e função convexa com o intuito de analisar a convexidade dos problemas de SVM. Para construção deste capítulo as principais bibliografias utilizadas foram \textcite{Ademir2013,Izmailov2014ac,luenberger2008linear,bertsekas2016nonlinear}.
+
+A modelagem matemática do problema de classificação através da técnica SVM, tanto para o caso de margem rígida quanto de margem flexível, é realizada no \Cref{chap:maquinas_vetores_suporte}. Para tanto, foram utilizadas como principais referências \textcite{Evelin2017,Faisal2019}.
+
+Por fim, a técnica SVM possui inúmeras aplicações como, por exemplo, no reconhecimento facial, leitura de placas automotivas e detecção de spam. Assim, no \Cref{chap:experimentos_numericos} realizamos experimentos numéricos da técnica SVM para a classificação de dados. Num primeiro momento aplicamos a SVM para classificar o conjunto de dados Iris, e posteriormente para a classificação de amostras de células de câncer de mama em maligno ou benigno. 
+
 
 
 \newpage
-\section{Introdução}
+\section{Máquinas de Vetores Suporte} \label{chap:maquinas_vetores_suporte}
+
 
 A Aprendizagem de Máquina (AM, do inglês \textit{Machine Learning}) é o estudo do uso de técnicas computacionais para automaticamente detectar padrões em dados e usá-los para fazer predições e tomar decisões. Nas palavras de \textcite[p. 11]{Faisal2019}, Aprendizagem de Máquina "\textit{é sobre como projetar algoritmos que extraem automaticamente informações valiosas dos dados. A ênfase aqui está em "automático", i.e., a aprendizagem de máquina está preocupada com metodologias de uso geral que possam ser aplicadas em muitos conjuntos de dados, enquanto produz algo significativo"} (tradução nossa). 
 
@@ -141,26 +195,52 @@ A aprendizagem não-supervisionada por sua vez é empregada em problemas que nã
 
 Neste trabalho nosso objetivo será realizar um estudo teórico matemático, do ponto de vista da Otimização, de uma técnica de aprendizagem supervisionada: as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}). Esta técnica é fundamentada na Teoria de Aprendizagem Estatística e foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes \cite{Vladimir1992,Vladimir1995}. Conforme destacado por \textcite{Evelin2017}, as SVM são amplamente empregadas em problemas de regressão e de classificação por possuírem um embasamento teórico bem consolidado e por apresentarem uma boa capacidade de generalização, sendo indicadas nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos. Algumas aplicações de SVM em problemas práticos são o reconhecimento facial, leitura de placas automotivas e detecção de spam.
 
-Ademais, nossa intenção é estudar a técnica SVM aplicada na classificação de dados. Neste caso, na fase de treinamento é fornecido um conjunto de dados rotulados da forma $(x^{i}, y_{i})$, em que $x^{i}$ representa o vetor de características (ou atributos) e $y_{i}$ corresponde à saída ou rótulo, e a partir dos quais a técnica SVM irá gerar um classificador capaz de predizer a saída correta de novos dados. É importante salientar que trataremos aqui do problema de classificação binário, isto é, quando existem apenas duas saídas possíveis, como por exemplo $1$ ou $-1$, $0$ ou $1$, \emph{vermelho} ou \emph{azul}. No entanto é possível generalizar tal técnica para problemas que envolvam mais saídas, se configurando neste caso num problema multiclasses. Na \Cref{fig:SVM_classificador} a seguir temos um esquema representando a atuação da técnica de SVM para obtenção de um classificador.
+Nossa intenção é estudar a técnica SVM aplicada na classificação de dados. Neste caso, na fase de treinamento é fornecido um conjunto de dados na forma $(x^{i}, y_{i})$, em que $x^{i}$ representa o vetor de características (ou atributos) e $y_{i}$ corresponde à saída ou rótulo, e a partir dos quais a técnica SVM irá gerar um classificador capaz de predizer a saída correta de novos dados. É importante salientar que trataremos aqui do problema de classificação binário, isto é, quando existem apenas duas saídas possíveis, como por exemplo $1$ ou $-1$, $0$ ou $1$, \emph{vermelho} ou \emph{azul}. No entanto é possível generalizar tal técnica para problemas que envolvam mais saídas, se configurando neste caso num problema multiclasses. Na \Cref{fig:SVM_classificador} a seguir temos uma representação simplificada da atuação de técnicas de AM, como a técnica SVM por exemplo, em problemas de classificação.
 
-\begin{figure}[!ht] 
+\begin{figure}[!ht] %refazer figura, resolução não está boa.
 	\centering
 	\includegraphics[width=0.70\textwidth]{representacao_tecnica_SVM}
-	\caption{Atuação da técnica de SVM na obtenção de um classificador. \\ Fonte: \textcite{Lorena&Carvalho} \label{fig:SVM_classificador}}
+	\caption{Atuação da técnica SVM. \\ Fonte: \textcite{Lorena&Carvalho} \label{fig:SVM_classificador}}
 \end{figure}
 
-Em síntese, ao formular o problema de classificação utilizando a técnica SVM veremos que este consiste no seguinte problema de programação quadrática convexa e com restrições lineares
-\[ \label{problema_geral_SVM_introducao}
+Em síntese, a aplicação da técnica SVM para classificação resulta no seguinte problema de programação quadrática convexa e com restrições lineares
+\[ %\label{problema_geral_SVM_introducao}
 \begin{aligned}
 \min_{w,b} & \quad f(w) \\
 \text{s.a.} &  \quad g(w,b) \leq 0, \end{aligned}
 \]
-em que as funções $f:\RR^{n+1} \rightarrow \RR$ e $g:\RR^{n+1} \rightarrow \RR^{m}$ são continuamente diferenciáveis. Como \eqref{problema_geral_SVM_introducao} é um problema de otimização convexa com restrições lineares, desenvolveremos nos \Cref{chap:conceitos_de_otimizacao,chap:otimizacao_convexa} seu embasamento matemático. Além disso, o objetivo ao resolver tal problema é obter um classificador a partir da solução $(w, b)$ \cite{Evelin2017}. Veremos mais adiante que a solução encontrada fornece um hiperplano definido pela equação $w^{T}x + b = 0$, que será justamente o classificador que desejamos encontrar.
+em que as funções $f:\RR^{n+1} \rightarrow \RR$ e $g:\RR^{n+1} \rightarrow \RR^{m}$ são continuamente diferenciáveis. Ao resolver tal problema obtemos um classificador a partir da solução $(w, b)$, que como veremos mais adiante fornece um hiperplano definido pela equação $w^{T}x + b = 0$ \cite{Evelin2017}. Geometricamente, dado um conjunto de dados, a técnica SVM realiza a separação deste conjunto em diferentes classes através de um hiperplano, que é construído a partir da solução do problema \eqref{problema_geral_SVM_introducao}. Na figura a seguir, por exemplo, temos representado um conjunto de dados pertencentes a duas classes distintas: azul ou laranja. 
 
-AQUI ABORDAR UM POUCO DA ORGANIZAÇÃO DO TRABALHO.
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.40\textwidth]{hiperplano_SVM_linear}
+	\caption{Margem Rígida. \label{fig:hiperplano_SVM_margemrigida}}
+\end{figure}
 
-\newpage
-\subsection{Formulação Matemática do Problema de Classificação - Margem Rígida}
+Assim reta em vermelho é o hiperplano separador, o qual fará a classificação de novos dados em azul se estiverem a direita do hiperplano e em laranja se estiverem a sua esquerda. Neste exemplo perceba que o hiperplano consegue separar corretamente todos os dados nas duas classes e portanto o denominamos de SVM linear de margem rígida. No entanto, em problemas que envolvam situações reais os dados costumam ser mais "embaralhados" como apresentado na \Cref{fig:margemflexivel_naolinear} a seguir.
+
+\begin{figure}[!ht] 
+\centering
+\begin{subfigure}[!ht]{0.3\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{hiperplano_SVM_flexivel}
+	\caption{Margem Flexível. \label{fig:hiperplano_SVM_margemflexivel}}
+\end{subfigure}
+\begin{subfigure}[!ht]{0.3\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{hiperplano_SVM_nao_linear}
+	\caption{Não Linear. \label{fig:hiperplano_SVM_naolinear}}
+\end{subfigure}
+\caption{Dados com margem flexível e não lineares. \label{fig:margemflexivel_naolinear}}
+\end{figure}
+
+Nestes exemplos não é mais possível separar corretamente os dados através de um hiperplano, sendo necessária a moelagem de SVM com margem flexível e SVM não linear. Portanto, a depender da conjunto de dados a modelagem da técnica SVM pode assumir três tipos: linear com margem rígida e suas generalizações, que são margem flexível e não linear. Neste trabalho abordaremos apenas o casos linear com margem rígida e margem flexível. 
+
+
+Portanto, como \eqref{problema_geral_SVM_introducao} é um problema de otimização convexa com restrições lineares, desenvolveremos nos \Cref{chap:conceitos_de_otimizacao,chap:otimizacao_convexa} seu embasamento matemático.
+
+\subsection{Máquinas de Vetores Suporte - Margem Rígida}
+
 
 Agora, vamos formular matematicamente o problema de classificação utilizando as Máquinas de Vetores Suporte. Para tanto, considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig:classificacao_dados}.
 
@@ -364,11 +444,7 @@ concluindo que
 \end{align}
 \end{proof}
 
-
-%--------------------------------------------------------------------------------------------------------------------------
-
-
-%\subsection{Formulação Matemática do Problema de Classificação - Margem Rígida}
+%\subsubsection{Formulação Matemática do Problema de Classificação - Margem Rígida}
 
 Encontrar o hiperplano que melhor separa os dados implica maximizar a largura da margem, isto é, maximizar $\dist(\Hset^{+} , \Hset^{-}) =\dfrac{2}{\Vert w\Vert }$. Isso equivale a minimizar seu inverso $\dfrac{1}{2}\Vert w\Vert $ ou ainda minimizar $\dfrac{1}{2}\Vert w\Vert^{2}$. De fato, seja $w^{*}=\argmax\dfrac{2}{\Vert w\Vert}$. Então, para todo $w\in \RR^n$,
 \[ 
@@ -414,7 +490,8 @@ com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_
 
 %----------------------------------------------------------------------------------------------------------------------
 
-\subsection{Formulação Matemática do Problema de Classificação - Margem Flexível (CSVM)}
+\subsection{Máquinas de Vetores Suporte - Margem Flexível (CSVM)}
+
 
 Situações reais dificilmente envolvem problemas cujos dados são linearmente separáveis. Em vista disso, faz-se necessário estender os conceitos e resultados estudados nas SVMs lineares de margem rígida para o caso de SVM com margem flexível, quando os dados não são linearmente separáveis. Para tanto, considere um conjunto de dados não-linearmente separável como da \Cref{fig:dados_linearmente_separaveis_e_nao_separaveis:b}, isto é, não existe um hiperplano separador. 
 
@@ -2492,7 +2569,7 @@ x^{*} = Q^{-1}b
 %\end{proof}
 
 \newpage
-\section{Experimentos Numéricos}
+\section{Experimentos Numéricos} \label{chap:experimentos_numericos}
 
 
 \newpage
