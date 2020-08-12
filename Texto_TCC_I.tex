@@ -136,7 +136,7 @@ O objetivo principal deste trabalho é realizar um estudo teórico matemático, 
 
 A análise inteligente de dados tem se tornado cada vez mais importante para auxiliar na tomada de decisões em diversos campos da ciência. A Aprendizagem de Máquina (AM, do inglês \textit{Machine Learning}) é um campo da inteligência computacional que estuda o uso de técnicas computacionais para automaticamente detectar padrões em dados e utilizá-los para fazer predições e tomar decisões. Ela possui contribuições em diversos campos da ciência e também está presente em diferentes situações do cotidiano como na recomendação de filmes e séries em serviços de Streaming, nos mecanismos de pesquisa do Google e na detecção de spam em emails, por exemplo. 
 
-A Aprendizagem de Máquina também está diretamente relacionada à Otimização, que contribui para a formulação matemática e para a implementação computacional de muitos de seus algoritmos. As técnicas de Aprendizagem de Máquina podem ser divididas em dois tipos principais, a aprendizagem supervisionada, em que através de um conjunto de dados, cujas saídas são previamente conhecidas, o algortimo detecta padrões e produz um modelo capaz de deduzir as saídas corretas para novos dados, e a aprendizagem não-supervisionada, empregada em problemas que não possuem dados previamente rotulados. Nosso objetivo neste trabalho é realizar um estudo teórico, do ponto de vista da Otimização, de uma técnica de aprendizagem supervisionada: as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}).
+A Aprendizagem de Máquina também está diretamente relacionada à Otimização, que contribui para a formulação matemática e para a implementação computacional de muitos de seus algoritmos. As técnicas de Aprendizagem de Máquina podem ser divididas em dois tipos principais, a aprendizagem supervisionada, em que através de um conjunto de dados, cujas saídas são previamente conhecidas, o algoritmo detecta padrões e produz um modelo capaz de deduzir as saídas corretas para novos dados, e a aprendizagem não-supervisionada, empregada em problemas que não possuem dados previamente rotulados. Nosso objetivo neste trabalho é realizar um estudo teórico, do ponto de vista da Otimização, de uma técnica de aprendizagem supervisionada: as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}).
 
 A técnica SVM é fundamentada na Teoria de Aprendizagem Estatística e foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes \cite{Vladimir1992,Vladimir1995}. Conforme destacado por \textcite{Evelin2017}, as SVM são amplamente empregadas em problemas de regressão e de classificação, possuem um embasamento teórico bem consolidado e apresentam uma boa capacidade de generalização. São indicadas nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos. 
 
@@ -2624,9 +2624,9 @@ Situações reais dificilmente envolvem problemas cujos dados são linearmente s
 \end{figure}
 
 
-Neste caso, temos que o conjunto viável
+Neste caso, temos que o conjunto factível
 \[
-\{ (w,b) \in \RR^{n+1} \mid 1-y_{i}(w^{T}x^{i} + b) \leq 0 , \quad i=1, \ldots , m \}
+\Omega = \{ (w,b) \in \RR^{n+1} \mid 1-y_{i}(w^{T}x^{i} + b) \leq 0 , \quad i=1, \ldots , m \}
 \]
 é vazio e, portanto, a formulação dada pelo problema \eqref{eq:problemageralSVM} não fornece um classificador.
 
