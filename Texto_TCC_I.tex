@@ -125,357 +125,64 @@ style=numeric-comp, noerroretextools=true, sorting=nty,
 \subtitle{Qualificação de Trabalho de Conclusão de Curso}
 \maketitle
 
-\section{Introdução às Máquinas de Vetores Suporte}
+\section{Resumo}
 
-A Aprendizagem de Máquina (do inglês \textit{Machine Learning}) é o estudo do uso de técnicas computacionais para automaticamente detectar padrões em dados e usá-los para fazer predições e tomar decisões. De acordo com \textcite{Evelin2017}, existem dois tipos de Aprendizagem de Máquina, a aprendizagem supervisionada, em que a partir de um conjunto de dados de entrada e saída a máquina constrói um modelo que deduz a saída para novas entradas, e a não supervisionada, na qual a máquina cria sua própria solução. 
+O objetivo principal deste trabalho é realizar um estudo teórico matemático, do ponto de vista da Otimização, das Máquinas de Vetores Suporte (SVM), uma técnica supervisionada da Aprendizagem de Máquina, aplicadas ao problema de classificação de dados. Em particular, é apresentada a modelagem matemática da técnica SVM para problemas de classificação com margem rígida e margem flexível. Tendo em vista que tal modelagem resulta num problema de programação quadrática, convexa e com restrições lineares, para sua formulação realizamos um estudo ds principais conceitos relacionados a otimização irrestrita e com restrições lineares de igualdade e desigualdade, apresentando resultados importantes como o Teorema de Karush-Kuhn-Tucker (KKT), além de abordar aspectos relacionados à otimização convexa, que fornece propriedades tão interessantes aos problemas de otimização, como a garantia de que soluções locais são globais. A técnica SVM possui muitas aplicações em problemas práticos de reconhecimento de padrões, como reconhecimento facial, leitura de placas automotivas e detecção de spam. No intuito de compreender um pouco da sua imlementação computacional, realizamos a implementação da técnica SVM para classificação do conjuto de dados flor Iris e de um conjunto de dados sobre células de câncer de mama para classificação do câncer em maligno ou benigno.
 
-A aprendizagem supervisionada é composta por uma etapa denominada fase de treinamento, na qual um conjunto de treinamento formado por vários dados de entrada e saída que funcionam como exemplos é dado e a partir dos quais a máquina detecta padrões e cria um modelo para deduzir a saída de novos dados. Após essa fase novas entradas são testadas, denominadas conjunto de teste, no intuito de analisar se a máquina está gerando as saídas corretas. Algumas técnicas para aprendizagem de máquina supervisionada são as Máquinas de Vetores Suporte, Regressão Linear, Regressão Logística e Redes Neurais. Enquanto que a Decomposição em Valor Singular (SVD), Clusterização e Análise de Componentes Principais \cite{Evelin2017} são exemplos de técnicas para a aprendizagem não supervisionada. 
+\textbf{Palavras-chave:} Apredizagem de Máquina, Classificação, Máquinas de Vetores Suporte, Otimização com restrições, Otimização convexa.
 
-As Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}), conforme mencionado por \textcite{Evelin2017}, são indicadas nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos, além de apresentar uma boa capacidade de generalização. Esta técnica pode ser aplicada tanto para problemas de regressão como de classificação. Tal técnica foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes, com base na Teoria de Aprendizagem Estatística. Algumas aplicações de SVM em problemas práticos são o reconhecimento facial, leitura de placas automotivas e detecção de spam.
 
-Agora, vamos formular matematicamente o problema de classificação utilizando as Máquinas de Vetores Suporte. Para tanto, considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig:classificacao_dados}.
+\section{Introdução}
 
+A análise inteligente de dados tem se tornado cada vez mais importante para auxiliar na tomada de decisões em diversos campos da ciência. A Aprendizagem de Máquina (AM, do inglês \textit{Machine Learning}) é um campo da inteligência computacional que estuda o uso de técnicas computacionais para automaticamente detectar padrões em dados e utilizá-los para fazer predições e tomar decisões. Ela possui contribuições em diversos campos da ciência e também está presente em diferentes situações do cotidiano como na recomendação de filmes e séries em serviços de Streaming, nos mecanismos de pesquisa do Google e na detecção de spam em emails, por exemplo. 
+
+A Aprendizagem de Máquina também está diretamente relacionada à Otimização, que contribui para a formulação matemática e para a implementação computacional de muitos de seus algoritmos. As técnicas de Aprendizagem de Máquina podem ser divididas em dois tipos principais, a aprendizagem supervisionada, em que através de um conjunto de dados, cujas saídas são previamente conhecidas, o algoritmo detecta padrões e produz um modelo capaz de deduzir as saídas corretas para novos dados, e a aprendizagem não-supervisionada, empregada em problemas que não possuem dados previamente rotulados. Nosso objetivo neste trabalho é realizar um estudo teórico, do ponto de vista da Otimização, de uma técnica de aprendizagem supervisionada: as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}).
+
+A técnica SVM é fundamentada na Teoria de Aprendizagem Estatística e foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes \cite{Vladimir1992,Vladimir1995}. Conforme destacado por \textcite{Evelin2017}, as SVM são amplamente empregadas em problemas de regressão e de classificação, possuem um embasamento teórico bem consolidado e apresentam uma boa capacidade de generalização. São indicadas nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos. 
+
+Neste trabalho será abordada a modelagem matemática da técnica SVM aplicada ao problema de classificação, que resulta no seguinte problema de programação quadrática convexa e com restrições lineares
+\[ \label{problema_geral_SVM_introducao}
+\begin{aligned}
+\min_{w,b} & \quad f(w) \\
+\text{s.a.} &  \quad g(w,b) \leq 0, \end{aligned}
+\]
+em que as funções $f:\RR^{n+1} \rightarrow \RR$ e $g:\RR^{n+1} \rightarrow \RR^{m}$ são continuamente diferenciáveis. A resolução do problema \eqref{problema_geral_SVM_introducao} fornece uma solução $(w,b)$, a partir da qual obtém-se um classificador linear. Geometricamente, dado um conjunto de dados, a técnica SVM realiza a separação deste conjunto em diferentes classes através de um hiperplano definido pela equação $w^{T}x + b = 0$ \cite{Evelin2017}, que é construído a partir da solução do problema \eqref{problema_geral_SVM_introducao}.
+
+Dependendo do conjunto de dados e da complexidade do problema, a técnica SVM apresenta três diferentes formulações: SVM com margem rígida (\Cref{fig:hiperplano_margemrigida}), SVM com margem flexível (\Cref{fig:hiperplano_margemflexivel}) e SVM não linear (\Cref{fig:SVM_naolinear}). 
 
 \begin{figure}[!ht] 
 \centering
 \begin{subfigure}[h]{0.3\textwidth}
 \centering
 \includegraphics[width=\textwidth]{hiperplano_SVM_linear}
-\caption{Linear. \label{fig:classificacao_dados:hiperplano_SVM_linear}}
+\caption{Margem Rígida. \label{fig:hiperplano_margemrigida}}
 \end{subfigure}
 \begin{subfigure}[!ht]{0.3\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{hiperplano_SVM_flexivel}
-	\caption{Flexível. \label{fig:classificacao_dados:hiperplano_SVM_flexivel}}
+	\caption{Margem Flexível. \label{fig:hiperplano_margemflexivel}}
 \end{subfigure}
 \begin{subfigure}[!ht]{0.3\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{hiperplano_SVM_nao_linear}
-	\caption{Não Linear. \label{fig:classificacao_dados:hiperplano_SVM_nao_linear}}
+	\caption{Não Linear. \label{fig:SVM_naolinear}}
 \end{subfigure}
-\caption{Dados lineares, com margem flexível e não lineares. \label{fig:classificacao_dados}}
+\caption{Conjunto de dados para classificação. \label{fig:distribuicao_dados_e_classificacao}}
 \end{figure}
 
-Observe que na \Cref{fig:classificacao_dados:hiperplano_SVM_linear} os dados podem ser classificados corretamente através de uma reta. Já na \Cref{fig:classificacao_dados:hiperplano_SVM_flexivel} é possível encontrar uma reta que separa alguns poucos dados, porém incorretamente. E na \Cref{fig:classificacao_dados:hiperplano_SVM_nao_linear} não é possível classificar os dados como nos casos anteriores. Nestes exemplos temos representados os três casos de SVM: o linear com margem rígida, o linear com margem flexível e o não linear, respectivamente.
+O problema de classificação representado na \Cref{fig:hiperplano_margemrigida} é um exemplo que pode ser modelado pelo problema \eqref{problema_geral_SVM_introducao}. Neste caso os dados são linearmente separáveis, sendo possível encontrar um hiperplano que os classifique corretamente. As \Cref{fig:hiperplano_margemflexivel,fig:SVM_naolinear}, no entanto, apresentam problemas cujos dados não são linearmente separáveis. Na \Cref{fig:hiperplano_margemflexivel} temos um exemplo de SVM de margem flexível, em que promovendo um relaxamento das restrições através de variáveis de folga $\xi_{i}$ associadas a cada atributo $x^{i}$ ainda é possível obter um hiperplano que classifique os dados. Já no caso da \Cref{fig:SVM_naolinear} é preciso aplicar a SVM não linear, na qual o hiperplano ótimo é obtido através de um mapeamento dos dados para um espaço de dimensão elevada \cite{Evelin2017}. Neste trabalho abordaremos somente os casos de SVM com margem rígida e margem flexível, pois para a modelagem da técnica SVM não linear são necessários alguns conceitos matemáticos mais complexos que não serão abordados neste trabalho e portanto, ela se constitui numa proposta de estudo a ser desenvolvida em projetos futuros.
 
-A modelagem do problema de classificação, utilizando a técnica de SVM, consiste em encontrar um hiperplano ótimo que melhor separe os dados de entrada $x^i$ em duas saídas $y_i$ através de uma função de decisão. Matematicamente, mostraremos que trata-se um problema de programação quadrática convexa com restrições lineares, que pode ser formulado como
-\[
-\begin{aligned}
-\min_{w,b} & \quad f(w) \\
-\text{s.a.} &  \quad g(w,b) \leq 0, \end{aligned}
-\]
-com $w\in \RR^n$ e $b\in \RR $, em que $f: \RR^n \rightarrow \RR$ é uma função quadrática e $g: \RR^{n+1} \rightarrow \RR^m$ é linear afim. Por consequência, $f$ e $g$ são continuamente diferenciáveis.
+Como o problema de classificação \eqref{problema_geral_SVM_introducao} que desejamos formular trata-se de um problema de programação quadrática convexa com restrições lineares, o \Cref{chap:conceitos_de_otimizacao} apresenta os principais conceitos e resultados de otimização irrestrita e com restrições lineares de igualdade e desigualdade. As principais referências consultadas para elaboração deste capítulo foram \textcite{Ana1994,Ademir2013,Izmailov2014ac,luenberger2008linear}.
 
+No \Cref{chap:otimizacao_convexa} são discutidos os conceitos de conjunto convexo e função convexa com o intuito de analisar a convexidade dos problemas de SVM. Para construção deste capítulo as principais bibliografias utilizadas foram \textcite{Ademir2013,Izmailov2014ac,luenberger2008linear,bertsekas2016nonlinear}.
 
+A modelagem matemática do problema de classificação através da técnica SVM, tanto para o caso de margem rígida quanto de margem flexível, é realizada no \Cref{chap:maquinas_vetores_suporte}. Para tanto, foram utilizadas como principais referências \textcite{Evelin2017,Faisal2019}.
 
-Para formular matematicamente o problema de classificação, considere os conjuntos de entrada $\Xset =\{x^1, \ldots , x^m \} \subset \RR^n$ e de treinamento $\Yset=\{(x^1, y_1), \ldots , (x^m, y_m)\mid x^i \in \Xset \, e \, y_i \in \{-1,1\}\}$, com a partição 
-\[ \label{conj1}
-\Xset ^{+} =\{x^i \in \Xset\mid y_i=1\} \quad e \quad \Xset^{-}=\{x^i \in \Xset\mid y_i=-1\},
-\]
-dos conjuntos formados pelos atributos pertencentes às classes positiva e negativa, respectivamente.
-
-\begin{defi} Considere um vetor não nulo $w\in \RR^n$ e um escalar $b\in \RR$. Um \emph{hiperplano com vetor normal $w$ e constante $b$} é um conjunto da forma $\Hset(w,b)=\{x\in \RR^n \mid w^{T}x+b=0\}$.
-\end{defi}
-
-O hiperplano $\Hset(w,b)$ divide o espaço $\RR^n$ em dois semiespaços, dados por
-\[ \label{conj2}
-\mathcal{S}^{+}=\{x\in \RR^n \mid w^{T}x+b\geq 0\} \quad e \quad \mathcal{S}^{-}=\{x\in \RR^n \mid w^{T}x+b\leq 0\}.
-\]
+Por fim, a técnica SVM possui inúmeras aplicações como, por exemplo, no reconhecimento facial, leitura de placas automotivas e detecção de spam. Assim, no \Cref{chap:experimentos_numericos} realizamos experimentos numéricos da técnica SVM para a classificação de dados. Num primeiro momento aplicamos a SVM para classificar o conjunto de dados Iris, e posteriormente para a classificação de amostras de células de câncer de mama em maligno ou benigno. 
 
 
-Considere dois conjuntos de dados de treinamento representados no $\RR^2$ como na \Cref{fig:dados_e_hiperplanos:dados_treinamento}, em que os pontos em azul representam a classe positiva, e os pontos em laranja a classe negativa. Perceba na \Cref{fig:dados_e_hiperplanos:hiperplanos_separadores} que todos os hiperplanos representados separam corretamente os dados, porém nosso objetivo será encontrar o hiperplano que melhor separa esses dados, o qual está representado na \Cref{fig:dados_e_hiperplano_otimo:hiperplano_otimo} pela cor vermelha. Logo, desejamos encontrar o hiperplano que possibilita a maior faixa que não contém nenhum dado, pois caso a faixa seja muito estreita pequenas perturbações no hiperplano ou no conjunto de dados podem resultar uma classificação incorreta. 
-\begin{figure}[htbp] 
-	\centering
-	\begin{subfigure}[h]{0.38\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{dados_treinamento}
-		\caption{Dados de treinamento. \label{fig:dados_e_hiperplanos:dados_treinamento}}
-	\end{subfigure}
-	\begin{subfigure}[h]{0.38\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{hiperplanos_separadores}
-		\caption{Hiperplanos separadores. \label{fig:dados_e_hiperplanos:hiperplanos_separadores}}
-	\end{subfigure}
-\caption{Conjunto de Dados e Hiperplanos. \label{fig:dados_e_hiperplanos}}
-\end{figure}
-\begin{figure}[hbtp] 
-	\centering
-	\begin{subfigure}[h]{0.38\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{hiperplano_otimo}
-		\caption{Hiperplano ótimo. \label{fig:dados_e_hiperplano_otimo:hiperplano_otimo}}
-	\end{subfigure}
-	\begin{subfigure}[h]{0.40\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{hiperplano_maxima_margem}
-		\caption{Máxima margem. \label{fig:dados_e_hiperplano_otimo:hiperplano_maxima_margem}}	
-	\end{subfigure}
-\caption{Hiperplano Ótimo. \label{fig:dados_e_hiperplano_otimo}}
-\end{figure}
 
 
-\begin{defi} \label{def:dados_linearmente_separaveis} Os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são ditos \emph{linearmente separáveis} quando existem $w\in \RR^n$ e $b\in \RR$  tais que $w^{T}x+b>0$ para todo $x\in \Xset^{+}$ e $w^{T}x+b<0$ para todo $x\in \Xset^{-}$. O hiperplano $\Hset(w,b)$ é chamado hiperplano separador dos conjuntos $\Xset^{+}$ e $\Xset^{-}$.
-\end{defi}
-
-
-\begin{lema} \label{lema:hiperplanos_separadores} 
-Suponha que os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são finitos e linearmente separáveis, com hiperplano separador $\Hset(w,b)$. Então, existem $\overline{w}\in \RR^n$ e $\overline{b}\in \RR$ tais que $\Hset(w,b)$ pode ser descrito por
-\[
-\wbar^{T}x+\bbar =0,
-\]
-satisfazendo
-\begin{align}
-\wbar^{T}x+\bbar &\geq 1, \text{ para todo } x\in \Xset^{+}, \label{eq:1_hiperplanos_separadores} \\
-\wbar^{T}x+\bbar &\leq -1, \text{ para todo } x\in \Xset^{-}. \label{eq:2_hiperplanos_separadores}
-\end{align}
-\end{lema} 
-
-\begin{proof}
-Pela  \Cref{def:dados_linearmente_separaveis}, temos que existem $w\in \RR^n$ e $b\in \RR$ tais que
-\begin{align}
-w^{T}x+b &>0, \text{ para todo } x\in \Xset^{+}, \\
-w^{T}x+b &<0, \text{ para todo } x\in \Xset^{-}.
-\end{align}  
-
-Como $\Xset^{+}\cup \Xset^{-}$ é um conjunto finito, podemos definir
-\[ \boldsymbol{\gamma} \coloneqq \min_{x\in \Xset^{+}\cup \Xset^{-}} \vert w^{T}x+b\vert  >0. \]
-
-Portanto, para todo $x\in \Xset^{+}\cup \Xset^{-}$, $\boldsymbol{\gamma} \leq \vert w^{T}x+b\vert$ e consequentemente, $\dfrac{\vert w^{T}x+b\vert }{\boldsymbol{\gamma}} \geq 1$. Assim, para $x\in \Xset^{+}$ temos
-\[ \dfrac{w^{T}x+b}{\boldsymbol{\gamma}} = \dfrac{\vert w^{T}x+b\vert }{\boldsymbol{\gamma}} \geq 1, \]
-e para $x\in \Xset^{-}$, temos
-\[- \dfrac{w^{T}x+b}{\boldsymbol{\gamma}} = \dfrac{\vert w^{T}x+b\vert }{\boldsymbol{\gamma}} \geq 1. \]
-
-Logo, definindo $\wbar \coloneqq \dfrac{w}{\boldsymbol{\gamma}}$ e $\bbar \coloneqq \dfrac{b}{\boldsymbol{\gamma}}$, obtemos as desigualdades \eqref{eq:1_hiperplanos_separadores} e \eqref{eq:2_hiperplanos_separadores}. 
-
-\end{proof}
-
-
-A partir do \Cref{lema:hiperplanos_separadores} podemos, sem perda de generalidade, considerar o hiperplano $\Hset (w,b)$, com $w$ e $b$ satisfazendo \eqref{eq:1_hiperplanos_separadores} e \eqref{eq:2_hiperplanos_separadores}. Além disso, temos que $\Hset^{+} (w,b) \coloneqq \{x\in \RR^n \mid w^{T}x+b= 1\}$ e $\Hset^{-} (w,b) \coloneqq \{x\in \RR^n \mid w^{T}x+b= -1\}$ são os hiperplanos que definem a faixa que separa os conjuntos $\Xset^{+}$ e $\Xset^{-}$.
-
-\begin{prop} \label{prop:projecao_ortogonal_sobre_hiperplano} 
-A projeção ortogonal de um vetor $\xbar\in \RR^n$ sobre um hiperplano afim $\Hset(w,b)$, é dada por
-\[ \proj_{\Hset (w,b)}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b}{w^{T}w}w. \]
-Além disso, a $\proj_{\Hset (w,b)}(\xbar)$ satisfaz a menor distância.
-\end{prop}
-
-\begin{proof}
-Sejam $w\in \RR^n$ o vetor normal ao hiperplano $\Hset(w,b)$, $\bar{z}\in \Hset(w,b)$ e $x^{*} \coloneqq \proj_{\Hset (w,b)}(\xbar)$ a projeção ortogonal de $\xbar$ sobre $\Hset(w,b)$. Assim, temos que 
-\[ \label{eq:1_projecao_ortogonal_sobre_hiperplano} 
-w^{T}(x^{*}-\bar{z})=0 
-\]
-e
-\[ \label{eq:2_projecao_ortogonal_sobre_hiperplano} 
-\xbar-x^{*}=\lambda w \Longrightarrow x^{*}=\xbar-\lambda w. 
-\]
-Substituindo \eqref{eq:2_projecao_ortogonal_sobre_hiperplano} em \eqref{eq:1_projecao_ortogonal_sobre_hiperplano}, obtemos
-\begin{align}
-0 &= w^{T}(\xbar-\lambda w-\overline{z}) \\
-&= w^{T}\xbar-\lambda w^{T}w - w^{T}\bar{z}.
-\end{align}
-Resolvendo para $\lambda$ e como $w^{T}\bar{z} = -b$, temos
-\[ \lambda =\dfrac{w^{T}\xbar-w^{T}\bar{z}}{w^{T}w} =\dfrac{w^{T}\xbar+b}{w^{T}w}. \]
-Portanto, 
-\[ x^{*}=\xbar-\dfrac{w^{T}\xbar+b}{w^{T}w}w . \]
-Ademais, vamos provar que a $\proj_{\Hset (w,b)}(\xbar)$ satisfaz a menor distância, isto é,
-\[ \Vert\xbar-x^{*}\Vert_{2} \leq \Vert \xbar-x\Vert_{2}, \]
-para todo $x\in \Hset(w,b)$.
-De fato, tomando $u=\xbar-x^{*}$ e $v=x^{*}-x$ observe que estes vetores são ortogonais, pois 
-\begin{align}
-u^{T}v&= (\xbar-x^{*})^{T}(x^{*}-x) \\
-&= (\xbar-\xbar+\lambda w)^{T}(x^{*}-x) \\
-&= \lambda w^{T}(x^{*}-x) \\
-&= \lambda (w^{T}x^{*}-w^{T}x) \\
-&= \lambda (-b-(-b)) \\
-&= 0.
-\end{align}
-Assim, podemos utilizar Pitágoras, isto é, obtemos
-\[ \Vert u+v\Vert^{2}=\Vert u\Vert^{2} + 2u^{T}v + \Vert v\Vert^{2}=\Vert u\Vert^{2} + \Vert v\Vert^{2} , \]
-e utilizamos as definições de $u$ e $v$ para obter
-\[ 
-\Vert \xbar-x\Vert^{2}=\Vert \xbar-x^{*}\Vert^{2} + \Vert x^{*}-x\Vert^{2} \geq \Vert x^{*} - x \Vert^{2} . 
-\]
-\end{proof}
-
-
-Utilizando a \Cref{prop:projecao_ortogonal_sobre_hiperplano} podemos demonstrar o \Cref{lema:distancia_entre_hiperplanos}, o qual estabelece a largura da faixa entre os hiperplanos separadores $\Hset^{+} (w,b)$ e $\Hset^{-} (w,b)$.
-
-\begin{lema} \label{lema:distancia_entre_hiperplanos} 
-A distância entre os hiperplanos $\Hset^{+} (w,b)$ e $\Hset^{-} (w,b)$ é dada por 
-\[
-\dist(\Hset^{+}, \Hset^{-})=\dfrac{2}{\Vert w\Vert}.
-\] 
-\end{lema}
-\begin{proof}
-Considere um ponto arbitrário $\xbar\in \Hset^{+} (w,b)$ e seja $x^{*}\in \Hset^{-} (w,b)$ a projeção ortogonal de $\xbar$ sobre $\Hset^{-} (w,b)$. Usando a \Cref{prop:projecao_ortogonal_sobre_hiperplano}, temos
-\[ \label{eq:1_distancia_entre_hiperplanos} 
-x^{*}= \proj_{\Hset^{-} (w,b)}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w. 
-\] 
-Além disso, a distância entre dois conjuntos é definida por
-\[ 
-\dist(\Hset^{+}, \Hset^{-}) \coloneqq  \inf\{\Vert x^{+}-x^{-} \Vert : x^{+}\in \Hset^{+} (w,b)\ \text{e} \ x^{-}\in \Hset^{-} (w,b) \},
-\]
-e como a $\proj_{\Hset^{-} (w,b)}(\xbar)$ satisfaz a menor distância entre $\xbar$ e $\Hset^{-} (w,b)$ e, $\Hset^{+} (w,b)$ é paralelo a $\Hset^{-} (w,b)$, temos que 
-\[ \label{eq:2_distancia_entre_hiperplanos} 
-\dist(\Hset^{+},\Hset^{-})=\Vert \xbar-x^{*}\Vert. 
-\]
-
-Substituindo \eqref{eq:1_distancia_entre_hiperplanos} em \eqref{eq:2_distancia_entre_hiperplanos} obtemos
-\begin{align} 
-\dist(\Hset^{+},\Hset^{-}) &= \Vert \xbar-x^{*}\Vert \\
-&= \left\Vert \xbar -\xbar +\dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w \right\Vert \\
-&=  \dfrac{\vert w^{T}\xbar+b+1 \vert}{\Vert w\Vert^{2}} \Vert w\Vert \\
-&= \dfrac{\vert w^{T}\xbar+b+1 \vert}{\Vert w\Vert},
-\end{align}
-e como $\xbar\in \Hset^{+} (w,b)$,  $ w^{T}\xbar+b=1$ implica
-\[  w^{T}\xbar =1-b, \]
-concluindo que 
-\begin{align} 
-\dist(\Hset^{+},\Hset^{-})&= \dfrac{\vert 1-b+b+1 \vert}{\Vert w\Vert} \\
-&= \dfrac{2}{\Vert w\Vert }. 
-\end{align}
-\end{proof}
-
-
-%--------------------------------------------------------------------------------------------------------------------------
-
-
-\subsection{Formulação Matemática do Problema de Classificação - Margem Rígida}
-
-Encontrar o hiperplano que melhor separa os dados implica maximizar a largura da margem, isto é, maximizar $\dist(\Hset^{+} , \Hset^{-}) =\dfrac{2}{\Vert w\Vert }$. Isso equivale a minimizar seu inverso $\dfrac{1}{2}\Vert w\Vert $ ou ainda minimizar $\dfrac{1}{2}\Vert w\Vert^{2}$. De fato, seja $w^{*}=\argmax\dfrac{2}{\Vert w\Vert}$. Então, para todo $w\in \RR^n$,
-\[ 
-\dfrac{2}{\Vert w^{*}\Vert} \geq \dfrac{2}{\Vert w\Vert} 
-\]
-implica
-\[ \label{eq:maximizar_distancia_equivalente_minimizar} 
-\Vert w\Vert \geq \Vert w^{*}\Vert. 
-\]
-Logo, $w^{*} \in \argmin\Vert w\Vert$. Além disso, como $\Vert \cdot \Vert$ é não negativa, elevando ao quadrado ambos os lados da desigualdade \eqref{eq:maximizar_distancia_equivalente_minimizar} temos que  $\Vert w\Vert^{2} \geq \Vert w^{*}\Vert^{2}$ implica
-\[ 
-\dfrac{1}{2}\Vert w\Vert^{2} \geq \dfrac{1}{2}\Vert w^{*}\Vert^{2}. 
-\]
-Portanto, 
-\[ \argmax\dfrac{2}{\Vert w\Vert} = \argmin\dfrac{1}{2}\Vert w\Vert^2. \]
-
-Ademais, como a faixa deve separar os dados das duas classes, as seguintes restrições devem ser satisfeitas
-\begin{align}
-w^{T}x+b &\geq 1 , \text{ para  todo } x\in \Xset^{+}, \\
-w^{T}x+b &\leq -1 , \text{ para  todo } x\in \Xset^{-}.
-\end{align}
-
-Considerando que $\Xset^{+}=\{x^i \in \Xset\mid y_i=1\}$ e $\Xset^{-}=\{x^i \in \Xset \mid y_i=-1\}$, podemos reescrever as restrições acima de uma forma mais compacta 
-\[ y_{i}(w^{T}x^{i}+b)\geq 1, \quad i=1, \ldots ,m. \]
-
-Portanto, o problema de encontrar o hiperplano ótimo pode ser formulado da seguinte maneira
-\[ \label{eq:problemageralSVM}
-\begin{aligned}
-\min_{w,b} & \quad \dfrac{1}{2} \Vert w\Vert^{2} \\
-\text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1, \quad i=1, \ldots , m, 
-\end{aligned}
-\]
-em que $w\in \RR^{n}$ e $b\in \RR$. 
-
-O problema \eqref{eq:problemageralSVM} possui função objetivo 
-\[ f(w,b)=\dfrac{1}{2}\Vert w\Vert^{2} \]
-convexa, e restrições lineares
-\[ g_i(w,b)=1-y_i(w^{T}x^{i}+b) \leq 0, \quad i=1, \ldots, m, \]
-em que a função $g:\RR^{n+1} \rightarrow \RR^{m}$ pode ser escrita da forma 
-\[ g(w,b)= e - (YX^{T}w+by) \leq 0, \]
-com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_{i})$, $X=\diag(x^{i})$, $y^{T}=[y_{1} \ \ldots \ y_{m}]$, $w\in \RR^n$ e $b\in \RR$.
-
-
-%----------------------------------------------------------------------------------------------------------------------
-
-\subsection{Formulação Matemática do Problema de Classificação - Margem Flexível (CSVM)}
-
-Situações reais dificilmente envolvem problemas cujos dados são linearmente separáveis. Em vista disso, faz-se necessário estender os conceitos e resultados estudados nas SVMs lineares de margem rígida para o caso de SVM com margem flexível, quando os dados não são linearmente separáveis. Para tanto, considere um conjunto de dados não-linearmente separável como da \Cref{fig:dados_linearmente_separaveis_e_nao_separaveis:b}, isto é, não existe um hiperplano separador. 
-
-
-\begin{figure}[htbp] 
-	\centering
-	\begin{subfigure}[h]{0.30\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{dados_linearmente_separaveis}
-		\caption{Dados linearmente separáveis. \label{fig:dados_linearmente_separaveis_e_nao_separaveis:a}}
-	\end{subfigure}
-	\begin{subfigure}[h]{0.30\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{dados_nao_linearmente_separaveis}
-		\caption{Dados não-linearmente separáveis. \label{fig:dados_linearmente_separaveis_e_nao_separaveis:b}}
-	\end{subfigure}
-\caption{Conjunto de dados. \label{fig:dados_linearmente_separaveis_e_nao_separaveis} }
-\end{figure}
-
-
-Neste caso, temos que o conjunto viável
-\[
-\{ (w,b) \in \RR^{n+1} \mid 1-y_{i}(w^{T}x^{i} + b) \leq 0 , \quad i=1, \ldots , m \}
-\]
-é vazio e, portanto, a formulação dada pelo problema \eqref{eq:problemageralSVM} não fornece um classificador.
-
-Assim, no intuito de contornar esse problema utilizamos regularização para suavizar as margens, acrescentando variáveis de folga $\xi_{i} \geq 0$ associadas aos dados de treinamento $x_{i}$, com $i=1, \ldots , m$, e permitindo, assim, uma flexibilização do problema de estimar as variáveis $w$ e $b$. Em outras palavras, a restrição $1-y_{i}(w^{T}x^{i} + b) \leq 0$ é relaxada e substituída por $1-y_{i}(w^{T}x^{i} + b) \leq \xi_{i} $, com $\xi_{i} \geq 0$. Cada variável de folga $\xi_{i}$ mensura a distância que determinado dado $x_{i}$ está do seu respectivo hiperplano separador, caso este dado esteja do lado errado.
-
-%Esta imagem também não está sendo lida, detectar problema #chateada -Uhhhul deu certo! LEMBRETE: não usar acento ao nomear figuras
-\begin{figure}[!ht] 
-	\centering
-	\includegraphics[width=0.50\textwidth]{variaveis_de_folga}
-	\caption{Variáveis de folga. \label{fig:variaveis_de_folga}}
-\end{figure}
-
-Tal procedimento permite que pontos da classe positiva permaneçam fora do semiespaço $\mathcal{S}^{+}=\{x\in \RR^n \mid w^{T}x+b\geq 1\}$ ou pontos da classe negativa fora do semiespaço $\mathcal{S}^{-}=\{x\in \RR^n \mid w^{T}x+b\leq -1\}$. 
-
-Nesta formulação o hiperplano separador é denominado hiperplano de margem flexível e as restrições dos hiperplanos separadores são reformuladas da seguinte maneira 
-\begin{align}
-w^{T}x^{i}+b &\geq 1 - \xi_{i} , \text{ para  todo } x^{i} \in \Xset^{+}, \label{restricoesCSVM+} \\
-w^{T}x^{i}+b &\leq -1 +\xi_{i} , \text{ para  todo } x^{i} \in \Xset^{-}. \label{restricoesCSVM-}
-\end{align}
-
-
-Agora nosso objetivo é encontrar $w$ e $b$ ótimos de modo a obter um bom classificador. Primeiramente, observe que dados $w$ e $b$ arbitrários, podemos escolher $\xi_{i} \geq 0$ de modo que as restrições \eqref{restricoesCSVM+} e \eqref{restricoesCSVM-} sejam satisfeitas. Para tanto, podemos definir
-\[
-\xi_{i} =  \left \{ \begin{array}{cc} \max\{0, 1-w^{T}x^{i}-b\}, & \quad \text{se} \quad x^{i} \in \Xset^{+}, \\
-\max\{0, 1+w^{T}x^{i}+b\}, & \quad \text{se} \quad x^{i} \in \Xset^{-}.
-\end{array} \right .
-\]
- 
-Desse modo, para obter um bom classificador não basta apenas maximizar a margem definida pelos hiperplanos $\Hset^{+} (w,b)$ e $\Hset^{-} (w,b)$ e introduzir as variáveis de folga nas restrições, mantendo a mesma função objetivo, pois, como exemplificado por \textcite{Evelin2017}, a \Cref{fig:hiperplano_nao_classificador} ilustra o hiperplano dado por $w_{0}^{T}x+b = 0$, que não poder ser usado para classificar os dados, mas satisfaz as restrições \eqref{restricoesCSVM+} e \eqref{restricoesCSVM-}. 
-
-\begin{figure}[!ht] 
-	\centering
-	\includegraphics[width=0.38\textwidth]{hiperplano_nao_classifica_dados}
-	\caption{Exemplo de hiperplano que não classifica os dados. \label{fig:hiperplano_nao_classificador}}
-\end{figure}
- 
-
-Portanto, para reformular o problema original de maximizar a margem é preciso também controlar o valor dessas variáveis de modo a estimular uma classificação correta, pois quanto maior o valor delas mais será permitido violar as restrições. Em vista disso, é acrescentada na função objetivo uma parcela que corresponde à penalização das violações e o problema \eqref{eq:problemageralSVM} é reformulado da seguinte forma
-
-\[ \label{eq:problemaCSVM}
-\begin{aligned}
-\min_{w,b,\xi} & \quad \dfrac{1}{2} \Vert w\Vert^{2} + C \sum_{i=1}^{m} \xi_{i} \\
-\text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1 - \xi_{i}, \quad i=1, \ldots , m, \\
-& \quad \xi_{i} \geq 0, \quad i=1, \ldots , m,\end{aligned}
-\]
-em que $C>0$ é um parâmetro de regularização que tem o objetivo de controlar a importância das variáveis de folga. O valor do parâmetro $C$ que fornece uma boa classificação dos dados é escolhido de maneira heurística na fase de treinamento, geralmente a partir da natureza do problema. É devido a utilização desse parâmetro esta modelagem de SVM também é conhecida como C-SVM.
-
-O termo $C \sum_{i=1}^{m} \xi_{i}$ na função objetivo do problema \eqref{eq:problemaCSVM} pode ser pensado como uma medida de erro de classificação, pois minimiza o valor das variáveis de folga e reduz desse modo o número de pontos classificados incorretamente. De fato, aumentando o valor do parâmetro $C$ aumenta-se a penalização sobre a violação da restrição original do problema SVM. Por outro lado, diminuindo o valor de $C$ o modelo se torna mais flexível a esse tipo de violação. 
-
-O problema de margem flexível \eqref{eq:problemaCSVM}, assim como o problema \eqref{eq:problemageralSVM}, também possui restrições lineares 
-\begin{align} 
-g_{i}(w,b,\xi) = & 1-\xi_{i} - y_i(w^{T}x^{i}+b) \leq 0 \quad \text{e} \\
-h_{i}(w,b,\xi) = & - \xi_{i} \leq 0, \quad i=1, \ldots, m,
-\end{align}
-
-e assim, o conjunto factível
-\[
-\Omega = \{(w,b,\xi) \in \RR^{n+1+m} \mid g_{i}(w,b,\xi) \leq 0, \, h_{i}(w,b,\xi) \leq 0, \, i=1, \ldots, m \} 
-\]
-é um poliedro não vazio.
-
-Ademais, a função objetivo $f$ é quadrática e limitada inferiormente em $\Omega$, pois 
-\[
-f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m} \underbrace{\xi_{i}}_{\geq 0} \geq 0.
-\]
-
-%Assim o Teorema de Programação Quadrática (1.34) garante a existência de um minimizador global para o problema \eqref{eq:problemaCSVM}.
 
 
 %-------------------------------------------------------------------------------------------------------------------------
@@ -483,17 +190,18 @@ f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m}
 \newpage
 \section{Conceitos de Otimização} \label{chap:conceitos_de_otimizacao}
 
-
-Tendo em vista que o problema de classificação trata-se de um problema de Otimização, neste capítulo pretendemos discutir alguns conceitos e resultados para o problema 
+Neste capítulo pretendemos discutir alguns conceitos e resultados para o problema 
 \[ \label{problema_geral_otimizacao}
 \begin{aligned}
 \min_{x} & \quad f(x) \\
 \text{s.a} & \quad x \in \Omega ,
 \end{aligned}
 \]
-em que $f: \RR^{n} \rightarrow \RR$ é chamada \emph{função objetivo}, $\Omega \subset \RR^{n}$ é chamado \emph{conjunto factível} do problema \eqref{problema_geral_otimizacao} e os pontos de $\Omega$ são chamados de \emph{pontos factíveis}. Para o desenvolvimento deste capítulo, em particular da teoria de otimização irrestrita, as principais referências utilizadas foram \textcite{Izmailov2014ac,Ademir2013}. Já os conceitos e resultados da teoria de otimização com restrições foram desenvolvidos, principalmente, com base em \textcite{Ana1994,luenberger2008linear}.  
+em que $f: \RR^{n} \rightarrow \RR$ é chamada \emph{função objetivo}, $\Omega \subset \RR^{n}$ é chamado \emph{conjunto factível} do problema \eqref{problema_geral_otimizacao} e os pontos de $\Omega$ são chamados de \emph{pontos factíveis}. 
 
-Inicialmente, faz-se necessário caracterizar os pontos que são solução do problema \eqref{problema_geral_otimizacao}.
+Como o problema de classificação \eqref{eq:problemageralSVM} trata-se de um problema de otimização que possui restrições lineares apenas, toda a teoria de condições de otimalidade somente será estudada para problemas desse tipo: com restrições lineares. Para o desenvolvimento da teoria de otimização irrestrita, as principais referências utilizadas foram \textcite{Izmailov2014ac,Ademir2013}. Já os conceitos e resultados da teoria de otimização com restrições foram desenvolvidos, principalmente, com base em \textcite{Ana1994,luenberger2008linear}.  
+
+Inicialmente, vamos caracterizar os pontos que são solução do problema \eqref{problema_geral_otimizacao}.
 
 \begin{defi} \label{defi:minimizador_local_global}
 Dizemos que um ponto $x^{*} \in \Omega$ é
@@ -1749,8 +1457,8 @@ para todo $k$ tal que $1 \leq k \leq s(x^{*})$. Logo, $d$ é uma direção fact�
 
 As condições em \eqref{eq:1_teo_KKT} são conhecidas como condições de Karush-Kuhn-Tucker (KKT). A partir delas podemos definir \emph{ponto estacionário}.
 
-\begin{defi} \label{defi:ponto_estacionario_KKT}
-Um ponto $x^{*} \in \RR^{n} $ é um \emph{ponto estacionário} do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} (ou ainda, um \emph{ponto de Karush-Kuhn-Tucker(KKT)}), quando $x^{*} \in \Omega$ e existem $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}$, tais que as condições \eqref{eq:1_teo_KKT} são satisfeitas. Os elementos $\boldsymbol{\lambda}^{*}$ e $\boldsymbol{\mu}^{*}$ são chamados de \emph{multiplicadores de Lagrange} associados ao ponto estacionário $x^{*}$.
+\begin{defi}(Ponto estacionário ou KKT) \label{defi:ponto_estacionario_KKT}
+Um ponto $x^{*} \in \RR^{n} $ é um \emph{ponto estacionário}, ou ainda, um \emph{ponto KKT} do problema \eqref{problema_geral_minimizacao_igualdade_desigualdade} quando $x^{*} \in \Omega$ e existem $\boldsymbol{\lambda}^{*} \in \RR^{m}$ e $\boldsymbol{\mu}^{*} \in \RR^{p}$, tais que as condições \eqref{eq:1_teo_KKT} são satisfeitas. Os elementos $\boldsymbol{\lambda}^{*}$ e $\boldsymbol{\mu}^{*}$ são chamados de \emph{multiplicadores de Lagrange} associados ao ponto estacionário $x^{*}$.
 \end{defi}
 Em outras palavras, $x^{*}$ é dito estacionário quando satisfaz as condições KKT. 
 
@@ -1860,7 +1568,7 @@ Agora, suponhamos que existe pelo menos um $j$ tal que $\mu_{j} =0$. Assim,
 \[
 W_{\mathcal{J}}^{T}\boldsymbol{\mu} = W_{\mathcal{K}}^{T}\boldsymbol{\mu}_{\mathcal{K}} ,
 \]
-em que $\boldsymbol{\mu}_{\mathcal{K}}$ é o vetor formado pelas componentes $\mu_{j}$ que possuem índices em $\mathcal{K} = \{ j\in \mathcal{J}(x^{*}) \mid \mu_{j} >0 \}$. Então, se $x^{*} \in \Omega$ satisfaz
+em que $\boldsymbol{\mu}_{\mathcal{K}}$ é o vetor formado pelas componentes $\mu_{j}$ que possuem índices em $\mathcal{K}$. Então, se $x^{*} \in \Omega$ satisfaz
 \[
 \nabla f(x^{*}) + A^{T}\boldsymbol{\lambda} + W^{T}_{\mathcal{K}} \boldsymbol{\mu} =0
 \]
@@ -1925,7 +1633,7 @@ Neste capítulo o objetivo principal é apresentar alguns resultados e definiç�
 \subsection{Conjuntos Convexos}
 
 \begin{defi} 
-Um \emph{conjunto} $C \subset \RR^{n}$ é dito \emph{convexo} quando dados $x,y \in C$, o segmento $[x,y] = \{ (1-t)x + ty \mid t\in [0,1] \}$ estiver inteiramente contido em $C$.
+Um \emph{conjunto} $C \subset \RR^{n}$ é dito \emph{convexo} quando dados $x,y \in C$, o segmento $[x,y] \coloneqq \{ (1-t)x + ty \mid t\in [0,1] \}$ estiver inteiramente contido em $C$.
 \end{defi}
 
 Esta definição pode ser interpretada geometricamente afirmando que um conjunto é convexo se, dados dois pontos no conjunto, cada ponto no segmento de linha que une esses dois pontos também for um membro do conjunto. A \Cref{fig:conjuntos_convexos} ilustra a noção de convexidade de conjuntos, em que o conjunto $C_{1}$ representa um conjunto convexo e o conjunto $C_{2}$ não é convexo.
@@ -1939,9 +1647,10 @@ Esta definição pode ser interpretada geometricamente afirmando que um conjunto
 \end{figure}
 
 
-Alguns exemplos de conjuntos convexos são o conjunto vazio, o espaço $\RR^{n}$, qualquer hiperplano do $\RR^{n}$ e um conjunto que contém um ponto só. A seguir, apresentamos alguns resultados importantes da análise convexa.
+Alguns exemplos de conjuntos convexos são o conjunto vazio, o espaço $\RR^{n}$, qualquer hiperplano do $\RR^{n}$ e um conjunto que contém um ponto só. 
 
-%{\cite[p. 50]{Ademir2013}}
+No próximo lema veremos que se dois vetores têm a mesma norma euclidiana, então qualquer combinação linear que não seja a trivial ($t=0$ ou $t=1$) terá norma estritamente menor.
+
 \begin{lema} \label{lema:1_convexidade}
 Considere $\Vert \cdot \Vert$ a norma euclidiana em $\RR^{n}$. Sejam $u,v \in \RR^{n}$ com $u\neq v$. Se $\Vert u \Vert = \Vert v \Vert = r$, então $\Vert (1-t)u + tv \Vert < r$, para todo $t \in (0,1)$.
 \end{lema}
@@ -1991,7 +1700,7 @@ Seja $\alpha = \inf \{\Vert z-x \Vert \mid x \in S\}$. Então, para cada $n \in 
 \[ \label{eq:1_lema_existencia_projecao}
 \alpha \leq \Vert z-x^{n} \Vert \leq \alpha + \dfrac{1}{n}. 
 \]
-Em particular, $\Vert z-x^{n} \Vert \leq \alpha + 1$, para todo $n \in \mathds{N}$. Logo, existe uma subsequência $(x^{n^{k}})$ convergente, com $k \in \mathds{N}'$, tal que $x^{n^{k}} \longrightarrow \bar{z}$. Como $S$ é fechado temos que $\bar{z} \in S$. Além disso, 
+Em particular, $\Vert z-x^{n} \Vert \leq \alpha + 1$, para todo $n \in \mathds{N}$. Logo, pelo Teorema de Bolzano-Weierstrass, existe uma subsequência $(x^{n^{k}})$ convergente, com $k \in \mathds{N}'$, tal que $x^{n^{k}} \longrightarrow \bar{z}$. Como $S$ é fechado temos que $\bar{z} \in S$. Além disso, 
 \[
 \Vert z-x^{n} \Vert \longrightarrow \Vert z-\bar{z} \Vert .
 \]
@@ -2095,7 +1804,7 @@ para todo $x\in S$. Portanto, $\bar{z} = \proj_{S} (z)$.
 \end{proof}
 
 
-O \Cref{lema:defineprojecao_convexidade} fornece uma condição necessária de otimalidade ao minimizar uma função em um conjunto convexo fechado.
+Uma aplicação do \Cref{lema:defineprojecao_convexidade} relacionada à otimização é que o mesmo fornece uma condição necessária de otimalidade para minimizadores de uma função diferenciável restrita a um conjunto convexo fechado.
 
 
 \begin{lema} \label{lema:associa_projecao_minimizador}
@@ -2214,9 +1923,9 @@ Portanto, $\alpha f$ é convexa em $C$.
 \end{enumerate}	
 \end{proof}
 
-Observe também que, se aplicarmos os itens (i) e (ii) da \Cref{prop:combinacao_funcoes_convexa} repetidamente, a combinação positiva de funções convexas $\alpha_{1} f_{1} +\alpha_{2} f_{2} + \ldots +\alpha_{m} f_{m}$ também é convexa. 
+Observe também que, se aplicarmos os itens (i) e (ii) da \Cref{prop:combinacao_funcoes_convexa} de maneira indutiva, a combinação positiva de funções convexas $\alpha_{1} f_{1} +\alpha_{2} f_{2} + \ldots +\alpha_{m} f_{m}$ também é convexa. 
 
-Agora, vamos analisar conjuntos definidos por restrições de desigualdade convexas.
+Agora, vamos analisar conjuntos definidos por restrições de desigualdade, quando as funções que as definem são convexas.
 
 \begin{prop}
 Seja $g$ uma função convexa em $C$. O conjunto $S_{c} = \{ x \mid x\in C, g(x)\leq c \}$ é convexo para todo número real $c$.
@@ -2229,7 +1938,7 @@ g((1-t)x_{1} + tx_{2}) \leq (1-t)g(x_{1}) + tg(x_{2}) \leq (1-t)c + tc = c.
 Portanto, $(1-t)x_{1} + tx_{2} \in S_{c}$.
 \end{proof}
 
-Dessa forma, desde que a intersecção de conjuntos convexos é também um conjunto convexo, concluímos que o conjunto de pontos que satisfaz simultaneamente
+Dessa forma, considerando que a intersecção de conjuntos convexos é também um conjunto convexo, concluímos que o conjunto de pontos que satisfaz simultaneamente
 \[
 g_{1}(x) \leq c_{1}, \ g_{2}(x) \leq c_{2}, \ \ldots, \ g_{m}(x) \leq c_{m} ,
 \]
@@ -2274,7 +1983,7 @@ f(x) \geq f(z) + \nabla f(z)^{T}(x-z) \quad \text{e} \quad f(y) \geq f(z) + \nab
 Agora, multiplicando a primeira desigualdade por $(1-t)$, a segunda por $t$ e somando, obtemos
 \begin{align}
 (1-t)f(x) + tf(y) & \geq (1-t)(f(z) + \nabla f(z)^{T}(x-z)) + t(f(z) + \nabla f(z)^{T}(y-z)) \\
-& \geq f(z) + \nabla f(z)^{T}(x-z) - tf(z) -t\nabla f(z)^{T}(x-z) + tf(z) + t\nabla f(z)^{T}(y-z) \\
+%& \geq f(z) + \nabla f(z)^{T}(x-z) - tf(z) -t\nabla f(z)^{T}(x-z) + tf(z) + t\nabla f(z)^{T}(y-z) \\
 & \geq f(z) + \nabla f(z)^{T}(x-z) + t\nabla f(z)^{T}(-x+z+y-z) \\
 & \geq f(z) + \nabla f(z)^{T}(x-z) + t\nabla f(z)^{T}(y-x) \\
 & \geq f(z) + \nabla f(z)^{T}(x-z) + t\nabla f(z)^{T} \dfrac{(z-x)}{t} \\
@@ -2285,7 +1994,7 @@ Agora, multiplicando a primeira desigualdade por $(1-t)$, a segunda por $t$ e so
 Portanto, a função $f$ é convexa em $C$.
 \end{proof}
 
-O \Cref{teo:diferenciabilidade_e_convexidade} afirma que a aproximação linear através da derivada local de uma função convexa está sempre abaixo do gráfico da função. Tal resultado está ilustrado na \Cref{fig:funcao_convexa_aproximacao_linear_derivada}. 
+Uma interpretação geométrica do \Cref{teo:diferenciabilidade_e_convexidade} é que a aproximação linear através da derivada local de uma função convexa diferenciável está sempre abaixo do gráfico da função. Tal resultado está ilustrado na \Cref{fig:funcao_convexa_aproximacao_linear_derivada}. 
 \begin{figure}[!ht] 
 	\centering
 	\includegraphics[width=0.50\textwidth]{funcao_convexa_aproximacao_linear_derivada}
@@ -2410,16 +2119,15 @@ para todo $x \in \Omega$.
 O \Cref{teo:pontoestacionario_minimizadorglobal_convexidade} se constitui num resultado de grande relevância, pois no caso em que o problema de otimização é convexo, isto é, a função objetivo é convexa e o conjunto factível determinado pelas restrições é convexo, então as condições de KKT são necessárias e suficientes para $x^{*}$ ser minimizador global.
 
 
-\section{Programação quadrática}
+\subsection{Convexidade dos problemas de SVM}
 
-Por conseguinte, tendo em vista que a função objetivo dos problemas de SVM são funções quadráticas, é necessário avaliar sob quais condições uma função quadrática é convexa. Tal resultado é apresentado a seguir e sua demonstração decorre do \Cref{teo:hessiana_convexidade}.
+Tendo em vista que a função objetivo dos problemas de SVM são funções quadráticas, é necessário avaliar sob quais condições uma função quadrática é convexa. Tal resultado é apresentado a seguir e sua demonstração decorre do \Cref{teo:hessiana_convexidade}.
 
-%\cite{Gondzio2018}
 \begin{teo} \label{teo:funcao_quadratica_e_convexa}
-Seja $C \in \RR^{n}$ um conjunto convexo e $Q \in \RR^{n\times n}$ uma matriz quadrada e simétrica. Seja $f:C \rightarrow \RR$ tal que $f(x) = x^{T}Qx$ é uma função quadrática. Então, $f$ é convexa se, e somente se, $Q$ é semidefinida positiva.
+Seja $C \in \RR^{n}$ um conjunto convexo e $Q \in \RR^{n\times n}$ uma matriz quadrada e simétrica. Seja $f:C \rightarrow \RR$ tal que $f(x) = \dfrac{1}{2}x^{T}Qx$ é uma função quadrática. Então, $f$ é convexa se, e somente se, $Q$ é semidefinida positiva.
 \end{teo}
 \begin{proof}
-Primeiramente, suponhamos que $f$ é convexa em $C$. Então, pelo \Cref{teo:hessiana_convexidade}, a Hessiana $\nabla^{2} f(x)$ é semidefinida positiva para todo $x\in C$, e como $\nabla^{2} f(x) = 2Q$, concluímos que $Q$ é semidefinida positiva. Reciprocamente, se $\nabla^{2} f(x) = 2Q$ é semidefinida positiva, então, pelo \Cref{teo:hessiana_convexidade}, a função $f$ é convexa em $C$.
+Primeiramente, suponhamos que $f$ é convexa em $C$. Então, pelo \Cref{teo:hessiana_convexidade}, a Hessiana $\nabla^{2} f(x)$ é semidefinida positiva para todo $x\in C$, e como $\nabla^{2} f(x) = Q$, concluímos que $Q$ é semidefinida positiva. Reciprocamente, se $\nabla^{2} f(x) = Q$ é semidefinida positiva, então, pelo \Cref{teo:hessiana_convexidade}, a função $f$ é convexa em $C$.
 \end{proof}
 
 Consequentemente, nos problemas de minimização irrestrita em que a função objetivo é uma quadrática da forma
@@ -2441,25 +2149,560 @@ x^{*} = Q^{-1}b
 \]  
 é o único mínimo global.
 
-Além de quadrática, a função objetivo do problema de classificação \eqref{eq:problemageralSVM} envolve a norma de um vetor $w \in \RR^{n}$. Em vista disso, a proposição a seguir garante a convexidade da norma.
+%lém de quadrática, a função objetivo do problema de classificação \eqref{eq:problemageralSVM} envolve a norma de um vetor $w \in \RR^{n}$. Em vista disso, a proposição a seguir garante a convexidade da norma.
 
-\begin{prop} \label{prop:norma_funcao_convexa}
-Considere a função $f: \RR^{n} \rightarrow \RR$ dada por
-\[
-f(x) = \dfrac{1}{2}\Vert x \Vert,
+%\begin{prop} \label{prop:norma_funcao_convexa}
+%Considere a função $f: \RR^{n} \rightarrow \RR$ dada por
+%\[
+%f(x) = \dfrac{1}{2}\Vert x \Vert,
+%\]
+%com $x\in \RR^{n}$. Então a função $f$ é uma função convexa.
+%\end{prop}
+%\begin{proof}
+%Seja $\Vert \cdot \Vert$ a norma de um vetor. Para quaisquer $x, y \in \RR^{n}$ e qualquer $\alpha \in [0,1]$, temos que
+%\begin{align}
+%f(\alpha x + (1-\alpha)y) &= \dfrac{1}{2} \Vert \alpha x + (1-\alpha)y \Vert \\
+%&\leq \dfrac{1}{2} \Vert \alpha x\Vert + \dfrac{1}{2}\Vert (1-\alpha)y \Vert \\
+%&= \alpha \dfrac{1}{2} \Vert x \Vert + (1-\alpha)\dfrac{1}{2} \Vert y \Vert \\
+%&= \alpha f(x) + (1-\alpha)f(y).
+%\end{align}
+%Portanto, $f$ é uma função convexa.
+%\end{proof}
+
+
+\newpage
+\section{Máquinas de Vetores Suporte} \label{chap:maquinas_vetores_suporte}
+
+A Aprendizagem de Máquina desempenha um papel importante dentro do campo de reconhecimento de padrões, o qual, de acordo com \textcite{bishop2016pattern}, "\textit{ (...) se preocupa com a descoberta automática de regularidades em dados através do uso de algoritmos de computador e com o uso destas regularidades para executar ações, como classificar dados em diferentes categorias}". Assim, em problemas que exigem a análise de uma grande quantidade de dados para classificá-los, um processo manual torna-se inviável, motivando o desenvolvimento de técnicas computacionais capazes de reconhecer padrões para desempenhar tal tarefa. Neste capítulo desenvolveremos a modelagem matemática de uma técnica de aprendizagem supervisionada aplicada ao problema de classificação de dados, as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}). 
+
+No primeiro momento discutiremos a formulação matemática de tal técnica para a classificação de dados linearmente separáveis, característica que qualifica a SVM com margem rígida. Posteriormente, estenderemos tal formulação para o caso em que os dados não são linearmente separáveis, obtendo assim a modelagem do problema de classificação com margem flexível.
+
+Para o desenvolvimento deste capítulo, as principais bibliografias utilizadas foram \textcite{Faisal2019,Evelin2017}
+
+
+\subsection{Conceitos Básicos de Aprendizagem de Máquina}
+
+Nas palavras de \textcite[p. 11]{Faisal2019}, a área da Aprendizagem de Máquina está interessada em "\textit{(...) como projetar algoritmos que extraem automaticamente informações valiosas dos dados. A ênfase aqui está em "automático", i.e., a aprendizagem de máquina está preocupada com metodologias de uso geral que possam ser aplicadas em muitos conjuntos de dados, enquanto produz algo significativo"} (tradução nossa). O aprendizado da máquina pode ser comparado ao do cérebro humano, pois os algoritmos de aprendizagem de máquina buscam "aprender" com a experiência, o que ocorre através do reconhecimento de padrões em dados \cite{Evelin2017}. 
+
+Considere o exemplo de reconhecimento de dígitos numéricos escritos à mão. Suponha que desejamos costruir um algoritmo capaz de diferenciá-los em 0,...,9. Perceba que neste caso, primeiramente é preciso fornecer à máquina imagens dos diferentes dígitos com suas respectivas classificações, isto é, informando quais dígitos são 0, quais são 1 e assim sucessivamente. A partir disso ela detecta padrões entre as características de cada dígito e sua classificação, e cria um modelo para deduzir a classificação de novos dígitos. Este é um exemplo de \emph{aprendizado supervisionado}, em que através de um conjunto de dados de entrada fornecidos na forma (entrada, saída desejada) \cite{Lorena&Carvalho}, a máquina detecta padrões e produz um modelo capaz de deduzir as saídas corretas para novos dados. Algumas técnicas para aprendizagem supervisionada são as Máquinas de Vetores Suporte (SVM), Regressão Linear, Regressão Logística e Redes Neurais.
+
+A \emph{aprendizagem não-supervisionada} por sua vez é empregada em problemas que não possuem dados previamente rotulados. Em vista disso, tais técnicas são geralmente utilizadas com o intuito de auxiliar no entendimentos dos dados e obter informações acerca deles \cite{Lorena&Carvalho}. A Decomposição em Valor Singular (SVD), Clusterização e Análise de Componentes Principais \cite{Evelin2017} são exemplos de técnicas de aprendizagem não-supervisionada. 
+
+A aprendizagem supervisionada é composta por uma etapa denominada \emph{fase de treinamento}, na qual um conjunto de treinamento que funciona como exemplo, formado por vários pares na forma $(x^{i}, y_{i})$, em que $x^{i}$ representa o vetor de características (ou atributos) e $y_{i}$ corresponde à saída (ou rótulo), é fornecido e a partir do qual a máquina detecta padrões e cria um modelo para deduzir a saída de novos dados não rotulados. Após este processo ocorre a \emph{fase de teste}, em que novas entradas serão testadas, denominadas conjunto de teste, no intuito de analisar se a máquina está gerando as saídas corretas. Na aprendizagem supervisionada, assim como o nome já salienta, há a presença de um supervisor externo, o qual será responsável por fornecer à máquina os dados devidamente rotulados e averiguar se ela está gerando as saídas corretas.
+
+Em muitas situações a aprendizagem supervisionada é aplicada a problemas cujo objetivo é obter uma classificação dos dados. Alguns exemplos são a detecção de spam em emails, o reconhecimento facial e o reconhecimento de dígitos escritos à mão. Em todos estes casos a técnica SVM pode ser aplicada, pois além de apresentar bons resultados quando comparadas a outras técnicas de classificação, ela também  possui uma boa capacidade de generalização e é indicada nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos. 
+
+Cada dado (atributo) será representado por um vetor de características $x^{i}$ pertencente ao conjunto de entrada e a saída será representada por $y_{i} \in \{ -1,1 \}$, de modo que diremos que $x_{i}$ pertence à classe positiva se $y_{i} = 1$, e $x^{i}$ pertence à classe negativa se $y_{i} = -1$. Sucintamente, a técnica SVM se concentra em obter um hiperplano ótimo $(w^{*})^{T}x + b^{*} = 0$ que separe os dados de entrada $x^{i}$ em duas saídas (classes) $y_{i}$ através de uma função de decisão. Para uma melhor compreensão considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig:classificacao_dados}.
+
+\begin{figure}[!ht] 
+\centering
+\begin{subfigure}[h]{0.3\textwidth}
+\centering
+\includegraphics[width=\textwidth]{hiperplano_SVM_linear}
+\caption{Linear. \label{fig:classificacao_dados:hiperplano_SVM_linear}}
+\end{subfigure}
+\begin{subfigure}[!ht]{0.3\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{hiperplano_SVM_flexivel}
+	\caption{Flexível. \label{fig:classificacao_dados:hiperplano_SVM_flexivel}}
+\end{subfigure}
+\begin{subfigure}[!ht]{0.3\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{hiperplano_SVM_nao_linear}
+	\caption{Não Linear. \label{fig:classificacao_dados:hiperplano_SVM_nao_linear}}
+\end{subfigure}
+\caption{Dados lineares, com margem flexível e não lineares. \label{fig:classificacao_dados}}
+\end{figure}
+
+Observe que na \Cref{fig:classificacao_dados:hiperplano_SVM_linear} os dados podem ser separados corretamente através de um hiperplano, que em $\RR^{2}$ é uma reta. Já na \Cref{fig:classificacao_dados:hiperplano_SVM_flexivel} é possível encontrar uma reta que separa alguns poucos dados, porém incorretamente. E na \Cref{fig:classificacao_dados:hiperplano_SVM_nao_linear} não é mais possível separar os dados como nos casos anteriores. Nestes exemplos temos representados os três casos de SVM: o linear com margem rígida, o linear com margem flexível e o não linear, respectivamente.
+
+Assim, mostraremos que a modelagem matemática do problema de classificação resulta num problema de programação quadrática, convexa e com restrições lineares, em que o objetivo é encontrar o hiperplano de máxima margem, isto é, que maximiza a distância entre os hiperplanos $w^{T}x+b = 1$ e $w^{T}x+b = -1$ que definem a faixa que separa os dados \cite{Evelin2017}. 
+
+É importante salientar que trataremos unicamente do problema de classificação binária, isto é, quando existem apenas duas saídas possíveis $\{-1,1\}$. No entanto é possível generalizar para problemas que envolvam mais saídas, se configurando neste caso num problema multiclasses. 
+
+Considere, por exemplo, o problema de detecção de câncer, em que desejamos identificar se um câncer é maligno ou benigno. Neste caso, a cada célula será associado um vetor de características $x^{i} \in \RR^{n}$ que contém $n$ informações relevantes observadas, dentre as quais medidas de raio, perímetro, área e textura por exemplo. As células com câncer maligno têm saída $y_{i} = 1$, enquanto que células com câncer benigno possuem saída $y_{i} = -1$. 
+
+Problemas de classificação que envolvem situações reais dificilmente apresentam um conjunto de dados linearmente separáveis. Neste contexto é necessário generalizar os resultados obtidos na modelagem da SVM com margem rígida para o caso não linear. Em vista disso, estudaremos também a SVM com margem flexível, em que os dados não são linearmente separáveis e para garantir a classificação correta através de um hiperplano no espaço de característica utilizamos regularização, introduzindo variáveis de folga $\xi_{i}$ às restrições. No intuito de evitar classificações incorretas, tais variáveis são penalizadas na função objetivo através de um parâmetro $C>0$, por isso a técnica é também denominada CSVM.
+
+O nome da técnica SVM se refere aos vetores do conjunto de treinamento que estão sobre os hiperplanos que determinam a margem ótima. Tais vetores são os que apresentam maior relevância na hora de determinar o hiperplano ótimo, de modo que os demais vetores possam ser descartados sem interferir na determinação do classificador. 
+
+A seguir, desenvolveremos a modelagem matemática da SVM com margem rígida e posteriormente sua generalização para margem flexível.
+
+%A Aprendizagem de Máquina (AM, do inglês \textit{Machine Learning}) é o estudo do uso de técnicas computacionais para automaticamente detectar padrões em dados e usá-los para fazer predições e tomar decisões.  
+
+%Neste trabalho nosso objetivo será realizar um estudo teórico matemático, do ponto de vista da Otimização, de uma técnica de aprendizagem supervisionada: as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}). Esta técnica é fundamentada na Teoria de Aprendizagem Estatística e foi desenvolvida por Vladimir Vapnik, Bernhard Boser, Isabelle Guyon e Corrina Cortes \cite{Vladimir1992,Vladimir1995}. Conforme destacado por \textcite{Evelin2017}, as SVM são amplamente empregadas em problemas de regressão e de classificação por possuírem um embasamento teórico bem consolidado e por apresentarem uma boa capacidade de generalização, sendo indicadas nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos. Algumas aplicações de SVM em problemas práticos são o reconhecimento facial, leitura de placas automotivas e detecção de spam.
+
+%Nossa intenção é estudar a técnica SVM aplicada na classificação de dados. Neste caso, na fase de treinamento é fornecido um conjunto de dados na forma $(x^{i}, y_{i})$, em que $x^{i}$ representa o vetor de características (ou atributos) e $y_{i}$ corresponde à saída ou rótulo, e a partir dos quais a técnica SVM irá gerar um classificador capaz de predizer a saída correta de novos dados.  Na \Cref{fig:SVM_classificador} a seguir temos uma representação simplificada da atuação de técnicas de AM, como a técnica SVM por exemplo, em problemas de classificação.
+
+%\begin{figure}[!ht] %refazer figura, resolução não está boa.
+%	\centering
+%	\includegraphics[width=0.70\textwidth]{representacao_tecnica_SVM}
+%	\caption{Atuação da técnica SVM. \\ Fonte: \textcite{Lorena&Carvalho} \label{fig:SVM_classificador}}
+%\end{figure}
+
+%Na figura a seguir, por exemplo, temos representado um conjunto de dados pertencentes a duas classes distintas: azul ou laranja. Assim reta em vermelho é o hiperplano separador, o qual fará a classificação de novos dados em azul se estiverem a direita do hiperplano e em laranja se estiverem a sua esquerda. Neste exemplo perceba que o hiperplano consegue separar corretamente todos os dados nas duas classes e portanto o denominamos de SVM linear de margem rígida. No entanto, em problemas que envolvam situações reais os dados costumam ser mais "embaralhados" como apresentado na figura a seguir. Nestes exemplos não é mais possível separar corretamente os dados através de um hiperplano, sendo necessária a moelagem de SVM com margem flexível e SVM não linear. Portanto, a depender da conjunto de dados a modelagem da técnica SVM pode assumir três tipos: linear com margem rígida e suas generalizações, que são margem flexível e não linear. Neste trabalho abordaremos apenas o casos linear com margem rígida e margem flexível. 
+
+
+
+\subsection{Máquinas de Vetores Suporte - Margem Rígida}
+
+Nesta seção formularemos matematicamente a técnica SVM para a classificação de dados linearmente separáveis, que caracteriza o problema com margem rígida. Para tanto, abordaremos alguns conceitos importantes para a modelagem do problema, como a definição de hiperplano, conjuntos linearmente separáveis, além de discutir a noção de margem. Veremos também que a modelagem de tal problema recai num problema de otimização. 
+
+Considere um conjunto de dados de treinamento representado no $\RR^2$ como na \Cref{fig:dados_e_hiperplanos:dados_treinamento}, em que os pontos em azul representam a classe positiva, e os pontos em laranja a classe negativa. Para obter a classificação desse conjunto em duas classes, azul ou laranja, a técnica SVM se concentra em determinar o hiperplano que melhor separa os dados corretamente. No entanto, para dados linearmente separáveis existem infinitos hiperplanos que separam corretamente os dados de treinamento, como apresentado na \Cref{fig:dados_e_hiperplanos:hiperplanos_separadores}. Assim, a escolha do hiperplano ideal se baseia no conceito de distância entre os pontos que representam os dados e o hiperplano. Isto é, o hiperplano ótimo, como será denominado o hiperplano que melhor separa os dados, será aquele que possibilita a maior faixa entre os dados positivos e negativos. Tal hiperplano é representado na \Cref{fig:dados_e_hiperplano_otimo:hiperplano_otimo} pela cor vermelha. Em outras palavras, estamos interessados em encontrar o hiperplano que maximiza a distância entre ele e os dados do conjunto de treinamento mais próximos. Note que, caso a faixa seja muito estreita pequenas perturbações no hiperplano ou no conjunto de dados podem resultar uma classificação incorreta. 
+
+\begin{figure}[htbp] 
+	\centering
+	\begin{subfigure}[h]{0.38\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{dados_treinamento}
+		\caption{Dados de treinamento. \label{fig:dados_e_hiperplanos:dados_treinamento}}
+	\end{subfigure}
+	\begin{subfigure}[h]{0.38\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{hiperplanos_separadores}
+		\caption{Hiperplanos separadores. \label{fig:dados_e_hiperplanos:hiperplanos_separadores}}
+	\end{subfigure}
+\caption{Conjunto de Dados e Hiperplanos. \label{fig:dados_e_hiperplanos}}
+\end{figure}
+\begin{figure}[hbtp] 
+	\centering
+	\begin{subfigure}[h]{0.38\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{hiperplano_otimo}
+		\caption{Hiperplano ótimo. \label{fig:dados_e_hiperplano_otimo:hiperplano_otimo}}
+	\end{subfigure}
+	\begin{subfigure}[h]{0.40\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{hiperplano_maxima_margem}
+		\caption{Máxima margem. \label{fig:dados_e_hiperplano_otimo:hiperplano_maxima_margem}}	
+	\end{subfigure}
+\caption{Hiperplano Ótimo. \label{fig:dados_e_hiperplano_otimo}}
+\end{figure}
+
+Inicialmente, para formular matematicamente o problema de classificação, é preciso estabelecer o conjunto de treinamento. Assim, considere o conjunto de treinamento $\Xset=\{(x^1, y_1), \ldots , (x^m, y_m)\mid x^i \in \RR^{n} \, e \, y_i \in \{-1,1\}\}$, formado por pares de entrada $x^{i}$ e saída $y_{i}$, com a seguinte partição 
+\[ \label{conj1}
+\Xset ^{+} =\{x^i \in \Xset\mid y_i=1\} \quad e \quad \Xset^{-}=\{x^i \in \Xset\mid y_i=-1\}.
 \]
-com $x\in \RR^{n}$. Então a função $f$ é uma função convexa.
-\end{prop}
-\begin{proof}
-Seja $\Vert \cdot \Vert$ a norma de um vetor. Para quaisquer $x, y \in \RR^{n}$ e qualquer $\alpha \in [0,1]$, temos que
+Diremos que $\Xset ^{+}$ e $\Xset^{-}$ são os conjuntos formados pelos atributos pertencentes às classes positiva e negativa, respectivamente.
+
+\begin{defi} Considere um vetor não nulo $w\in \RR^n$ e um escalar $b\in \RR$. Um \emph{hiperplano} com vetor normal $w$ e constante $b$ é um conjunto da forma $\Hset(w,b)=\{x\in \RR^n \mid w^{T}x+b=0\}$.
+\end{defi}
+
+O hiperplano $\Hset(w,b)$ divide o espaço $\RR^n$ em dois semiespaços, dados por
+\[ \label{conj2}
+\mathcal{S}^{+}=\{x\in \RR^n \mid w^{T}x+b\geq 0\} \quad e \quad \mathcal{S}^{-}=\{x\in \RR^n \mid w^{T}x+b\leq 0\}.
+\]
+
+
+\begin{defi} \label{def:dados_linearmente_separaveis} Os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são ditos \emph{linearmente separáveis} quando existem $w\in \RR^n$ e $b\in \RR$  tais que $w^{T}x+b>0$ para todo $x\in \Xset^{+}$ e $w^{T}x+b<0$ para todo $x\in \Xset^{-}$. O hiperplano $\Hset(w,b)$ é chamado hiperplano separador dos conjuntos $\Xset^{+}$ e $\Xset^{-}$.
+\end{defi}
+
+\begin{lema} \label{lema:hiperplanos_separadores} 
+Suponha que os conjuntos $\Xset^{+}, \Xset^{-} \subset \RR^n$ são finitos e linearmente separáveis, com hiperplano separador $\Hset(w,b)$. Então, existem $\overline{w}\in \RR^n$ e $\overline{b}\in \RR$ tais que $\Hset(w,b)$ pode ser descrito por
+\[
+\wbar^{T}x+\bbar =0,
+\]
+satisfazendo
 \begin{align}
-f(\alpha x + (1-\alpha)y) &= \dfrac{1}{2} \Vert \alpha x + (1-\alpha)y \Vert \\
-&\leq \dfrac{1}{2} \Vert \alpha x\Vert + \dfrac{1}{2}\Vert (1-\alpha)y \Vert \\
-&= \alpha \dfrac{1}{2} \Vert x \Vert + (1-\alpha)\dfrac{1}{2} \Vert y \Vert \\
-&= \alpha f(x) + (1-\alpha)f(y).
+\wbar^{T}x+\bbar &\geq 1, \text{ para todo } x\in \Xset^{+}, \label{eq:1_hiperplanos_separadores} \\
+\wbar^{T}x+\bbar &\leq -1, \text{ para todo } x\in \Xset^{-}. \label{eq:2_hiperplanos_separadores}
 \end{align}
-Portanto, $f$ é uma função convexa.
+\end{lema} 
+
+\begin{proof}
+Pela  \Cref{def:dados_linearmente_separaveis}, temos que existem $w\in \RR^n$ e $b\in \RR$ tais que
+\begin{align}
+w^{T}x+b &>0, \text{ para todo } x\in \Xset^{+}, \\
+w^{T}x+b &<0, \text{ para todo } x\in \Xset^{-}.
+\end{align}  
+Como $\Xset^{+}\cup \Xset^{-}$ é um conjunto finito, podemos definir
+\[ \boldsymbol{\gamma} \coloneqq \min_{x\in \Xset^{+}\cup \Xset^{-}} \vert w^{T}x+b\vert  >0. \]
+Portanto, para todo $x\in \Xset^{+}\cup \Xset^{-}$, $\boldsymbol{\gamma} \leq \vert w^{T}x+b\vert$ e consequentemente, $\dfrac{\vert w^{T}x+b\vert }{\boldsymbol{\gamma}} \geq 1$. Assim, para $x\in \Xset^{+}$ temos
+\[ \dfrac{w^{T}x+b}{\boldsymbol{\gamma}} = \dfrac{\vert w^{T}x+b\vert }{\boldsymbol{\gamma}} \geq 1, \]
+e para $x\in \Xset^{-}$, temos
+\[- \dfrac{w^{T}x+b}{\boldsymbol{\gamma}} = \dfrac{\vert w^{T}x+b\vert }{\boldsymbol{\gamma}} \geq 1. \]
+Logo, definindo $\wbar \coloneqq \dfrac{w}{\boldsymbol{\gamma}}$ e $\bbar \coloneqq \dfrac{b}{\boldsymbol{\gamma}}$, obtemos as desigualdades \eqref{eq:1_hiperplanos_separadores} e \eqref{eq:2_hiperplanos_separadores}. 
+
 \end{proof}
+
+
+Sem perda de generalidade, a partir do \Cref{lema:hiperplanos_separadores} podemos considerar o hiperplano $\Hset (w,b)$ com $w$ e $b$ satisfazendo \eqref{eq:1_hiperplanos_separadores} e \eqref{eq:2_hiperplanos_separadores}. Logo, temos que $\Hset^{+} (w,b) \coloneqq \{x\in \RR^n \mid w^{T}x+b= 1\}$ e $\Hset^{-} (w,b) \coloneqq \{x\in \RR^n \mid w^{T}x+b= -1\}$ são os hiperplanos que definem a faixa que separa os conjuntos $\Xset^{+}$ e $\Xset^{-}$.
+
+Como mencionado anteriormente, o hiperplano ótimo será aquele que admite a máxima margem, isto é, a máxima distância entre o hiperplano separador e os dados mais próximos. Em vista disso, os dois resultados a seguir estabelecem, respectivamente, a distância de um ponto qualquer sobre um hiperplano e a distância entre os hiperplanos $\Hset^{+}$ e $\Hset^{-}$.
+
+\begin{prop} \label{prop:projecao_ortogonal_sobre_hiperplano} 
+A projeção ortogonal de um vetor $\xbar\in \RR^n$ sobre um hiperplano afim $\Hset(w,b)$, é dada por
+\[ \proj_{\Hset (w,b)}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b}{w^{T}w}w. \]
+Além disso, a $\proj_{\Hset (w,b)}(\xbar)$ satisfaz a menor distância.
+\end{prop}
+
+\begin{proof}
+Sejam $w\in \RR^n$ o vetor normal ao hiperplano $\Hset(w,b)$, $\bar{z}\in \Hset(w,b)$ e $x^{*} \coloneqq \proj_{\Hset (w,b)}(\xbar)$ a projeção ortogonal de $\xbar$ sobre $\Hset(w,b)$. Assim, temos que 
+\[ \label{eq:1_projecao_ortogonal_sobre_hiperplano} 
+w^{T}(x^{*}-\bar{z})=0 
+\]
+e
+\[ \label{eq:2_projecao_ortogonal_sobre_hiperplano} 
+\xbar-x^{*}=\lambda w \Longrightarrow x^{*}=\xbar-\lambda w. 
+\]
+Substituindo \eqref{eq:2_projecao_ortogonal_sobre_hiperplano} em \eqref{eq:1_projecao_ortogonal_sobre_hiperplano}, obtemos
+\begin{align}
+0 &= w^{T}(\xbar-\lambda w-\overline{z}) \\
+&= w^{T}\xbar-\lambda w^{T}w - w^{T}\bar{z}.
+\end{align}
+Resolvendo para $\lambda$ e como $w^{T}\bar{z} = -b$, temos
+\[ \lambda =\dfrac{w^{T}\xbar-w^{T}\bar{z}}{w^{T}w} =\dfrac{w^{T}\xbar+b}{w^{T}w}. \]
+Portanto, 
+\[ x^{*}=\xbar-\dfrac{w^{T}\xbar+b}{w^{T}w}w . \]
+Ademais, vamos provar que a $\proj_{\Hset (w,b)}(\xbar)$ satisfaz a menor distância, isto é,
+\[ \Vert\xbar-x^{*}\Vert_{2} \leq \Vert \xbar-x\Vert_{2}, \]
+para todo $x\in \Hset(w,b)$.
+De fato, tomando $u=\xbar-x^{*}$ e $v=x^{*}-x$ observe que estes vetores são ortogonais, pois 
+\begin{align}
+u^{T}v&= (\xbar-x^{*})^{T}(x^{*}-x) \\
+&= (\xbar-\xbar+\lambda w)^{T}(x^{*}-x) \\
+&= \lambda w^{T}(x^{*}-x) \\
+&= \lambda (w^{T}x^{*}-w^{T}x) \\
+&= \lambda (-b-(-b)) \\
+&= 0.
+\end{align}
+Assim, podemos utilizar Pitágoras, isto é, obtemos
+\[ \Vert u+v\Vert^{2}=\Vert u\Vert^{2} + 2u^{T}v + \Vert v\Vert^{2}=\Vert u\Vert^{2} + \Vert v\Vert^{2} , \]
+e utilizamos as definições de $u$ e $v$ para obter
+\[ 
+\Vert \xbar-x\Vert^{2}=\Vert \xbar-x^{*}\Vert^{2} + \Vert x^{*}-x\Vert^{2} \geq \Vert x^{*} - x \Vert^{2} . 
+\]
+\end{proof}
+
+
+Agora, utilizando a \Cref{prop:projecao_ortogonal_sobre_hiperplano} podemos demonstrar o \Cref{lema:distancia_entre_hiperplanos}, o qual estabelece a largura da faixa entre os hiperplanos separadores $\Hset^{+} (w,b)$ e $\Hset^{-} (w,b)$.
+
+\begin{lema} \label{lema:distancia_entre_hiperplanos} 
+A distância entre os hiperplanos $\Hset^{+} (w,b)$ e $\Hset^{-} (w,b)$ é dada por 
+\[
+\dist(\Hset^{+}, \Hset^{-})=\dfrac{2}{\Vert w\Vert}.
+\] 
+\end{lema}
+\begin{proof}
+Considere um ponto arbitrário $\xbar\in \Hset^{+} (w,b)$ e seja $x^{*}\in \Hset^{-} (w,b)$ a projeção ortogonal de $\xbar$ sobre $\Hset^{-} (w,b)$. Usando a \Cref{prop:projecao_ortogonal_sobre_hiperplano}, temos
+\[ \label{eq:1_distancia_entre_hiperplanos} 
+x^{*}= \proj_{\Hset^{-} (w,b)}(\xbar)= \xbar - \dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w. 
+\] 
+Além disso, a distância entre dois conjuntos é definida por
+\[ 
+\dist(\Hset^{+}, \Hset^{-}) \coloneqq  \inf\{\Vert x^{+}-x^{-} \Vert : x^{+}\in \Hset^{+} (w,b)\ \text{e} \ x^{-}\in \Hset^{-} (w,b) \},
+\]
+e como a $\proj_{\Hset^{-} (w,b)}(\xbar)$ satisfaz a menor distância entre $\xbar$ e $\Hset^{-} (w,b)$ e, $\Hset^{+} (w,b)$ é paralelo a $\Hset^{-} (w,b)$, temos que 
+\[ \label{eq:2_distancia_entre_hiperplanos} 
+\dist(\Hset^{+},\Hset^{-})=\Vert \xbar-x^{*}\Vert. 
+\]
+Substituindo \eqref{eq:1_distancia_entre_hiperplanos} em \eqref{eq:2_distancia_entre_hiperplanos}, obtemos
+\begin{align} 
+\dist(\Hset^{+},\Hset^{-}) &= \Vert \xbar-x^{*}\Vert \\
+&= \left\Vert \xbar -\xbar +\dfrac{w^{T}\xbar+b+1}{\Vert w\Vert^{2}}w \right\Vert \\
+&=  \dfrac{\vert w^{T}\xbar+b+1 \vert}{\Vert w\Vert^{2}} \Vert w\Vert \\
+&= \dfrac{\vert w^{T}\xbar+b+1 \vert}{\Vert w\Vert},
+\end{align}
+e como $\xbar\in \Hset^{+} (w,b)$,  $ w^{T}\xbar+b=1$ implica
+\[  
+w^{T}\xbar =1-b, 
+\]
+concluimos que 
+\begin{align} 
+\dist(\Hset^{+},\Hset^{-})&= \dfrac{\vert 1-b+b+1 \vert}{\Vert w\Vert} \\
+&= \dfrac{2}{\Vert w\Vert }. 
+\end{align}
+\end{proof}
+
+%\subsubsection{Formulação Matemática do Problema de Classificação - Margem Rígida}
+
+Portanto, encontrar o hiperplano que melhor separa os dados implica maximizar a largura da margem, isto é, maximizar $\dist(\Hset^{+} , \Hset^{-}) =\dfrac{2}{\Vert w\Vert }$. Isso equivale a minimizar seu inverso $\dfrac{1}{2}\Vert w\Vert $ ou ainda minimizar $\dfrac{1}{2}\Vert w\Vert^{2}$. De fato, seja $w^{*}=\argmax\dfrac{2}{\Vert w\Vert}$. Então, para todo $w\in \RR^n$,
+\[ 
+\dfrac{2}{\Vert w^{*}\Vert} \geq \dfrac{2}{\Vert w\Vert} 
+\]
+implica
+\[ \label{eq:maximizar_distancia_equivalente_minimizar} 
+\Vert w\Vert \geq \Vert w^{*}\Vert. 
+\]
+Logo, $w^{*} \in \argmin\Vert w\Vert$. Além disso, como $\Vert \cdot \Vert$ é não negativa, elevando ao quadrado ambos os lados da desigualdade \eqref{eq:maximizar_distancia_equivalente_minimizar} temos que  $\Vert w\Vert^{2} \geq \Vert w^{*}\Vert^{2}$ implica
+\[ 
+\dfrac{1}{2}\Vert w\Vert^{2} \geq \dfrac{1}{2}\Vert w^{*}\Vert^{2}. 
+\]
+Portanto, 
+\[ \argmax\dfrac{2}{\Vert w\Vert} = \argmin\dfrac{1}{2}\Vert w\Vert^2. \]
+
+Ademais, como a faixa deve separar os dados das duas classes, as seguintes restrições devem ser satisfeitas
+\begin{align}
+w^{T}x+b &\geq 1 , \text{ para  todo } x\in \Xset^{+}, \\
+w^{T}x+b &\leq -1 , \text{ para  todo } x\in \Xset^{-}.
+\end{align}
+
+Considerando que $\Xset^{+}=\{x^i \in \Xset\mid y_i=1\}$ e $\Xset^{-}=\{x^i \in \Xset \mid y_i=-1\}$, podemos reescrever as restrições acima de uma forma mais compacta 
+\[ y_{i}(w^{T}x^{i}+b)\geq 1, \quad i=1, \ldots ,m. \]
+
+Portanto, o problema de encontrar o hiperplano ótimo pode ser formulado da seguinte maneira
+\[ \label{eq:problemageralSVM}
+\begin{aligned}
+\min_{w,b} & \quad \dfrac{1}{2} \Vert w\Vert^{2} \\
+\text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1, \quad i=1, \ldots , m, 
+\end{aligned}
+\]
+em que $w\in \RR^{n}$ e $b\in \RR$. 
+
+O problema \eqref{eq:problemageralSVM} possui função objetivo 
+\[ f(w,b)=\dfrac{1}{2}\Vert w\Vert^{2} \]
+convexa, e restrições lineares
+\[ g_i(w,b)=1-y_i(w^{T}x^{i}+b) \leq 0, \quad i=1, \ldots, m, \]
+em que a função $g:\RR^{n+1} \rightarrow \RR^{m}$ pode ser escrita da forma 
+\[ g(w,b)= e - (YX^{T}w+by) \leq 0, \]
+com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_{i})$, $X=\diag(x^{i})$, $y^{T}=[y_{1} \ \ldots \ y_{m}]$, $w\in \RR^n$ e $b\in \RR$.
+
+Nosso objetivo agora é garantir a existência de um minimizador para o problema \eqref{eq:problemageralSVM}. Vale ressaltar que por se tratar de um problema convexo, todo minimizador local é global. Observe que a função objetivo é limitada inferiormente, isto é, $\dfrac{1}{2}\Vert w \Vert^{2} >0$, e também, como $\Xset^{+}$ e $\Xset^{-}$ são conjuntos linearmente separáveis, o conjunto factível $\Omega = \{ (w,b) \in \RR^{n+1} \mid g_{i}(w,b) \leq 0, i = 1, \ldots , m \}$ é um poliedro não-vazio.
+
+\begin{teo} \label{teo:existencia_minimizador_problema_SVM}
+O problema \eqref{eq:problemageralSVM} possui um minimizador global.
+\end{teo}
+\begin{proof}
+Primeiramente, note que a função objetivo do problema \eqref{eq:problemageralSVM} é limitada inferiormente e o conjunto $\Omega \neq \emptyset$. Logo, podemos definir
+\[
+f^{*} \coloneqq \inf_{(w,b) \in \Omega} f(w,b) > -\infty .
+\]
+Pela definição de ínfimo, temos que para todo $k \in \mathds{N}$, existe $(w_{k},b_{k}) \subset \Omega$ tal que
+\[ \label{eq:1_existencia_minimizador_problema_SVM}
+\dfrac{1}{2}\Vert w_{k} \Vert^{2} = f(w_{k}, b_{k}) \rightarrow f^{*} ,
+\]
+e portanto, $(\Vert w_{k} \Vert )$ é convergente. Consequentemente, como toda sequência convergente é limitada, concluímos que $(w_{k})$ é limitada.
+
+Mostraremos agora que $(b_{k})$ também é limitada. Para tanto, considere $\tilde{x} \in \Xset^{+}$ e $\xbar \in \Xset^{-}$ arbitrários. Temos que 
+\[
+w_{k}^{T}\tilde{x} + b_{k} \geq 1
+\]
+e
+\[
+w_{k}^{T}\xbar + b_{k} \leq -1,
+\]
+e portanto,
+\[
+1-w_{k}^{T}\tilde{x} \leq b_{k} \leq -1-w_{k}^{T}\xbar .
+\]
+Então, como $(w_{k})$ é uma sequência limitada segue que $(b_{k})$ é limitada também. 
+
+Como a sequência $(w_{k}, b_{k})$ é limitada, pelo Teorema de Bolzano-Weierstrass, ela possui uma subsequência convergente 
+\[
+(w_{k_{j}}, b_{k_{j}}) \rightarrow (w^{*}, b^{*}).
+\]
+Logo, pela continuidade de $f$ obtemos
+\[
+f(w_{k_{j}}, b_{k_{j}}) \rightarrow f(w^{*}, b^{*}),
+\]
+e por \eqref{eq:1_existencia_minimizador_problema_SVM} temos que $f(w^{*}, b^{*}) = f^{*}$. Portanto, existe $(w^{*}, b^{*}) \in \Omega$ tal que
+\[
+f(w^{*}, b^{*}) = f^{*} \leq f(w,b),
+\]
+para todo $(w,b) \in \Omega$.
+\end{proof}
+
+Ademais, além da existência também podemos garantir a unicidade da solução do problema \eqref{eq:problemageralSVM}. Para sua demonstração utilizaremos o lema a seguir.
+
+\begin{lema} \label{lema:solucao_otima_SVM_margens}
+Se $(w^{*}, b^{*})$ é uma solução ótima para o problema \eqref{eq:problemageralSVM} então existem $\xbar \in \Xset^{+}$ e $\tilde{x} \in \Xset^{-}$ tais que $(w^{*})^{T}\xbar + b^{*} = 1$ e $(w^{*})^{T}\tilde{x} + b^{*} = -1$.
+\end{lema}
+\begin{proof}
+Como $(w^{*}, b^{*})$ é uma solução ótima para o problema \eqref{eq:problemageralSVM}, temos que
+\[
+f(w^{*}, b^{*}) \leq f(w, b),
+\]
+para todo $(w, b) \in \Omega$. Suponhamos que não existe $\xbar \in \Xset^{+}$ satisfazendo $(w^{*})^{T}\xbar + b^{*} = 1$. Então, 
+\[
+(w^{*})^{T}\xbar + b^{*} \geq 1 + \delta ,
+\]
+para todo $x \in \Xset^{+}$, em que $\delta \coloneqq \min_{x \in \Xset^{+}} [(w^{*})^{T}x + b^{*}] > 0$. Desse modo, 
+\[
+(w^{*})^{T}\xbar + b^{*} -\dfrac{\delta}{2} \geq 1 + \dfrac{\delta}{2},
+\]
+e dividindo ambos os lados da desigualdade por $1+\dfrac{\delta}{2}$, obtemos
+\[
+\dfrac{(w^{*})^{T}\xbar + b^{*} -\dfrac{\delta}{2}}{1 + \dfrac{\delta}{2}} \geq 1.
+\]
+Agora, tomando $\bar{w} = \dfrac{w^{*}}{1 + \dfrac{\delta}{2}}$ e $\bar{b} = \dfrac{b^{*} - \dfrac{\delta}{2}}{1 + \dfrac{\delta}{2}}$, temos
+\[
+\bar{w}^{T}x + \bar{b} \geq 1,
+\]
+para todo $x \in \Xset^{+}$.
+
+Por conseguinte, para $x \in \Xset^{-}$ temos $(w^{*})^{T}\xbar + b^{*} \leq -1$, o que equivale a 
+\[
+(w^{*})^{T}\xbar + b^{*} -\dfrac{\delta}{2} \leq -1 - \dfrac{\delta}{2}.
+\]
+Assim, temos que $\bar{w}^{T}x + \bar{b} \leq -1$, para todo $x \in \Xset^{-}$.
+
+Portanto, encontramos $(\bar{w}, \bar{b})$ satisfazendo as restrições do problema \eqref{eq:problemageralSVM} e 
+\[
+f(\bar{w}, \bar{b}) = \dfrac{1}{2}\Vert \bar{w} \Vert^{2} = \dfrac{1}{2} \dfrac{\Vert w^{*} \Vert^{2}}{\left( 1 + \dfrac{\delta}{2}\right)^{2}} < \dfrac{1}{2}\Vert w^{*} \Vert^{2} = f(w^{*}, b^{*}),
+\]
+contradizendo a hipótese de que $(w^{*}, b^{*})$ é ótimo.
+\end{proof}
+
+Podemos agora demonstrar a unicidade da solução de \eqref{eq:problemageralSVM}.
+
+\begin{teo}
+O minimizador global para o problema \eqref{eq:problemageralSVM} é único.
+\end{teo}
+\begin{proof}
+Suponhamos que $(\bar{w}, \bar{b})$ e $(\tilde{w}, \tilde{b})$ são soluções ótimas para o problema \eqref{eq:problemageralSVM}. Então, 
+\[
+\dfrac{1}{2}\Vert \bar{w} \Vert^{2} = \dfrac{1}{2}\Vert \tilde{w} \Vert^{2},
+\]
+e portanto, 
+\[
+\Vert \bar{w} \Vert = \Vert \tilde{w} \Vert .
+\]
+Como $\Omega$ é um conjunto convexo, temos que
+\[
+(\hat{w}, \hat{b}) = \dfrac{1}{2}((\bar{w}, \bar{b}) + (\tilde{w}, \tilde{b})) \in \Omega .
+\]
+Ademais, pelo \Cref{lema:1_convexidade} temos que $\Vert \hat{w} \Vert < \Vert \bar{w} \Vert$ o que implica 
+\[
+f(\hat{w}, \hat{b}) < f(\bar{w}, \bar{b}),
+\]
+contradizendo o fato de $(\bar{w}, \bar{b})$ ser uma solução ótima. Portanto, temos a unicidade de $w$.
+
+Agora, vamos mostrar a unicidade de $b$. Suponha que $(w, \bar{b})$ e $(w, \tilde{b})$ são soluções ótimas para o problema \eqref{eq:problemageralSVM} com, por exemplo, $\tilde{b} < \bar{b}$. Pelo \Cref{lema:solucao_otima_SVM_margens}, existe $x \in \Xset^{+}$ tal que $w^{T}x + \bar{b} = 1$. Por outro lado, 
+\[
+1 \leq w^{T}x + \tilde{b} < w^{T}x + \bar{b} = 1,
+\]
+o que é uma contradição.
+\end{proof}
+
+A seguir apresentamos a definição de vetores suporte, conceito que nomeia a técnica SVM, a abordamos brevemente sua relevância com base nas considerações feitas em \cite{Evelin2017,bishop2016pattern}.
+
+\begin{defi} \label{defi:vetores_suporte}
+Considere um conjunto $\Xset$ de vetores linearmente separáveris e $(w^{*}, b^{*})$ a solução do problema \eqref{eq:problemageralSVM}. Os \emph{vetores suporte} são os vetores $x^{i} \in \Xset$ tais que $y_{i}((w^{*})^{T} x^{i} + b^{*}) = 1$.
+\end{defi}
+
+Desse modo, os vetores suporte serão aqueles localizados sobre os hiperplanos que definem a máxima margem que separa os dados, ou, em outras palavras, são os vetores que correpondem às restrições ativas na solução $(w^{*}, b^{*})$ do problema \eqref{eq:problemageralSVM}. Tal propriedade detém grande importância na aplicação prática da técnica SVM, pois de acordo com o \Cref{teo:vetores_suporte} a seguir, temos que após o modelo ser treinado uma significativa quantidade de dados pode ser descartada e apenas os vetores suporte mantidos de modo que o classificador se mantém o mesmo. 
+
+\begin{teo} \label{teo:vetores_suporte}
+Considere $(w^{*}, b^{*})$ a solução do problema \eqref{eq:problemageralSVM} e $\mathcal{I}^{*} = \mathcal{I} (w^{*}, b^{*})$ o conjunto dos índices das restrições ativas na solução. Então, a solução do problema
+\[
+\begin{aligned}
+\min_{w,b} & \quad \dfrac{1}{2} \Vert w\Vert^{2} \\
+\text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1, \quad i \in \mathcal{I}^{*}
+\end{aligned}
+\]
+é $(w^{*}, b^{*})$.
+\end{teo}
+\begin{proof}
+
+\end{proof}
+
+Ademais, conforme mencionado por \textcite{Evelin2017}, como somente os vetores suporte possuem um papel relevante na determinação do hiperplano ótimo, o cálculo de $w^{*}$ torna-se mais barato computacionalmente.
+
+Neste capítulo desenvolvemos a formulação do problema de classificação com margem rígida. Concluímos que tal problema trata-se de um problema de otimização e demonstramos a existência de solução e sua unicidade. No entanto, como já mencionado em alguns momentos no decorrer do texto, problemas que envolvam situações reais dificilmente apresentam dados linearmente separáveis. Em vista disso, na seção a seguir trataremos da modelagem do problema com margem flexível, caso em que os dados não são linearmente separáveis.
+
+%----------------------------------------------------------------------------------------------------------------------
+
+\subsection{Máquinas de Vetores Suporte - Margem Flexível (CSVM)}
+
+
+Situações reais dificilmente envolvem problemas cujos dados são linearmente separáveis. Em vista disso, faz-se necessário estender os conceitos e resultados estudados nas SVMs lineares de margem rígida para o caso de SVM com margem flexível, quando os dados não são linearmente separáveis. Para tanto, considere um conjunto de dados não-linearmente separável como da \Cref{fig:dados_linearmente_separaveis_e_nao_separaveis:b}, isto é, não existe um hiperplano separador. 
+
+
+\begin{figure}[htbp] 
+	\centering
+	\begin{subfigure}[h]{0.30\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{dados_linearmente_separaveis}
+		\caption{Dados linearmente separáveis. \label{fig:dados_linearmente_separaveis_e_nao_separaveis:a}}
+	\end{subfigure}
+	\begin{subfigure}[h]{0.30\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{dados_nao_linearmente_separaveis}
+		\caption{Dados não-linearmente separáveis. \label{fig:dados_linearmente_separaveis_e_nao_separaveis:b}}
+	\end{subfigure}
+\caption{Conjunto de dados. \label{fig:dados_linearmente_separaveis_e_nao_separaveis} }
+\end{figure}
+
+
+Neste caso, temos que o conjunto factível
+\[
+\Omega = \{ (w,b) \in \RR^{n+1} \mid 1-y_{i}(w^{T}x^{i} + b) \leq 0 , \quad i=1, \ldots , m \}
+\]
+é vazio e, portanto, a formulação dada pelo problema \eqref{eq:problemageralSVM} não fornece um classificador.
+
+Assim, no intuito de contornar esse problema utilizamos regularização para suavizar as margens, acrescentando variáveis de folga $\xi_{i} \geq 0$ associadas aos dados de treinamento $x_{i}$, com $i=1, \ldots , m$, e permitindo, assim, uma flexibilização do problema de estimar as variáveis $w$ e $b$. Em outras palavras, a restrição $1-y_{i}(w^{T}x^{i} + b) \leq 0$ é relaxada e substituída por $1-y_{i}(w^{T}x^{i} + b) \leq \xi_{i} $, com $\xi_{i} \geq 0$. Cada variável de folga $\xi_{i}$ mensura a distância que determinado dado $x_{i}$ está do seu respectivo hiperplano separador, caso este dado esteja do lado errado.
+
+%Esta imagem também não está sendo lida, detectar problema #chateada -Uhhhul deu certo! LEMBRETE: não usar acento ao nomear figuras
+\begin{figure}[!ht] 
+	\centering
+	\includegraphics[width=0.50\textwidth]{variaveis_de_folga}
+	\caption{Variáveis de folga. \label{fig:variaveis_de_folga}}
+\end{figure}
+
+Tal procedimento permite que pontos da classe positiva permaneçam fora do semiespaço $\mathcal{S}^{+}=\{x\in \RR^n \mid w^{T}x+b\geq 1\}$ ou pontos da classe negativa fora do semiespaço $\mathcal{S}^{-}=\{x\in \RR^n \mid w^{T}x+b\leq -1\}$. 
+
+Nesta formulação o hiperplano separador é denominado hiperplano de margem flexível e as restrições dos hiperplanos separadores são reformuladas da seguinte maneira 
+\begin{align}
+w^{T}x^{i}+b &\geq 1 - \xi_{i} , \text{ para  todo } x^{i} \in \Xset^{+}, \label{restricoesCSVM+} \\
+w^{T}x^{i}+b &\leq -1 +\xi_{i} , \text{ para  todo } x^{i} \in \Xset^{-}. \label{restricoesCSVM-}
+\end{align}
+
+
+Agora nosso objetivo é encontrar $w$ e $b$ ótimos de modo a obter um bom classificador. Primeiramente, observe que dados $w$ e $b$ arbitrários, podemos escolher $\xi_{i} \geq 0$ de modo que as restrições \eqref{restricoesCSVM+} e \eqref{restricoesCSVM-} sejam satisfeitas. Para tanto, podemos definir
+\[
+\xi_{i} =  \left \{ \begin{array}{cc} \max\{0, 1-w^{T}x^{i}-b\}, & \quad \text{se} \quad x^{i} \in \Xset^{+}, \\
+\max\{0, 1+w^{T}x^{i}+b\}, & \quad \text{se} \quad x^{i} \in \Xset^{-}.
+\end{array} \right .
+\]
+ 
+Desse modo, para obter um bom classificador não basta apenas maximizar a margem definida pelos hiperplanos $\Hset^{+} (w,b)$ e $\Hset^{-} (w,b)$ e introduzir as variáveis de folga nas restrições, mantendo a mesma função objetivo, pois, como exemplificado por \textcite{Evelin2017}, a \Cref{fig:hiperplano_nao_classificador} ilustra o hiperplano dado por $w_{0}^{T}x+b = 0$, que não poder ser usado para classificar os dados, mas satisfaz as restrições \eqref{restricoesCSVM+} e \eqref{restricoesCSVM-}. 
+
+\begin{figure}[!ht] 
+	\centering
+	\includegraphics[width=0.38\textwidth]{hiperplano_nao_classifica_dados}
+	\caption{Exemplo de hiperplano que não classifica os dados. \label{fig:hiperplano_nao_classificador}}
+\end{figure}
+ 
+
+Portanto, para reformular o problema original de maximizar a margem é preciso também controlar o valor dessas variáveis de modo a estimular uma classificação correta, pois quanto maior o valor delas mais será permitido violar as restrições. Em vista disso, é acrescentada na função objetivo uma parcela que corresponde à penalização das violações e o problema \eqref{eq:problemageralSVM} é reformulado da seguinte forma
+
+\[ \label{eq:problemaCSVM}
+\begin{aligned}
+\min_{w,b,\xi} & \quad \dfrac{1}{2} \Vert w\Vert^{2} + C \sum_{i=1}^{m} \xi_{i} \\
+\text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1 - \xi_{i}, \quad i=1, \ldots , m, \\
+& \quad \xi_{i} \geq 0, \quad i=1, \ldots , m,\end{aligned}
+\]
+em que $C>0$ é um parâmetro de regularização que tem o objetivo de controlar a importância das variáveis de folga. O valor do parâmetro $C$ que fornece uma boa classificação dos dados é escolhido de maneira heurística na fase de treinamento, geralmente a partir da natureza do problema. É devido a utilização desse parâmetro esta modelagem de SVM também é conhecida como C-SVM.
+
+O termo $C \sum_{i=1}^{m} \xi_{i}$ na função objetivo do problema \eqref{eq:problemaCSVM} pode ser pensado como uma medida de erro de classificação, pois minimiza o valor das variáveis de folga e reduz desse modo o número de pontos classificados incorretamente. De fato, aumentando o valor do parâmetro $C$ aumenta-se a penalização sobre a violação da restrição original do problema SVM. Por outro lado, diminuindo o valor de $C$ o modelo se torna mais flexível a esse tipo de violação. 
+
+O problema de margem flexível \eqref{eq:problemaCSVM}, assim como o problema \eqref{eq:problemageralSVM}, também possui restrições lineares 
+\begin{align} 
+g_{i}(w,b,\xi) = & 1-\xi_{i} - y_i(w^{T}x^{i}+b) \leq 0 \quad \text{e} \\
+h_{i}(w,b,\xi) = & - \xi_{i} \leq 0, \quad i=1, \ldots, m,
+\end{align}
+
+e assim, o conjunto factível
+\[
+\Omega = \{(w,b,\xi) \in \RR^{n+1+m} \mid g_{i}(w,b,\xi) \leq 0, \, h_{i}(w,b,\xi) \leq 0, \, i=1, \ldots, m \} 
+\]
+é um poliedro não vazio.
+
+Ademais, a função objetivo $f$ é quadrática e limitada inferiormente em $\Omega$, pois 
+\[
+f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m} \underbrace{\xi_{i}}_{\geq 0} \geq 0.
+\]
+
+%Assim o Teorema de Programação Quadrática (1.34) garante a existência de um minimizador global para o problema \eqref{eq:problemaCSVM}.
+
+
+\newpage
+\section{Experimentos Numéricos} \label{chap:experimentos_numericos}
+
+
+\newpage
+\section{Conclusões}
+
 
 \newpage
 
