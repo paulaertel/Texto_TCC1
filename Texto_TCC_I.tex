@@ -1,4 +1,6 @@
 \documentclass[12pt,a4paper]{scrartcl}
+    % \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+
 \usepackage{iftex}
 \ifPDFTeX
 	\usepackage[brazil]{babel}
@@ -19,8 +21,10 @@
 \usepackage[brazilian]{cleveref}
 
 \usepackage{float}
-\usepackage[dvipsnames]{xcolor}
+\usepackage[dvipsnames,usenames]{xcolor}
+\usepackage[breakable]{tcolorbox}
 \usepackage{xargs}
+
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 \newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
 \newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
@@ -126,11 +130,6 @@ style=numeric-comp, noerroretextools=true, sorting=nty,
     \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
     \usepackage{float}
     \floatplacement{figure}{H} % forces figures to be placed at the correct location
-    \usepackage{xcolor} % Allow colors to be defined
-    \usepackage{enumerate} % Needed for markdown enumerations to work
-    \usepackage{geometry} % Used to adjust the document margins
-    \usepackage{amsmath} % Equations
-    \usepackage{amssymb} % Equations
     \usepackage{textcomp} % defines textquotesingle
     % Hack from http://tex.stackexchange.com/a/47451/13684:
     \AtBeginDocument{%
@@ -3035,6 +3034,1699 @@ f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m}
 
 \newpage
 \section{Experimentos Numéricos} \label{chap:experimentos_numericos}
+
+
+    Este capítulo é dedicado a alguns experimentos númericos que têm como
+objetivo visualizar na prática a implementação da técnica Máquinas de
+Vetores Suporte (SVM), possibilitando assim analisar as particularidades
+da sua implementação juntamente com o referencial teórico matemático
+desenvolvido no capítulo anterior. Para tanto, o capítulo é dividido em
+duas seções. Na primeira, discutimos a aplicação de SVM para classificar
+o conjunto de dados flor Íris entre suas espécies. A segunda seção
+aborda a aplicação da técnica CSVM para detectar num conjunto de dados
+sobre células de câncer de mama quais apresentam tumor maligno ou
+benigno.
+
+Para desenvolvimento desses experimentos utilizamos o \emph{software} de
+programação Julia em sua versão 1.4.0, além dos pacotes \texttt{Plots}
+para gerar as imagens, \texttt{JuMP} e \texttt{Ipopt} para resolução dos
+problemas de otimização, \texttt{RDatasets} para ter acesso ao conjunto
+de dados Iris e o pacote \texttt{DataFrame} para gerar as tabelas de
+dados.
+
+Como abordado no capítulo anterior, Máquinas de Vetores Suporte é uma
+técnica de Aprendizagem de Máquina muito utilizada para classificação e
+regressão, e nosso objetivo será sua aplicação em problemas que envolvam
+a classificação binária de dados. Primeiramente, vamos relembrar que em
+problemas de classificação estamos interessados, assim como o nome já
+antecipa, em classificar da melhor maneira possível um determinado
+conjunto de dados. No caso em que os dados são linearmente separáveis,
+isto é, existe um hiperplano que os separa corretamente, aplica-se SVM
+de margem rígida e o problema costuma ter uma resolução mais simples.
+Entretanto, os problemas de classificação que envolvem situações reais
+costumam ser mais elaborados, pois neste caso os dados geralmente não
+são linearmente separáveis. Nestas situações é necessário utilizar SVM
+com margem flexível (CSVM), se os dados forem, a grosso modo, mais
+``comportados'', ou a SVM não-linear. Este último caso exige um
+desenvolvimento teórico matemático mais avançado e que foge do escopo
+deste trabalho e portanto não será abordado, se constituindo numa
+proposta de estudos a ser desenvolvida em projetos futuros.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{using} \PY{n}{RDatasets}\PY{p}{,} \PY{n}{JuMP}\PY{p}{,} \PY{n}{Ipopt}\PY{p}{,} \PY{n}{Random}\PY{p}{,} \PY{n}{LinearAlgebra}\PY{p}{,} \PY{n}{Plots}\PY{p}{,} \PY{n}{StatsBase}\PY{p}{,} \PY{n}{DataFrames}\PY{p}{,} \PY{n}{CSV}\PY{p}{,} \PY{n}{StatsPlots}
+\PY{n}{include}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{p}\PY{l+s}{a}\PY{l+s}{i}\PY{l+s}{r}\PY{l+s}{p}\PY{l+s}{l}\PY{l+s}{o}\PY{l+s}{t}\PY{l+s}{.}\PY{l+s}{j}\PY{l+s}{l}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+pairplot (generic function with 1 method)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{implementauxe7uxe3o-de-svm-para-classificauxe7uxe3o-do-conjunto-de-dados-uxedris}{%
+\subsection{Implementação de SVM para Classificação do Conjunto de Dados
+Íris}\label{implementauxe7uxe3o-de-svm-para-classificauxe7uxe3o-do-conjunto-de-dados-uxedris}}
+
+Neste primeiro momento nosso propósito será implementar a técnica SVM
+num exemplo prático: o conjunto de dados flor Íris. Tal conjunto de
+dados consiste em 150 amostras de três espécies da planta Íris, sendo 50
+amostras da Íris setosa, 50 da Íris virginica e 50 da Íris versicolor.
+Cada dado amostral contém as medidas de quatro variáveis morfológicas:
+comprimento e largura das sépalas e das pétalas, medidas em centímetros.
+É com base nas diferenciações e semelhanças dessas características que é
+possível distinguir uma espécie da outra.
+
+A seguir importamos o conjunto de dados Íris do pacote
+\texttt{RDatasets}. Perceba que as amostras pertencem a três diferentes
+espécies: setosa, versicolor e virginica. Porém, como nossos estudos se
+concentram na classificação binária, nosso objetivo inicial será
+aprender a separar os dados em setosa e não setosa e posteriormente em
+virginica e não virginica.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{iris} \PY{o}{=} \PY{n}{dataset}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{d}\PY{l+s}{a}\PY{l+s}{t}\PY{l+s}{a}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{s}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{i}\PY{l+s}{r}\PY{l+s}{i}\PY{l+s}{s}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{n}{levels}\PY{p}{(}\PY{n}{iris}\PY{p}{[}\PY{o}{!}\PY{p}{,}\PY{o}{:}\PY{n}{Species}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+3-element Array\{String,1\}:
+ "setosa"
+ "versicolor"
+ "virginica"
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Nos gráficos abaixo, os pontos em azul pertencem à espécie setosa, os
+pontos em vermelho à espécie versicolor e os pontos em verde à espécie
+virginica. Eles foram construídos considerando-se duas características
+de cada vez.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plt} \PY{o}{=} \PY{n}{pairplot}\PY{p}{(}\PY{n}{iris}\PY{p}{,}\PY{o}{:}\PY{n}{Species}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+% \prompt{Out}{outcolor}{3}{}
+    
+    \begin{center}
+    \includegraphics[width=0.7\textwidth]{Implementacao_de_SVM_em_Julia_TCC_files/Implementacao_de_SVM_em_Julia_TCC_6_0.pdf}
+    \end{center}
+    
+
+    \hypertarget{classificauxe7uxe3o-com-duas-caracteruxedsticas}{%
+\subsubsection{Classificação com duas
+características}\label{classificauxe7uxe3o-com-duas-caracteruxedsticas}}
+
+De acordo com o Capítulo 5, a técnica SVM com margem rígida pode ser
+formulada pelo problema (74). Assim, utilizando esta formulação,
+apresentamos a seguir uma aplicação na classificação do conjunto de
+dados Íris em setosa e não setosa com base em duas características
+apenas.
+
+Inicialmente, é importante lembrar que na modelagem do problema cada
+dado é representado por um vetor no espaço n-dimensional, em que n
+corresponde ao número de características do problema em questão. Neste
+exemplo, como o problema compreende apenas duas características os dados
+de entrada \(x^{i}\) pertencem ao espaço \(\mathbb{R}^{2}\). Logo,
+podemos representar estes dados através de uma matriz
+\(X_{150\times 2}\), em que cada linha corresponde a um vetor \(x^{i}\)
+e cada coluna às suas características, que neste caso serão comprimento
+e largura das sépalas, medidas em centímetros.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{X} \PY{o}{=} \PY{n}{convert}\PY{p}{(}\PY{k+kt}{Array}\PY{p}{,}\PY{n}{iris}\PY{p}{[}\PY{o}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{o}{:}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)} 
+\PY{n}{p}\PY{p}{,} \PY{n}{n} \PY{o}{=} \PY{n}{size}\PY{p}{(}\PY{n}{X}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(150, 2)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Por conseguinte, a SVM é uma técnica de aprendizagem supervisionada e
+portanto, a obtenção do classificador é feita com base num conjunto de
+dados de entrada para os quais há o prévio conhecimento da classe
+\(y_{i}\) a qual cada amostra \(i\) pertence. Assim, amostras da espécie
+setosa serão classificadas como \(1\), enquanto que amostras das
+espécies versicolor ou virginica serão classificadas em \(-1\), ou seja,
+\(y_{i} \in \{ -1,1 \}\).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{iris\PYZus{}df} \PY{o}{=} \PY{n}{DataFrame}\PY{p}{(}\PY{n}{X}\PY{p}{)}\PY{p}{;}
+\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Y} \PY{o}{=} \PY{p}{[}\PY{n}{species} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{a}\PY{l+s}{\PYZdq{}} \PY{o}{?} \PY{l+m+mf}{1.0} \PY{o}{:} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.0} \PY{k}{for} \PY{n}{species} \PY{k+kp}{in} \PY{n}{iris}\PY{p}{[}\PY{o}{!}\PY{p}{,}\PY{o}{:}\PY{n}{Species}\PY{p}{]}\PY{p}{]}\PY{p}{;}
+\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Especie} \PY{o}{=} \PY{n}{iris}\PY{o}{.}\PY{n}{Species}
+\PY{n}{rename!}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{p}{,} \PY{k+kt}{Dict}\PY{p}{(}\PY{o}{:}\PY{n}{x1} \PY{o}{=\PYZgt{}} \PY{o}{:}\PY{n}{Comprimento\PYZus{}sepala}\PY{p}{)}\PY{p}{)}
+\PY{n}{rename!}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{p}{,} \PY{k+kt}{Dict}\PY{p}{(}\PY{o}{:}\PY{n}{x2} \PY{o}{=\PYZgt{}} \PY{o}{:}\PY{n}{Largura\PYZus{}sepala}\PY{p}{)}\PY{p}{)}
+\PY{n}{first}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Portanto, nosso objetivo é classificar o conjunto de dados Íris em
+setosa e não setosa com base nas características ``comprimento de
+sépala'' e ``largura de sépala''. O gráfico a seguir representa tais
+dados em relação às duas características citadas. Através dele podemos
+ter uma noção acerca da separabilidade do conjunto Íris neste contexto.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{I} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Y} \PY{o}{.==} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{scatter}\PY{p}{(}\PY{n}{X}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{X}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{blue}\PY{p}{,} \PY{n}{m}\PY{o}{=}\PY{o}{:}\PY{n}{square}\PY{p}{,} \PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{S}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{a}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{I} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Y} \PY{o}{.==} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{scatter!}\PY{p}{(}\PY{n}{X}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{X}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{red}\PY{p}{,} \PY{n}{m}\PY{o}{=}\PY{o}{:}\PY{n}{circle}\PY{p}{,} \PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{N}\PY{l+s}{a}\PY{l+s}{o}\PY{l+s}{ }\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{a}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{legend}\PY{o}{=}\PY{o}{:}\PY{n}{outerbottomright}\PY{p}{)}
+\PY{n}{plot!}\PY{p}{(}\PY{n}{xlabel}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{L}\PY{l+s}{a}\PY{l+s}{r}\PY{l+s}{g}\PY{l+s}{u}\PY{l+s}{r}\PY{l+s}{a}\PY{l+s}{ }\PY{l+s}{s}\PY{l+s}{é}\PY{l+s}{p}\PY{l+s}{a}\PY{l+s}{l}\PY{l+s}{a}\PY{l+s}{ }\PY{l+s}{(}\PY{l+s}{c}\PY{l+s}{m}\PY{l+s}{)}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{ylabel}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{C}\PY{l+s}{o}\PY{l+s}{m}\PY{l+s}{p}\PY{l+s}{r}\PY{l+s}{i}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{n}\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{ }\PY{l+s}{s}\PY{l+s}{é}\PY{l+s}{p}\PY{l+s}{a}\PY{l+s}{l}\PY{l+s}{a}\PY{l+s}{ }\PY{l+s}{(}\PY{l+s}{c}\PY{l+s}{m}\PY{l+s}{)}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+{            
+    \prompt{Out}{outcolor}{6}{}
+        
+        \begin{center}
+        \includegraphics[width=0.7\textwidth]{Implementacao_de_SVM_em_Julia_TCC_files/Implementacao_de_SVM_em_Julia_TCC_12_0.pdf}
+        \end{center}
+    }    
+
+    Assim, no gráfico acima estão representados os 150 dados do conjunto
+Íris, em que os pontos em azul representam a espécie setosa, isto é, os
+vetores \(x^{i}\) tais que \(y_{i} = 1\), e os pontos em vermelho as
+espécies versicolor e virginica, que correspondem aos vetores \(x^{i}\)
+tais que \(y_{i} = -1\). Como os dados aparentam ser linearmente
+separáveis, aplicaremos primeiramente SVM com margem rígida.
+
+A aprendizagem supervisionada é composta por dois momentos, a fase de
+treino e a fase de testes. Em vista disso, inicialmente dividimos, de
+maneira aleatória, o conjunto Íris em dois subconjuntos, o conjunto de
+treinamento (\texttt{train\_set}), com 50 dados, e o conjunto de teste
+(\texttt{test\_set}), com os 100 dados restantes. É através do conjunto
+de treinamento que o algoritmo SVM irá ``aprender'' a classificar os
+dados detectando padrões entre suas características e a espécie a qual
+pertencem. Já o conjunto de teste será utilizado para analisar a
+eficácia do classificador encontrado, averiguando se ele gera as saídas
+corretas para tais dados.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Random}\PY{o}{.}\PY{n}{seed!}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{trainsize} \PY{o}{=} \PY{l+m+mi}{50}
+\PY{n}{train\PYZus{}set} \PY{o}{=} \PY{n}{sample}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{p}\PY{p}{,}\PY{n}{trainsize}\PY{p}{,}\PY{n}{replace}\PY{o}{=}\PY{k+kc}{false}\PY{p}{,}\PY{n}{ordered}\PY{o}{=}\PY{k+kc}{true}\PY{p}{)} 
+\PY{n}{test\PYZus{}set} \PY{o}{=} \PY{n}{setdiff}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{p}\PY{p}{,}\PY{n}{train\PYZus{}set}\PY{p}{)} 
+\PY{n}{Xtrain} \PY{o}{=} \PY{n}{X}\PY{p}{[}\PY{n}{train\PYZus{}set}\PY{p}{,}\PY{o}{:}\PY{p}{]}
+\PY{n}{Ytrain} \PY{o}{=} \PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Y}\PY{p}{[}\PY{n}{train\PYZus{}set}\PY{p}{]}
+\PY{n}{Xtest} \PY{o}{=} \PY{n}{X}\PY{p}{[}\PY{n}{test\PYZus{}set}\PY{p}{,}\PY{o}{:}\PY{p}{]}
+\PY{n}{Ytest} \PY{o}{=} \PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Y}\PY{p}{[}\PY{n}{test\PYZus{}set}\PY{p}{]}
+\PY{n}{ptrain} \PY{o}{=} \PY{n}{length}\PY{p}{(}\PY{n}{Ytrain}\PY{p}{)}
+\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{conjunto} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{o}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{p}\PY{p}{)}
+\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{conjunto}\PY{p}{[}\PY{n}{test\PYZus{}set}\PY{p}{]} \PY{o}{.=} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Como abordado no Capítulo 5, a modelagem do problema de classificação
+utilizando a técnica SVM consiste em determinar o hiperplano que melhor
+separa os dados, classificando-os assim em duas classes. Ademais, o
+hiperplano ótimo \(\mathcal{H}(w,b)\) é aquele que maximiza a margem que
+não contenha nenhum dado, ou seja, desejamos que os pontos \(x^{i}\)
+satisfaçam a seguinte restrição
+
+\[
+y_i(w^{T}x^{i}+b) \geq 1, \quad i=1, \ldots , 50.
+\]
+
+Logo, o problema de encontrar o hiperplano ótimo \(\mathcal{H}(w,b)\) é
+formulado da seguinte forma
+
+\begin{align}
+\min_{w,b} & \quad \dfrac{1}{2} \Vert w\Vert^{2} \\
+\text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1, \quad i=1, \ldots , 50, 
+\end{align}
+
+em que, neste exemplo, \(w \in \mathbb{R}^{2}\) e \(b\in \mathbb{R}\). É
+importante salientar que como neste caso os dados pertencem ao
+\(\mathbb{R}^{2}\) o hiperplano ótimo será uma reta.
+
+Assim, utilizando o modelo matemático formulado no capítulo anterior,
+criamos a função \texttt{SVM\_rigida}, a qual adapta o problema de
+otimização formulado em (74) para os dados do problema de classificação
+que desejamos resolver e, com o auxílio do pacote \texttt{Ipopt} para
+resolver este problema, determina o hiperplano ótimo.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{function} \PY{n}{SVM\PYZus{}rigida}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{)}
+    \PY{n}{model} \PY{o}{=} \PY{n}{Model}\PY{p}{(}\PY{n}{optimizer\PYZus{}with\PYZus{}attributes}\PY{p}{(}\PY{n}{Ipopt}\PY{o}{.}\PY{n}{Optimizer}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{p}\PY{l+s}{r}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{t}\PY{l+s}{\PYZus{}}\PY{l+s}{l}\PY{l+s}{e}\PY{l+s}{v}\PY{l+s}{e}\PY{l+s}{l}\PY{l+s}{\PYZdq{}}\PY{o}{=\PYZgt{}}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{)}
+
+    \PY{n+nd}{@variable}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{w}\PY{p}{[}\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{n}\PY{p}{]}\PY{p}{)} \PY{c}{\PYZsh{} Aqui declaramos as variáveis.}
+    \PY{n+nd}{@variable}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{b}\PY{p}{)}
+
+    \PY{n+nd}{@objective}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{Min}\PY{p}{,} \PY{n}{dot}\PY{p}{(}\PY{n}{w}\PY{p}{,} \PY{n}{w}\PY{p}{)} \PY{o}{/} \PY{l+m+mi}{2}\PY{p}{)} \PY{c}{\PYZsh{} Esta é a função objetivo.}
+
+    \PY{n+nd}{@constraint}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{p}{[}\PY{n}{i}\PY{o}{=}\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{ptrain}\PY{p}{]}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{*} \PY{p}{(}\PY{n}{dot}\PY{p}{(}\PY{n}{w}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{o}{:}\PY{p}{]}\PY{p}{)} \PY{o}{+} \PY{n}{b}\PY{p}{)} \PY{o}{≥} \PY{l+m+mi}{1}\PY{p}{)} \PY{c}{\PYZsh{} Esta é a restrição.}
+
+    \PY{n}{optimize!}\PY{p}{(}\PY{n}{model}\PY{p}{)}
+
+    \PY{n}{w}\PY{p}{,} \PY{n}{b} \PY{o}{=} \PY{n}{value}\PY{o}{.}\PY{p}{(}\PY{n}{w}\PY{p}{)}\PY{p}{,} \PY{n}{value}\PY{o}{.}\PY{p}{(}\PY{n}{b}\PY{p}{)} \PY{c}{\PYZsh{} Com este comando queremos que os valores ótimos sejam apresentados.}
+    \PY{k}{return} \PY{n}{w}\PY{p}{,} \PY{n}{b}
+\PY{k}{end}
+\PY{n}{w}\PY{p}{,} \PY{n}{b} \PY{o}{=} \PY{n}{SVM\PYZus{}rigida}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+******************************************************************************
+
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+([-2.857142829807275, 3.3333333011819755], 4.99999995276859)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Assim, com o auxílio da função \texttt{SVM\_rigida}, encontramos os
+valores ótimos para \(w\) e \(b\), os quais definem o hiperplano
+separador \(\mathcal{H}(w,b)\), que é dado por
+
+\[
+(-2.857142829807275, 3.333333301181975)^{T} x + 4.99999995276859 = 0,
+\]
+
+com \(x \in \mathbb{R}^{2}\).
+
+Para melhor visualizar a classificação dos dados de treinamento vamos
+representá-los graficamente a seguir junto ao hiperplano ótimo.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{I} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Ytrain} \PY{o}{.==} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{scatter}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{blue}\PY{p}{,} \PY{n}{m}\PY{o}{=}\PY{o}{:}\PY{n}{square}\PY{p}{,} \PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{S}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{a}\PY{l+s}{ }\PY{l+s}{(}\PY{l+s}{t}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{o}\PY{l+s}{)}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{legend}\PY{o}{=}\PY{o}{:}\PY{n}{outerbottomright}\PY{p}{)}
+\PY{n+nb}{I} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Ytrain} \PY{o}{.==} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{scatter!}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{red}\PY{p}{,} \PY{n}{m}\PY{o}{=}\PY{o}{:}\PY{n}{circle}\PY{p}{,} \PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{N}\PY{l+s}{ã}\PY{l+s}{o}\PY{l+s}{ }\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{a}\PY{l+s}{ }\PY{l+s}{(}\PY{l+s}{t}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{o}\PY{l+s}{)}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{c}{\PYZsh{} plot!(leg=false)}
+\PY{n}{plot!}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{o}{\PYZhy{}}\PY{p}{(}\PY{n}{w}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{n}{x} \PY{o}{+} \PY{n}{b}\PY{p}{)} \PY{o}{/} \PY{n}{w}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{magenta}\PY{p}{,} \PY{n}{lw}\PY{o}{=}\PY{o}{:}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{S}\PY{l+s}{o}\PY{l+s}{l}\PY{l+s}{u}\PY{l+s}{ç}\PY{l+s}{ã}\PY{l+s}{o}\PY{l+s}{ }\PY{l+s}{Ó}\PY{l+s}{t}\PY{l+s}{i}\PY{l+s}{m}\PY{l+s}{a}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plot!}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{o}{\PYZhy{}}\PY{p}{(}\PY{n}{w}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{n}{x} \PY{o}{+} \PY{n}{b} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{/} \PY{n}{w}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{blue}\PY{p}{,} \PY{n}{l}\PY{o}{=}\PY{o}{:}\PY{n}{dash}\PY{p}{,}\PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plot!}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{o}{\PYZhy{}}\PY{p}{(}\PY{n}{w}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{n}{x} \PY{o}{+} \PY{n}{b} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{/} \PY{n}{w}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{red}\PY{p}{,} \PY{n}{l}\PY{o}{=}\PY{o}{:}\PY{n}{dash}\PY{p}{,}\PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+{            
+\prompt{Out}{outcolor}{9}{}
+    
+    \begin{center}
+    \includegraphics[width=0.7\textwidth]{Implementacao_de_SVM_em_Julia_TCC_files/Implementacao_de_SVM_em_Julia_TCC_18_0.pdf}
+    \end{center}
+    % { \hspace*{\fill} \\}
+    }
+
+    Portanto, no gráfico acima a reta magenta corresponde ao hiperplano
+ótimo e as retas tracejadas são os hiperplanos que delimitam a máxima
+margem possível. Observe que o conjuto de dados de treinamento é
+linearmente separável, pois o hiperplano ótimo os está separando
+corretamente.
+
+Além disso, de acordo com a Definição 14 do Capítulo 5.2, temos que os
+vetores que estão sobre os hiperplanos da margem são os \emph{vetores
+suporte}. Observe que tais vetores dão suporte ao hiperplano ótimo, de
+modo que todos os demais vetores poderiam ser descartados sem alterá-lo.
+
+Agora, tendo determinado o classificador (hiperplano ótimo), vamos para
+a fase de testes, na qual estamos interessados em analisar se o
+classificador encontrado é eficaz. Para tanto, vamos acrescentar ao
+gráfico anterior os dados do conjunto de teste e observar se o
+hiperplano encontrado também os separa corretamente.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{I} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Ytest} \PY{o}{.==} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{scatter!}\PY{p}{(}\PY{n}{Xtest}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{Xtest}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{magenta}\PY{p}{,} \PY{n}{m}\PY{o}{=}\PY{o}{:}\PY{n}{square}\PY{p}{,} \PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{S}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{a}\PY{l+s}{ }\PY{l+s}{(}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{)}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{legend}\PY{o}{=}\PY{o}{:}\PY{n}{outerbottomright}\PY{p}{)}
+\PY{n+nb}{I} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Ytest} \PY{o}{.==} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{scatter!}\PY{p}{(}\PY{n}{Xtest}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{Xtest}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{black}\PY{p}{,} \PY{n}{m}\PY{o}{=}\PY{o}{:}\PY{n}{circle}\PY{p}{,} \PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{N}\PY{l+s}{ã}\PY{l+s}{o}\PY{l+s}{ }\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{a}\PY{l+s}{ }\PY{l+s}{(}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{)}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+{\prompt{Out}{outcolor}{10}{}
+     
+     \begin{center}
+     \includegraphics[width=0.7\textwidth]{Implementacao_de_SVM_em_Julia_TCC_files/Implementacao_de_SVM_em_Julia_TCC_20_0.pdf}
+     \end{center}
+     % { \hspace*{\fill} \\}
+    } 
+
+    Analisando o gráfico acima percebe-se que há um ponto da espécie setosa
+do conjunto de teste que está localizado ligeiramente do lado direito do
+hiperplano ótimo, fazendo com que seja classificado incorretamente como
+não setosa. Assim, como determinar se o classificador encontrado é o
+melhor?
+
+Para responder a esta pergunta é preciso medir a eficácia do modelo,
+comparando a real saída dos dados de teste com a respectiva
+classificação obtida pelo modelo. De modo geral, quanto mais
+classificações corretas o classificador predizer para o conjunto de
+teste, mais eficiente ele é.
+
+Para analisarmos o desempenho do classificador utilizaremos a Matriz de
+Confusão (REFERENCIAR BIBLIOGRAFIA), também denominada Matriz de Erro,
+que consiste em uma medida de desempenho muito utilizada para fazer
+avaliações de modelos de classificação da aprendizagem de máquina
+supervisionada, como a SVM por exemplo. Ela é uma tabela que apresenta
+quatro combinações entre a classificação real e a prevista, o que nos
+permite analisar se a previsão sugerida pelo classificador encontrado ao
+implementar a SVM é condizente com a verdadeira classificação dos dados.
+Em síntese, a matriz de confusão apresenta as seguintes frequências:
+Verdadeiro Positivo (VP), Verdadeiro Negativo (VN), Falso Positivo (FP)
+e Falso Negativo (FN).
+
+Vamos compreender estas terminologias com base na classificação dos
+dados Íris. Assim, para o problema em que desejamos classificar amostras
+em setosa (\(y_{i} = 1\)) e não setosa (\(y_{i} = -1\)), temos que
+
+\begin{itemize}
+\item
+  Verdadeiro Positivo (VP): quantidade de dados que são setosa
+  (\(y_{i} = 1\)) e foram classificados como tal (\(y_{i} = 1\));
+\item
+  Verdadeiro Negativo (VN): se refere ao número de dados que não são
+  setosa (\(y_{i} = -1\)) e foram classificados corretamente como não
+  setosa (\(y_{i} = -1\));
+\item
+  Falso Positivo (FP): quantidade de dados não setosa (\(y_{i} = -1\))
+  classificados como setosa (\(y_{i} = 1\));
+\item
+  Falso Negativo (FN): quantidade de dados setosa (\(y_{i} = 1\)) que
+  receberam classificação não setosa (\(y_{i} = -1\)).
+\end{itemize}
+
+Assim, a matriz de confusão permite observar a relação entre resultados
+falsos/verdadeiros e negativos/positivos, fornecendo na diagonal
+principal o número de acertos da classificação predita em relação a real
+classificação (VP e VN), enquanto os demais elementos correspondem aos
+erros na classificação (FP e FN). Vale observar que um classificador
+ideal apresentaria uma matriz de confusão com os elementos não
+pertencetes a diagonal principal iguais a zero, pois isso significaria
+que tal classificador não comete erros.
+
+Ademais, usando os valores fornecidos pela matriz de confusão podemos
+calcular a acurácia do modelo, que fornece a porcentagem de dados
+positivos e negativos classificados corretamente. Ela é dada pela
+seguinte fórmula
+
+\[
+\text{Acurácia} = \dfrac{\text{VP} + \text{VN}}{\text{VP} + \text{FP} + \text{VN} + \text{FN}} .
+\]
+
+Note que, quanto mais próxima de 1 for a acurácia, mais assertivo é o
+classificador.
+
+Portanto, para avaliarmos o classificador encontrado, vamos determinar a
+matriz de confusão para este caso e calcular sua acurácia.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Setosa} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZgt{}=} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{Nonsetosa} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)}
+
+\PY{n}{gdf} \PY{o}{=} \PY{n}{filter}\PY{p}{(}\PY{o}{:}\PY{n}{conjunto} \PY{o}{=\PYZgt{}} \PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{iris\PYZus{}df}\PY{p}{)} 
+\PY{n}{gdf}\PY{o}{.}\PY{n}{Ypredito} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{n}{ptrain}\PY{p}{)} 
+\PY{n}{gdf}\PY{p}{[}\PY{n}{Nonsetosa}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{.=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+
+\PY{k}{function} \PY{n}{MatrizConfusao}\PY{p}{(}\PY{n}{gdf}\PY{p}{)}
+    \PY{n}{Verdadeiro\PYZus{}positivo} \PY{o}{=} \PY{n}{nrow}\PY{p}{(}\PY{n}{filter}\PY{p}{(}\PY{p}{[}\PY{o}{:}\PY{n}{Y}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{=\PYZgt{}} \PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+m+mf}{1.} \PY{o}{\PYZam{}\PYZam{}} \PY{n}{y} \PY{o}{==} \PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{gdf}\PY{p}{)}\PY{p}{)} 
+    \PY{n}{Verdadeiro\PYZus{}negativo} \PY{o}{=} \PY{n}{nrow}\PY{p}{(}\PY{n}{filter}\PY{p}{(}\PY{p}{[}\PY{o}{:}\PY{n}{Y}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{=\PYZgt{}} \PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.} \PY{o}{\PYZam{}\PYZam{}} \PY{n}{y} \PY{o}{==} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{gdf}\PY{p}{)}\PY{p}{)}
+    \PY{n}{Falso\PYZus{}positivo} \PY{o}{=} \PY{n}{nrow}\PY{p}{(}\PY{n}{filter}\PY{p}{(}\PY{p}{[}\PY{o}{:}\PY{n}{Y}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{=\PYZgt{}} \PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.} \PY{o}{\PYZam{}\PYZam{}} \PY{n}{y} \PY{o}{==} \PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{gdf}\PY{p}{)}\PY{p}{)}
+    \PY{n}{Falso\PYZus{}negativo} \PY{o}{=} \PY{n}{nrow}\PY{p}{(}\PY{n}{filter}\PY{p}{(}\PY{p}{[}\PY{o}{:}\PY{n}{Y}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{=\PYZgt{}} \PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+m+mf}{1.} \PY{o}{\PYZam{}\PYZam{}} \PY{n}{y} \PY{o}{==} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{gdf}\PY{p}{)}\PY{p}{)}
+    
+    \PY{n}{VP}\PY{p}{,} \PY{n}{VN}\PY{p}{,} \PY{n}{FP}\PY{p}{,} \PY{n}{FN} \PY{o}{=} \PY{n}{Verdadeiro\PYZus{}positivo}\PY{p}{,} \PY{n}{Verdadeiro\PYZus{}negativo}\PY{p}{,} \PY{n}{Falso\PYZus{}positivo}\PY{p}{,} \PY{n}{Falso\PYZus{}negativo}
+    \PY{n}{acuracia} \PY{o}{=} \PY{p}{(}\PY{n}{VP} \PY{o}{+} \PY{n}{VN}\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{n}{VP} \PY{o}{+} \PY{n}{FP} \PY{o}{+} \PY{n}{VN} \PY{o}{+} \PY{n}{FN}\PY{p}{)}
+    \PY{n}{matrizconfusao} \PY{o}{=} \PY{n}{DataFrame}\PY{p}{(}\PY{n}{Classe} \PY{o}{=} \PY{p}{[}\PY{l+s}{\PYZdq{}}\PY{l+s}{R}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{l}\PY{l+s}{ }\PY{l+s}{P}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{i}\PY{l+s}{t}\PY{l+s}{i}\PY{l+s}{v}\PY{l+s}{a}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{R}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{l}\PY{l+s}{ }\PY{l+s}{N}\PY{l+s}{e}\PY{l+s}{g}\PY{l+s}{a}\PY{l+s}{t}\PY{l+s}{i}\PY{l+s}{v}\PY{l+s}{a}\PY{l+s}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+                           \PY{n}{Predita\PYZus{}Positiva} \PY{o}{=} \PY{p}{[}\PY{n}{VP} \PY{p}{,} \PY{n}{FP}\PY{p}{]}\PY{p}{,}
+                           \PY{n}{Predita\PYZus{}Negativa} \PY{o}{=} \PY{p}{[}\PY{n}{FN}\PY{p}{,} \PY{n}{VN}\PY{p}{]} 
+                           \PY{p}{)}
+        \PY{k}{return}  \PY{n}{acuracia}\PY{p}{,} \PY{n}{matrizconfusao}
+\PY{k}{end}
+\PY{n}{Acuracia\PYZus{}Iris}\PY{p}{,} \PY{n}{MatrizConfusao\PYZus{}Iris} \PY{o}{=} \PY{n}{MatrizConfusao}\PY{p}{(}\PY{n}{gdf}\PY{p}{)}\PY{p}{;}
+\PY{n+nd}{@show} \PY{n}{Acuracia\PYZus{}Iris}
+\PY{n}{MatrizConfusao\PYZus{}Iris}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Acuracia\_Iris = 0.99
+    \end{Verbatim}
+ 
+            
+{\prompt{Out}{outcolor}{11}{}
+    
+    \begin{tabular}{r|ccc}
+    & Classe & Predita\_Positiva & Predita\_Negativa\\
+    \hline
+    
+    1 & Real Positiva & 35 & 1 \\
+    2 & Real Negativa & 0 & 64 \\
+\end{tabular}
+
+}
+    
+
+    A tabela acima corresponde à matriz de confusão para o hiperplano ótimo
+encontrado, em que dos 100 dados do conjunto de teste, o número de $VP =
+35, VN = 64, FN = 1 e FP = 0$. Ou seja, um dado da espécie setosa foi
+classificado incorretamente pelo hiperplano ótimo como pertencente às
+espécies versicolor ou virginica, implicando numa acurácia de 99\%.
+
+É possível visualizar este dado no gráfico apresentado anteriormente e
+como ele é único analisamos se tal classificação incorreta se repetia
+nos casos em que a quantidade de dados do conjunto de treinamento fosse
+maior, averiguando assim se uma maior quantidade de dados para treinar o
+modelo resultaria numa solução mais eficiente e que classificasse todos
+os dados de maneira correta. Contudo, o que se observou é que mesmo para
+um conjunto de treino com 100 dados, por exemplo, ainda ocorria uma
+classificação incorreta, pois os dados são distribuídos de maneira
+aleatória entre os conjuntos de treino e teste, de modo que tal controle
+não seja possível. Ademais, é importante que o conjunto de teste não
+seja tão pequeno em relação ao conjunto de treino para que não ocorram
+equívocos ao avaliar se o classificador é bom.
+
+Em vista disso, aplicamos então a técnica SVM com margem flexível (CSVM)
+para classificar esse mesmo conjunto de dados Íris e analisar se dessa
+forma seria possível obter um classificador com uma acurácia de 100\%
+para o conjunto de teste.
+
+Neste caso, de acordo com a teoria desenvolvida no Capítulo 5.3, o
+problema de classificação com margem flexível tem o seguinte formato
+
+\begin{align}
+\min_{w,b, \xi} & \quad \dfrac{1}{2} \Vert w\Vert^{2} + C\sum_{i=1}^{50} \xi_{i} \\
+\text{s.a.} &  \quad y_i(w^{T}x^{i}+b) \geq 1 - \xi_{i} , \quad i=1, \ldots , 50, \\
+& \quad \xi_{i} \geq 0 , \ \ \ \qquad \qquad \qquad i=1, \ldots , 50, 
+\end{align}
+
+em que \(w \in \mathbb{R}^{2}\), \(b\in \mathbb{R}\),
+\(\xi \in \mathbb{R}^{50}\) e \(C >0\).
+
+De maneira análoga à função \texttt{SVM\_rigida}, definimos então a
+função \texttt{SVM\_flexivel} com base no problema acima para aplicar
+aos problemas que exigem a técnica SVM com margem flexível.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{function} \PY{n}{SVM\PYZus{}flexivel}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{,} \PY{n}{C} \PY{o}{=} \PY{l+m+mf}{1.0}\PY{p}{)}
+    \PY{n}{model} \PY{o}{=} \PY{n}{Model}\PY{p}{(}\PY{n}{optimizer\PYZus{}with\PYZus{}attributes}\PY{p}{(}\PY{n}{Ipopt}\PY{o}{.}\PY{n}{Optimizer}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{p}\PY{l+s}{r}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{t}\PY{l+s}{\PYZus{}}\PY{l+s}{l}\PY{l+s}{e}\PY{l+s}{v}\PY{l+s}{e}\PY{l+s}{l}\PY{l+s}{\PYZdq{}}\PY{o}{=\PYZgt{}}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{)}
+
+    \PY{n+nd}{@variable}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{w}\PY{p}{[}\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{n}\PY{p}{]}\PY{p}{)} \PY{c}{\PYZsh{} Aqui declaramos as variáveis.}
+    \PY{n+nd}{@variable}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{b}\PY{p}{)}
+    \PY{n+nd}{@variable}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{ξ}\PY{p}{[}\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{ptrain}\PY{p}{]} \PY{o}{≥} \PY{l+m+mi}{0}\PY{p}{)}
+
+    \PY{n+nd}{@objective}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{Min}\PY{p}{,} \PY{n}{dot}\PY{p}{(}\PY{n}{w}\PY{p}{,} \PY{n}{w}\PY{p}{)} \PY{o}{/} \PY{l+m+mi}{2} \PY{o}{+} \PY{n}{C} \PY{o}{*} \PY{n}{sum}\PY{p}{(}\PY{n}{ξ}\PY{p}{)}\PY{p}{)} \PY{c}{\PYZsh{} Esta é a função objetivo.}
+
+    \PY{n+nd}{@constraint}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{p}{[}\PY{n}{i}\PY{o}{=}\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{ptrain}\PY{p}{]}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{*} \PY{p}{(}\PY{n}{dot}\PY{p}{(}\PY{n}{w}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{o}{:}\PY{p}{]}\PY{p}{)} \PY{o}{+} \PY{n}{b}\PY{p}{)}  \PY{o}{≥} \PY{l+m+mi}{1}\PY{o}{\PYZhy{}} \PY{n}{ξ}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)} \PY{c}{\PYZsh{} Esta é a restrição.}
+
+    \PY{c}{\PYZsh{} print(model) }
+    \PY{n}{optimize!}\PY{p}{(}\PY{n}{model}\PY{p}{)}
+
+    \PY{n}{w}\PY{p}{,} \PY{n}{b}\PY{p}{,} \PY{n}{ξ} \PY{o}{=} \PY{n}{value}\PY{o}{.}\PY{p}{(}\PY{n}{w}\PY{p}{)}\PY{p}{,} \PY{n}{value}\PY{o}{.}\PY{p}{(}\PY{n}{b}\PY{p}{)}\PY{p}{,} \PY{n}{value}\PY{o}{.}\PY{p}{(}\PY{n}{ξ}\PY{p}{)} \PY{c}{\PYZsh{}aqui queremos desenhar os valores ótimos.}
+        \PY{k}{return} \PY{n}{w}\PY{p}{,} \PY{n}{b}\PY{p}{,} \PY{n}{ξ}
+\PY{k}{end}
+\PY{n}{w}\PY{p}{,} \PY{n}{b}\PY{p}{,} \PY{n}{ξ} \PY{o}{=} \PY{n}{SVM\PYZus{}flexivel}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{,} \PY{l+m+mf}{1.0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+([-1.8054054084206983, 1.567567554887955], 4.721081137153697, [0.0,
+0.42270269035295177, 0.0, 0.0, 0.0, 0.0, 0.1805405354351823, 0.2659459348641559,
+0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Portanto, adaptando nosso modelo obtemos uma nova solução que é
+apresentada acima. Os valores ótimos encontrados determinaram um novo
+hiperplano classificador, o qual está representado na cor magenta no
+gráfico a seguir.
+
+Fazendo uma comparação entre este hiperplano ótimo e aquele determinado
+no problema em que aplicamos SVM de margem rígida, percebemos que no
+caso atual os vetores que apresentam \(\xi_{i} > 0\) possuem uma maior
+``liberdade'', de modo que possam estar localizados na região entre as
+margens e o hiperplano separador. Tal ``liberdade'' é fruto do
+relaxamento promovido nas restrições através das variáveis de folga,
+relaxamento que deve ser regulado. É neste contexto que entra o
+parâmetro \(C\). De acordo com Krulikovski (2017), tal parâmetro nos
+fornece um ``equilíbrio entre a maximização da margem e a minimização do
+erro de classificação''. Ou seja, caso o valor atribuído ao parâmetro de
+penalização \(C\) seja pequeno, uma maior quantidade de vetores recebe
+folga, inclusive alguns para os quais não seria necessário. Caso
+contrário, se valores muito altos são atribuídos ao parâmetro \(C\), o
+número de vetores que recebe folga diminui. Contudo, neste último caso o
+programa tende a se concentrar em minimizar a penalização em vez de
+maximizar a margem na função objetivo. Em decorrência disso, é de suma
+importância escolher o valor correto para o parâmetro \(C\).
+
+Assim, ao definir a função \texttt{SVM\_flexivel} determinamos como
+padrão \(C=1\), pois como veremos na fase de testes tal valor
+possibilitou uma boa classificação para o problema atual. No entanto, na
+próxima seção analisaremos os classificadores obtidos para diferentes
+valores de \(C\).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{I} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{ξ} \PY{o}{.\PYZgt{}} \PY{l+m+mf}{1e\PYZhy{}6}\PY{p}{)} 
+\PY{n}{scatter!}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{green}\PY{p}{,} \PY{n}{m}\PY{o}{=}\PY{p}{(}\PY{o}{:}\PY{n}{white}\PY{p}{,} \PY{n}{stroke}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{o}{:}\PY{n}{green}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{I} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Ytrain} \PY{o}{.==} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{scatter}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{blue}\PY{p}{,} \PY{n}{m}\PY{o}{=}\PY{o}{:}\PY{n}{square}\PY{p}{,} \PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{S}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{a}\PY{l+s}{ }\PY{l+s}{(}\PY{l+s}{t}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{o}\PY{l+s}{)}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{legend}\PY{o}{=}\PY{o}{:}\PY{n}{outerbottomright}\PY{p}{)}
+\PY{n+nb}{I} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Ytrain} \PY{o}{.==} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{scatter!}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{red}\PY{p}{,} \PY{n}{m}\PY{o}{=}\PY{o}{:}\PY{n}{circle}\PY{p}{,} \PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{N}\PY{l+s}{ã}\PY{l+s}{o}\PY{l+s}{ }\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{a}\PY{l+s}{ }\PY{l+s}{(}\PY{l+s}{t}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{o}\PY{l+s}{)}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{c}{\PYZsh{} plot!(leg=false)}
+\PY{n}{plot!}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{o}{\PYZhy{}}\PY{p}{(}\PY{n}{w}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{n}{x} \PY{o}{+} \PY{n}{b}\PY{p}{)} \PY{o}{/} \PY{n}{w}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{magenta}\PY{p}{,} \PY{n}{lw}\PY{o}{=}\PY{o}{:}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{S}\PY{l+s}{o}\PY{l+s}{l}\PY{l+s}{u}\PY{l+s}{ç}\PY{l+s}{ã}\PY{l+s}{o}\PY{l+s}{ }\PY{l+s}{Ó}\PY{l+s}{t}\PY{l+s}{i}\PY{l+s}{m}\PY{l+s}{a}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plot!}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{o}{\PYZhy{}}\PY{p}{(}\PY{n}{w}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{n}{x} \PY{o}{+} \PY{n}{b} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{/} \PY{n}{w}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{blue}\PY{p}{,} \PY{n}{l}\PY{o}{=}\PY{o}{:}\PY{n}{dash}\PY{p}{,}\PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plot!}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{o}{\PYZhy{}}\PY{p}{(}\PY{n}{w}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{n}{x} \PY{o}{+} \PY{n}{b} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{/} \PY{n}{w}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{red}\PY{p}{,} \PY{n}{l}\PY{o}{=}\PY{o}{:}\PY{n}{dash}\PY{p}{,}\PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+{            
+\prompt{Out}{outcolor}{13}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.6\linewidth}{0.9\paperheight}}{Implementacao_de_SVM_em_Julia_TCC_files/Implementacao_de_SVM_em_Julia_TCC_26_0.pdf}
+    \end{center}
+    }
+
+    Novamente, após determinado o classificador, é preciso avaliar sua
+eficiência. Portanto, utilizando o conjunto de teste vamos construir a
+matriz de confusão e calcular a acurácia do novo hiperplano encontrado.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Setosa} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZgt{}=} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{Nonsetosa} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{gdf} \PY{o}{=} \PY{n}{filter}\PY{p}{(}\PY{o}{:}\PY{n}{conjunto} \PY{o}{=\PYZgt{}} \PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{iris\PYZus{}df}\PY{p}{)} \PY{c}{\PYZsh{}filter é uma função. Neste caso, ela foi utilizada para \PYZdq{}filtrar\PYZdq{}/selecionar em um dataframe que denominamos por \PYZdq{}gdf\PYZdq{} todos os dados x que possuiam \PYZdq{}teste\PYZdq{} na coluna \PYZdq{}conjunto\PYZdq{}. Assim, conseguimos analisar a predição do conjunto de teste}
+\PY{n}{gdf}\PY{o}{.}\PY{n}{Ypredito} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{n}{ptrain}\PY{p}{)} \PY{c}{\PYZsh{}fill é uma função. Neste caso ela preencheu a coluna Ypredito com 1.}
+\PY{n}{gdf}\PY{p}{[}\PY{n}{Nonsetosa}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{.=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+\PY{n}{Acuracia\PYZus{}Iris}\PY{p}{,} \PY{n}{MatrizConfusao\PYZus{}Iris} \PY{o}{=} \PY{n}{MatrizConfusao}\PY{p}{(}\PY{n}{gdf}\PY{p}{)}\PY{p}{;}
+\PY{n+nd}{@show} \PY{n}{Acuracia\PYZus{}Iris}
+\PY{n}{MatrizConfusao\PYZus{}Iris}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Acuracia\_Iris = 1.0
+    \end{Verbatim}
+ 
+            
+{\prompt{Out}{outcolor}{14}{}
+    
+    \begin{tabular}{r|ccc}
+    & Classe & Predita\_Positiva & Predita\_Negativa\\
+    \hline
+    
+    1 & Real Positiva & 36 & 0 \\
+    2 & Real Negativa & 0 & 64 \\
+\end{tabular}
+
+
+    }
+
+    Analisando a matriz de confusão temos que os valores de FN e FP são
+nulos, o que nos permite concluir que o hiperplano ótimo encontrado pela
+técnica SVM com margem flexível atua como um bom classificador,
+apresentando uma acurácia igual a 1 e, portanto, 100\% de acerto na
+classificação dos dados de teste em setosa e não setosa. De fato, no
+gráfico a seguir podemos visualizar que o hiperplano ótimo separa todos
+os dados dos conjuntos de treino e teste corretamente.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{I} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Ytest} \PY{o}{.==} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{scatter!}\PY{p}{(}\PY{n}{Xtest}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{Xtest}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{magenta}\PY{p}{,} \PY{n}{m}\PY{o}{=}\PY{o}{:}\PY{n}{square}\PY{p}{,} \PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{S}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{a}\PY{l+s}{ }\PY{l+s}{(}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{)}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{legend}\PY{o}{=}\PY{o}{:}\PY{n}{outerbottomright}\PY{p}{)}
+\PY{n+nb}{I} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Ytest} \PY{o}{.==} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{scatter!}\PY{p}{(}\PY{n}{Xtest}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{Xtest}\PY{p}{[}\PY{n+nb}{I}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{o}{:}\PY{n}{black}\PY{p}{,} \PY{n}{m}\PY{o}{=}\PY{o}{:}\PY{n}{circle}\PY{p}{,} \PY{n}{label} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{N}\PY{l+s}{ã}\PY{l+s}{o}\PY{l+s}{ }\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{a}\PY{l+s}{ }\PY{l+s}{(}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{)}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+{\prompt{Out}{outcolor}{15}{}
+    
+    \begin{center}
+    \includegraphics[width=0.7\textwidth]{Implementacao_de_SVM_em_Julia_TCC_files/Implementacao_de_SVM_em_Julia_TCC_30_0.pdf}
+    \end{center}
+    }
+
+    Portanto, utilizando a técnica CSVM, com \(C = 1\), foi possível
+determinar um hiperplano separador com uma acurácia de 100\% para o
+conjunto de teste.
+
+\hypertarget{classificauxe7uxe3o-com-quatro-caracteruxedsticas}{%
+\subsubsection{Classificação com quatro
+características}\label{classificauxe7uxe3o-com-quatro-caracteruxedsticas}}
+
+Agora, vamos analisar a implementação da técnica SVM com margem rígida
+para a classificação do conjunto de dados Íris em setosa e não setosa
+levando em consideração quatro características: comprimento e largura
+das sépalas e pétalas.
+
+De modo análogo ao exemplo anterior, os dados pertencentes à espécie
+setosa serão classificados como 1, e os demais, pertencetes às espécies
+versicolor ou virginica, classificados como -1. A principal diferença
+agora é que os dados do conjunto de entrada pertencem ao
+\(\mathbb{R}^{4}\).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{X} \PY{o}{=} \PY{n}{convert}\PY{p}{(}\PY{k+kt}{Array}\PY{p}{,}\PY{n}{iris}\PY{p}{[}\PY{o}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{o}{:}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)} 
+\PY{n}{p}\PY{p}{,} \PY{n}{n} \PY{o}{=} \PY{n}{size}\PY{p}{(}\PY{n}{X}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(150, 4)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{iris\PYZus{}df} \PY{o}{=} \PY{n}{DataFrame}\PY{p}{(}\PY{n}{X}\PY{p}{)}\PY{p}{;}
+\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Y} \PY{o}{=} \PY{p}{[}\PY{n}{species} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{a}\PY{l+s}{\PYZdq{}} \PY{o}{?} \PY{l+m+mf}{1.0} \PY{o}{:} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.0} \PY{k}{for} \PY{n}{species} \PY{k+kp}{in} \PY{n}{iris}\PY{p}{[}\PY{o}{!}\PY{p}{,}\PY{o}{:}\PY{n}{Species}\PY{p}{]}\PY{p}{]}\PY{p}{;}
+\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Especie} \PY{o}{=} \PY{n}{iris}\PY{o}{.}\PY{n}{Species}
+\PY{n}{rename!}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{p}{,} \PY{k+kt}{Dict}\PY{p}{(}\PY{o}{:}\PY{n}{x1} \PY{o}{=\PYZgt{}} \PY{o}{:}\PY{n}{Comp\PYZus{}sepala}\PY{p}{)}\PY{p}{)}
+\PY{n}{rename!}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{p}{,} \PY{k+kt}{Dict}\PY{p}{(}\PY{o}{:}\PY{n}{x2} \PY{o}{=\PYZgt{}} \PY{o}{:}\PY{n}{Larg\PYZus{}sepala}\PY{p}{)}\PY{p}{)}
+\PY{n}{rename!}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{p}{,} \PY{k+kt}{Dict}\PY{p}{(}\PY{o}{:}\PY{n}{x3} \PY{o}{=\PYZgt{}} \PY{o}{:}\PY{n}{Comp\PYZus{}petala}\PY{p}{)}\PY{p}{)}
+\PY{n}{rename!}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{p}{,} \PY{k+kt}{Dict}\PY{p}{(}\PY{o}{:}\PY{n}{x4} \PY{o}{=\PYZgt{}} \PY{o}{:}\PY{n}{Larg\PYZus{}petala}\PY{p}{)}\PY{p}{)}
+\PY{n}{first}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Analisando os gráficos da firgura (referenciar pairplot) temos que os
+dados setosa (em azul) e não setosa (em verde e vermelho) aparentam ser
+linearmente separáveis. Guiados por essa perspectiva, vamos aplicar a
+técnica SVM com margem rígida para determinar o classificador.
+
+Inicialmente, assim como no problema anterior, é necessário separar os
+dados Íris em conjunto de treinamento (\texttt{train\_set}), com 50
+dados, e conjunto de teste (\texttt{test\_set}), com 100 dados.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Random}\PY{o}{.}\PY{n}{seed!}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{trainsize} \PY{o}{=} \PY{l+m+mi}{50} 
+\PY{n}{train\PYZus{}set} \PY{o}{=} \PY{n}{sample}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{p}\PY{p}{,}\PY{n}{trainsize}\PY{p}{,}\PY{n}{replace}\PY{o}{=}\PY{k+kc}{false}\PY{p}{,}\PY{n}{ordered}\PY{o}{=}\PY{k+kc}{true}\PY{p}{)} 
+\PY{n}{test\PYZus{}set} \PY{o}{=} \PY{n}{setdiff}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{p}\PY{p}{,}\PY{n}{train\PYZus{}set}\PY{p}{)} 
+\PY{n}{Xtrain} \PY{o}{=} \PY{n}{X}\PY{p}{[}\PY{n}{train\PYZus{}set}\PY{p}{,}\PY{o}{:}\PY{p}{]}
+\PY{n}{Ytrain} \PY{o}{=} \PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Y}\PY{p}{[}\PY{n}{train\PYZus{}set}\PY{p}{]}
+\PY{n}{Xtest} \PY{o}{=} \PY{n}{X}\PY{p}{[}\PY{n}{test\PYZus{}set}\PY{p}{,}\PY{o}{:}\PY{p}{]}
+\PY{n}{Ytest} \PY{o}{=} \PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Y}\PY{p}{[}\PY{n}{test\PYZus{}set}\PY{p}{]}
+\PY{n}{ptrain} \PY{o}{=} \PY{n}{length}\PY{p}{(}\PY{n}{Ytrain}\PY{p}{)}
+\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{conjunto} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{o}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{p}\PY{p}{)}
+\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{conjunto}\PY{p}{[}\PY{n}{test\PYZus{}set}\PY{p}{]} \PY{o}{.=} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}
+\PY{n}{iris\PYZus{}df}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Tendo definido os conjuntos de treino e teste, vamos aplicar a técnica
+SVM com margem rígida sobre o conjunto de treino para obter o hiperplano
+separador. Para tanto, utilizaremos a função \texttt{SVM\_rigida}
+definida no exemplo anterior.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{w}\PY{p}{,} \PY{n}{b} \PY{o}{=} \PY{n}{SVM\PYZus{}rigida}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+([-1.9124232444455314e-7, 0.3203662687382003, -0.8237985755072654,
+-0.3661327030904415], 1.315789899955701)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Agora, vamos avaliar a eficiência do classificador encontrado, isto é,
+se ele separa os dados corretamente. Para tanto, tomamos o conjunto de
+teste, para o qual já conhecemos sua real classificação, e comparamos
+com a classificação predita pelo hiperplano separador. Os resultados
+desta comparação podem ser visualizados na matriz de confusão dada a
+seguir e a taxa de acerto é dada pela acurácia..
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Setosa} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZgt{}=} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{Nonsetosa} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{gdf} \PY{o}{=} \PY{n}{filter}\PY{p}{(}\PY{o}{:}\PY{n}{conjunto} \PY{o}{=\PYZgt{}} \PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{iris\PYZus{}df}\PY{p}{)} 
+\PY{n}{gdf}\PY{o}{.}\PY{n}{Ypredito} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{n}{ptrain}\PY{p}{)} 
+\PY{n}{gdf}\PY{p}{[}\PY{n}{Nonsetosa}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{.=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+\PY{n}{Acuracia\PYZus{}Iris}\PY{p}{,} \PY{n}{MatrizConfusao\PYZus{}Iris} \PY{o}{=} \PY{n}{MatrizConfusao}\PY{p}{(}\PY{n}{gdf}\PY{p}{)}\PY{p}{;}
+\PY{n+nd}{@show} \PY{n}{Acuracia\PYZus{}Iris}
+\PY{n}{MatrizConfusao\PYZus{}Iris}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Acuracia\_Iris = 1.0
+    \end{Verbatim}
+ 
+{            
+\prompt{Out}{outcolor}{20}{}
+    
+    \begin{tabular}{r|ccc}
+    & Classe & Predita\_Positiva & Predita\_Negativa\\
+    \hline
+    
+    1 & Real Positiva & 36 & 0 \\
+    2 & Real Negativa & 0 & 64 \\
+\end{tabular}
+
+
+    }
+
+    Assim, como os valores da diagonal secundária são todos nulos temos que
+o hiperplano ótimo separou todos os dados do conjunto de teste
+corretamente, apresentando uma acurácia de 100\%.
+
+Portanto, para o problema que considera as quatro características dos
+dados amostrais temos que a técnica SVM com margem rígida nos fornece um
+hiperplano que atua como um bom classificador, separando corretamente
+todos os dados, tanto de treinamento quanto de teste.
+
+\hypertarget{classificauxe7uxe3o-em-espuxe9cie-virginica-e-nuxe3o-virginica-utilizando-quatro-caracteruxedsticas}{%
+\subsubsection{Classificação em espécie virginica e não virginica
+utilizando quatro
+características}\label{classificauxe7uxe3o-em-espuxe9cie-virginica-e-nuxe3o-virginica-utilizando-quatro-caracteruxedsticas}}
+
+Para finalizar os experimentos numéricos com o conjunto de dados Íris,
+vamos implementar neste momento a técnica SVM com margem flexível para
+classificar tal conjunto de dados em virginica e não virginica.
+
+Assim como no exemplo anterior, serão consideradas as características
+comprimento e largura das sépalas e pétalas, de modo que cada vetor
+\(x^{i} \in \mathbb{R}^{4}\). Mas gora, dados da espécie virginica serão
+classificados com \(y_{i} = 1\) e dados das espécies não virginica com
+\(y_{i} = -1\).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{X} \PY{o}{=} \PY{n}{convert}\PY{p}{(}\PY{k+kt}{Array}\PY{p}{,}\PY{n}{iris}\PY{p}{[}\PY{o}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{o}{:}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)} 
+\PY{n}{p}\PY{p}{,} \PY{n}{n} \PY{o}{=} \PY{n}{size}\PY{p}{(}\PY{n}{X}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(150, 4)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{iris\PYZus{}df} \PY{o}{=} \PY{n}{DataFrame}\PY{p}{(}\PY{n}{X}\PY{p}{)}\PY{p}{;}
+\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Y} \PY{o}{=} \PY{p}{[}\PY{n}{species} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{v}\PY{l+s}{i}\PY{l+s}{r}\PY{l+s}{g}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{i}\PY{l+s}{c}\PY{l+s}{a}\PY{l+s}{\PYZdq{}} \PY{o}{?} \PY{l+m+mf}{1.0} \PY{o}{:} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.0} \PY{k}{for} \PY{n}{species} \PY{k+kp}{in} \PY{n}{iris}\PY{p}{[}\PY{o}{!}\PY{p}{,}\PY{o}{:}\PY{n}{Species}\PY{p}{]}\PY{p}{]}\PY{p}{;}
+\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Especie} \PY{o}{=} \PY{n}{iris}\PY{o}{.}\PY{n}{Species}
+\PY{n}{rename!}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{p}{,} \PY{k+kt}{Dict}\PY{p}{(}\PY{o}{:}\PY{n}{x1} \PY{o}{=\PYZgt{}} \PY{o}{:}\PY{n}{Comp\PYZus{}sepala}\PY{p}{)}\PY{p}{)}
+\PY{n}{rename!}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{p}{,} \PY{k+kt}{Dict}\PY{p}{(}\PY{o}{:}\PY{n}{x2} \PY{o}{=\PYZgt{}} \PY{o}{:}\PY{n}{Larg\PYZus{}sepala}\PY{p}{)}\PY{p}{)}
+\PY{n}{rename!}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{p}{,} \PY{k+kt}{Dict}\PY{p}{(}\PY{o}{:}\PY{n}{x3} \PY{o}{=\PYZgt{}} \PY{o}{:}\PY{n}{Comp\PYZus{}petala}\PY{p}{)}\PY{p}{)}
+\PY{n}{rename!}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{p}{,} \PY{k+kt}{Dict}\PY{p}{(}\PY{o}{:}\PY{n}{x4} \PY{o}{=\PYZgt{}} \PY{o}{:}\PY{n}{Larg\PYZus{}petala}\PY{p}{)}\PY{p}{)}
+\PY{n}{first}\PY{p}{(}\PY{n}{iris\PYZus{}df}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Observando novamente os gráficos apresentados em (referenciar pairplot),
+é possível perceber que alguns dados pertencentes às duas classes
+distintas (virginica na cor verde e não virginica nas cores azul e
+vermelha) acabam se sobrepondo. Logo, intuímos que eles não são
+linearmente separáveis. Em vista disso, aplicaremos a técnica SVM com
+margem flexível para obter o classificador.
+
+De modo análogo ao que foi desenvolvido anteriormente, é necessário
+primeiramente dividir aleatoriamente o conjunto total de dados em dois
+subconjuntos: conjunto de treinamento e conjunto de testes. Neste caso,
+o conjunto de treinamento será composto por 75 dados e o conjunto de
+teste pelos 75 dados restantes.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Random}\PY{o}{.}\PY{n}{seed!}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{trainsize} \PY{o}{=} \PY{l+m+mi}{75} 
+\PY{n}{train\PYZus{}set} \PY{o}{=} \PY{n}{sample}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{p}\PY{p}{,}\PY{n}{trainsize}\PY{p}{,}\PY{n}{replace}\PY{o}{=}\PY{k+kc}{false}\PY{p}{,}\PY{n}{ordered}\PY{o}{=}\PY{k+kc}{true}\PY{p}{)}
+\PY{n}{test\PYZus{}set} \PY{o}{=} \PY{n}{setdiff}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{p}\PY{p}{,}\PY{n}{train\PYZus{}set}\PY{p}{)} 
+\PY{n}{Xtrain} \PY{o}{=} \PY{n}{X}\PY{p}{[}\PY{n}{train\PYZus{}set}\PY{p}{,}\PY{o}{:}\PY{p}{]}
+\PY{n}{Ytrain} \PY{o}{=} \PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Y}\PY{p}{[}\PY{n}{train\PYZus{}set}\PY{p}{]}
+\PY{n}{Xtest} \PY{o}{=} \PY{n}{X}\PY{p}{[}\PY{n}{test\PYZus{}set}\PY{p}{,}\PY{o}{:}\PY{p}{]}
+\PY{n}{Ytest} \PY{o}{=} \PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{Y}\PY{p}{[}\PY{n}{test\PYZus{}set}\PY{p}{]}
+\PY{n}{ptrain} \PY{o}{=} \PY{n}{length}\PY{p}{(}\PY{n}{Ytrain}\PY{p}{)}
+\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{conjunto} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{o}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{p}\PY{p}{)}
+\PY{n}{iris\PYZus{}df}\PY{o}{.}\PY{n}{conjunto}\PY{p}{[}\PY{n}{test\PYZus{}set}\PY{p}{]} \PY{o}{.=} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}
+\PY{n}{iris\PYZus{}df}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Agora, para obter o hiperplano ótimo aplicamos a função
+\texttt{SVM\_flexivel} com parâmetro \(C = 1\).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{w}\PY{p}{,} \PY{n}{b}\PY{p}{,} \PY{n}{ξ} \PY{o}{=} \PY{n}{SVM\PYZus{}flexivel}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+([-0.3456754552444701, -0.8049690813571279, 1.7254845918550477,
+1.6080094600267831], -6.676855229902285, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.8965384097436062, 0.0, 4.754013257179834e-9,
+0.0, 0.0, 0.0, 0.0])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Assim, a solução acima nos fornece o hiperplano ótimo. Observe também
+que, de acordo com a solução ótima encontrada, algumas variáveis de
+folga \(\xi_{i}\) assumiram valores não nulos.
+
+Para verificarmos se tal hiperplano atua como um bom classificador
+recorremos à fase de testes. Em vista disso, apresentamos a seguir a
+matriz de confusão e a acurácia do hiperplano ótimo encontrado ao
+classificar o conjunto de teste..
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Virginica} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZgt{}=} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{Nonvirginica} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{gdf} \PY{o}{=} \PY{n}{filter}\PY{p}{(}\PY{o}{:}\PY{n}{conjunto} \PY{o}{=\PYZgt{}} \PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{iris\PYZus{}df}\PY{p}{)} 
+\PY{n}{gdf}\PY{o}{.}\PY{n}{Ypredito} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{n}{ptrain}\PY{p}{)} 
+\PY{n}{gdf}\PY{p}{[}\PY{n}{Nonvirginica}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{.=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+\PY{n}{Acuracia\PYZus{}Iris}\PY{p}{,} \PY{n}{MatrizConfusao\PYZus{}Iris} \PY{o}{=} \PY{n}{MatrizConfusao}\PY{p}{(}\PY{n}{gdf}\PY{p}{)}\PY{p}{;}
+\PY{n+nd}{@show} \PY{n}{Acuracia\PYZus{}Iris}
+\PY{n}{MatrizConfusao\PYZus{}Iris}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Acuracia\_Iris = 1.0
+    \end{Verbatim}
+ 
+{            
+\prompt{Out}{outcolor}{25}{}
+    
+    \begin{tabular}{r|ccc}
+    & Classe & Predita\_Positiva & Predita\_Negativa\\
+    \hline
+    
+    1 & Real Positiva & 23 & 0 \\
+    2 & Real Negativa & 0 & 52 \\
+\end{tabular}
+}
+
+    
+
+    Felizmente, como a diagonal secundária apresenta somente valores nulos,
+temos que não ocorreram Falsos Positivos e Falsos Negativos para a
+classificação do conjunto de teste. Além disso, calculando a acurácia
+para o conjunto de teste obtemos 100\% de acerto. Logo, o hiperplano
+ótimo encontrado classifica corretamente os dados do conjunto de treino
+e de teste, se configurando num ótimo classificador.
+
+    \hypertarget{implementauxe7uxe3o-de-svm-para-classificauxe7uxe3o-de-dados-de-cuxe2ncer-de-mama}{%
+\subsection{Implementação de SVM para Classificação de Dados de Câncer
+de
+Mama}\label{implementauxe7uxe3o-de-svm-para-classificauxe7uxe3o-de-dados-de-cuxe2ncer-de-mama}}
+
+    De acordo com o Instituto Nacional de Câncer (INCA), ``\emph{Câncer é o
+nome dado a um conjunto de mais de 100 doenças que têm em comum o
+crescimento desordenado de células, que invadem tecidos e órgãos.
+Dividindo-se rapidamente, estas células tendem a ser muito agressivas e
+incontroláveis, determinando a formação de tumores, que podem
+espalhar-se para outras regiões do corpo.}'' O câncer de mama por sua
+vez ocorre quando há formação de tumor na mama, sendo o tipo de câncer
+mais incidente entre as mulheres, tanto no Brasil quanto no mundo. No
+mundo, somente em 2018, foram registrados cerca de 2,1 milhões de novos
+casos, número que equivale a 11,6\% de todos os cânceres estimados. No
+Brasil, em 2017, ocorreram 16.724 óbitos por câncer de mama e, segundo
+estimativas do INCA, são estimados cerca de 66.280 novos casos de câncer
+de mama no Brasil para cada ano do triênio 2020-2022, o que correponde a
+uma taxa de incidência de 61,61 novos casos a cada 100 mil mulheres.
+
+O diagnóstico precoce é um dos principais fatores que contribuem para
+reduzir a mortalidade por câncer, possibilitando cerca de 95\% de
+chances de cura. Neste contexto, ``\emph{A mamografia é uma das melhores
+técnicas para o rastreamento do câncer de mama disponível atualmente,
+capaz de registrar imagens da mama com a finalidade de diagnosticar a
+presença ou ausência de estruturas que possam indicar a doença. Com esse
+tipo de exame pode-se detectar o tumor antes que ele se torne
+palpável.}'' (LEAL, LIMA e SILVA, 2019). Tendo em vista as altas taxas
+de incidência e mortes causadas pelo câncer de mama, muitas pesquisas
+científicas vem sendo desenvolvidas nos últimos anos com o intuito de
+auxiliar no diagnósticos de doenças, tornando as técnicas de
+aprendizagem de máquina cada vez mais presentes na área médica.
+
+Visto que este tema é de grande relevância e interesse, o próximo
+experimento numérico será realizado com um conjunto de dados sobre
+células de câncer de mama retirados do \emph{UC Irvine Machine Learning
+Repository}. Nosso objetivo será utilizar a técnica SVM com margem
+flexível para classificar estes dados em tumores malignos ou benignos.
+
+Este conjunto é composto por 569 dados, em que cada um possui um número
+de identidade (ID), sua classificação em tumor maligno (M) ou benigno
+(B) e 30 características acerca de núcleos celulares presentes em
+imagens digitalizadas de um aspirado por agulha fina (do inglês
+\emph{fine needle aspirate}, FNA), de uma massa mamária. As
+características extraídas dos núcleos celulares são:
+
+\begin{itemize}
+\item
+  Raio (média das distâncias do centro aos pontos do perímetro);
+\item
+  Textura (desvio padrão dos valores da escala cinza);
+\item
+  Perímetro;
+\item
+  Área;
+\item
+  Suavidade (variação local nos comprimentos do raio);
+\item
+  Compactação (\(\dfrac{\text{perímetro}^{2}}{\text{área} - 1.0}\));
+\item
+  Concavidade (severidade das porções côncavas do contorno);
+\item
+  Pontos côncavos (número de partes côncavas do contorno);
+\item
+  Simetria;
+\item
+  Dimensão fractal (``aproximação da costa'' - 1).
+\end{itemize}
+
+Para cada imagem foram calculadas a média, o desvido padrão e o ``pior''
+ou maior (média dos três maiores valores) dos valores atribuídos a cada
+um dos atributos acima mencionados, resultando nas 30 características da
+tabela a seguir.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{col\PYZus{}headers} \PY{o}{=} \PY{p}{[}\PY{l+s}{\PYZdq{}}\PY{l+s}{i}\PY{l+s}{d}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{d}\PY{l+s}{i}\PY{l+s}{a}\PY{l+s}{g}\PY{l+s}{n}\PY{l+s}{o}\PY{l+s}{s}\PY{l+s}{i}\PY{l+s}{s}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{r}\PY{l+s}{a}\PY{l+s}{d}\PY{l+s}{i}\PY{l+s}{u}\PY{l+s}{s}\PY{l+s}{\PYZus{}}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{n}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{x}\PY{l+s}{t}\PY{l+s}{u}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{\PYZus{}}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{n}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{p}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{i}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{\PYZus{}}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{n}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{a}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{\PYZus{}}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{n}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{s}\PY{l+s}{m}\PY{l+s}{o}\PY{l+s}{o}\PY{l+s}{t}\PY{l+s}{h}\PY{l+s}{n}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{s}\PY{l+s}{\PYZus{}}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{n}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{c}\PY{l+s}{o}\PY{l+s}{m}\PY{l+s}{p}\PY{l+s}{a}\PY{l+s}{c}\PY{l+s}{t}\PY{l+s}{n}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{s}\PY{l+s}{\PYZus{}}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{n}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{c}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{c}\PY{l+s}{a}\PY{l+s}{v}\PY{l+s}{i}\PY{l+s}{t}\PY{l+s}{y}\PY{l+s}{\PYZus{}}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{n}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{c}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{c}\PY{l+s}{a}\PY{l+s}{v}\PY{l+s}{e}\PY{l+s}{ }\PY{l+s}{p}\PY{l+s}{o}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{t}\PY{l+s}{s}\PY{l+s}{\PYZus{}}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{n}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{s}\PY{l+s}{y}\PY{l+s}{m}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{r}\PY{l+s}{y}\PY{l+s}{\PYZus{}}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{n}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{f}\PY{l+s}{r}\PY{l+s}{a}\PY{l+s}{c}\PY{l+s}{t}\PY{l+s}{a}\PY{l+s}{l}\PY{l+s}{\PYZus{}}\PY{l+s}{d}\PY{l+s}{i}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{n}\PY{l+s}{s}\PY{l+s}{i}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{\PYZus{}}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{n}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{r}\PY{l+s}{a}\PY{l+s}{d}\PY{l+s}{i}\PY{l+s}{u}\PY{l+s}{s}\PY{l+s}{\PYZus{}}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{x}\PY{l+s}{t}\PY{l+s}{u}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{\PYZus{}}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{p}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{i}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{\PYZus{}}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{a}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{\PYZus{}}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{s}\PY{l+s}{m}\PY{l+s}{o}\PY{l+s}{o}\PY{l+s}{t}\PY{l+s}{h}\PY{l+s}{n}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{s}\PY{l+s}{\PYZus{}}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{c}\PY{l+s}{o}\PY{l+s}{m}\PY{l+s}{p}\PY{l+s}{a}\PY{l+s}{c}\PY{l+s}{t}\PY{l+s}{n}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{s}\PY{l+s}{\PYZus{}}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{c}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{c}\PY{l+s}{a}\PY{l+s}{v}\PY{l+s}{i}\PY{l+s}{t}\PY{l+s}{y}\PY{l+s}{\PYZus{}}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{c}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{c}\PY{l+s}{a}\PY{l+s}{v}\PY{l+s}{e}\PY{l+s}{ }\PY{l+s}{p}\PY{l+s}{o}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{t}\PY{l+s}{s}\PY{l+s}{\PYZus{}}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{s}\PY{l+s}{y}\PY{l+s}{m}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{r}\PY{l+s}{y}\PY{l+s}{\PYZus{}}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{f}\PY{l+s}{r}\PY{l+s}{a}\PY{l+s}{c}\PY{l+s}{t}\PY{l+s}{a}\PY{l+s}{l}\PY{l+s}{\PYZus{}}\PY{l+s}{d}\PY{l+s}{i}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{n}\PY{l+s}{s}\PY{l+s}{i}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{\PYZus{}}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{r}\PY{l+s}{a}\PY{l+s}{d}\PY{l+s}{i}\PY{l+s}{u}\PY{l+s}{s}\PY{l+s}{\PYZus{}}\PY{l+s}{w}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{x}\PY{l+s}{t}\PY{l+s}{u}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{\PYZus{}}\PY{l+s}{w}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{p}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{i}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{\PYZus{}}\PY{l+s}{w}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{a}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{\PYZus{}}\PY{l+s}{w}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{s}\PY{l+s}{m}\PY{l+s}{o}\PY{l+s}{o}\PY{l+s}{t}\PY{l+s}{h}\PY{l+s}{n}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{s}\PY{l+s}{\PYZus{}}\PY{l+s}{w}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{c}\PY{l+s}{o}\PY{l+s}{m}\PY{l+s}{p}\PY{l+s}{a}\PY{l+s}{c}\PY{l+s}{t}\PY{l+s}{n}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{s}\PY{l+s}{\PYZus{}}\PY{l+s}{w}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{c}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{c}\PY{l+s}{a}\PY{l+s}{v}\PY{l+s}{i}\PY{l+s}{t}\PY{l+s}{y}\PY{l+s}{\PYZus{}}\PY{l+s}{w}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{c}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{c}\PY{l+s}{a}\PY{l+s}{v}\PY{l+s}{e}\PY{l+s}{ }\PY{l+s}{p}\PY{l+s}{o}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{t}\PY{l+s}{s}\PY{l+s}{\PYZus{}}\PY{l+s}{w}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{s}\PY{l+s}{y}\PY{l+s}{m}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{r}\PY{l+s}{y}\PY{l+s}{\PYZus{}}\PY{l+s}{w}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{\PYZdq{}} \PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{f}\PY{l+s}{r}\PY{l+s}{a}\PY{l+s}{c}\PY{l+s}{t}\PY{l+s}{a}\PY{l+s}{l}\PY{l+s}{\PYZus{}}\PY{l+s}{d}\PY{l+s}{i}\PY{l+s}{m}\PY{l+s}{e}\PY{l+s}{n}\PY{l+s}{s}\PY{l+s}{i}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{\PYZus{}}\PY{l+s}{w}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{\PYZdq{}}\PY{p}{]}
+\PY{n}{cancer\PYZus{}df} \PY{o}{=} \PY{n}{CSV}\PY{o}{.}\PY{n}{read}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{c}\PY{l+s}{a}\PY{l+s}{n}\PY{l+s}{c}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{\PYZus{}}\PY{l+s}{d}\PY{l+s}{a}\PY{l+s}{t}\PY{l+s}{a}\PY{l+s}{.}\PY{l+s}{c}\PY{l+s}{s}\PY{l+s}{v}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{header} \PY{o}{=} \PY{n}{col\PYZus{}headers}\PY{p}{,}\PY{p}{)}
+\PY{n}{cancer\PYZus{}df}\PY{o}{.}\PY{n}{Y} \PY{o}{=} \PY{p}{[}\PY{n}{diagnosis} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{M}\PY{l+s}{\PYZdq{}} \PY{o}{?} \PY{l+m+mf}{1.0} \PY{o}{:} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.0} \PY{k}{for} \PY{n}{diagnosis} \PY{k+kp}{in} \PY{n}{cancer\PYZus{}df}\PY{p}{[}\PY{o}{!}\PY{p}{,}\PY{o}{:}\PY{n}{diagnosis}\PY{p}{]}\PY{p}{]}\PY{p}{;}
+\PY{n}{first}\PY{p}{(}\PY{n}{cancer\PYZus{}df}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ {
+             
+ \prompt{Out}{outcolor}{26}{}
+     
+     \begin{tabular}{r|cccccccc}
+     & id & diagnosis & radius\_mean & texture\_mean & perimeter\_mean & area\_mean & smoothness\_mean & \\
+     \hline
+     
+     1 & 842302 & M & 17.99 & 10.38 & 122.8 & 1001.0 & 0.1184 & $\dots$ \\
+     2 & 842517 & M & 20.57 & 17.77 & 132.9 & 1326.0 & 0.08474 & $\dots$ \\
+     3 & 84300903 & M & 19.69 & 21.25 & 130.0 & 1203.0 & 0.1096 & $\dots$ \\
+     4 & 84348301 & M & 11.42 & 20.38 & 77.58 & 386.1 & 0.1425 & $\dots$ \\
+     5 & 84358402 & M & 20.29 & 14.34 & 135.1 & 1297.0 & 0.1003 & $\dots$ \\
+     6 & 843786 & M & 12.45 & 15.7 & 82.57 & 477.1 & 0.1278 & $\dots$ \\
+     7 & 844359 & M & 18.25 & 19.98 & 119.6 & 1040.0 & 0.09463 & $\dots$ \\
+     8 & 84458202 & M & 13.71 & 20.83 & 90.2 & 577.9 & 0.1189 & $\dots$ \\
+     9 & 844981 & M & 13.0 & 21.82 & 87.5 & 519.8 & 0.1273 & $\dots$ \\
+     10 & 84501001 & M & 12.46 & 24.04 & 83.97 & 475.9 & 0.1186 & $\dots$ \\
+ \end{tabular}
+ 
+ }
+    
+
+    A seguir temos a representação gráfica destes dados considerando-se
+algumas das características mencionadas. Nestes gráficos, os pontos em
+azul correspondem aos dados que pertencem à classe benigna e os dados em
+vermelho à classe maligna.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plt1} \PY{o}{=} \PY{n}{pairplot}\PY{p}{(}\PY{n}{select}\PY{p}{(}\PY{n}{cancer\PYZus{}df}\PY{p}{,}\PY{l+m+mi}{2}\PY{o}{:}\PY{l+m+mi}{7}\PY{p}{)}\PY{p}{,}\PY{o}{:}\PY{n}{diagnosis}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+{            
+    \prompt{Out}{outcolor}{27}{}
+        
+        \begin{center}
+        \includegraphics[width=0.7\textwidth]{Implementacao_de_SVM_em_Julia_TCC_files/Implementacao_de_SVM_em_Julia_TCC_54_0.pdf}
+        \end{center}
+    }    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{X} \PY{o}{=} \PY{n}{convert}\PY{p}{(}\PY{k+kt}{Array}\PY{p}{,}\PY{n}{cancer\PYZus{}df}\PY{p}{[}\PY{o}{:}\PY{p}{,} \PY{l+m+mi}{3}\PY{o}{:}\PY{l+m+mi}{32}\PY{p}{]}\PY{p}{)} 
+\PY{n}{p}\PY{p}{,} \PY{n}{n} \PY{o}{=} \PY{n}{size}\PY{p}{(}\PY{n}{X}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(569, 30)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Neste exemplo, cada dado \(x^{i}\) do conjunto de entrada pertence ao
+\(\mathbb{R}^{30}\), pois são 30 as características. Ademais, os dados
+diagnosticados como malignos (M) serão classificados como \(y_{i} = 1\),
+e os dados com diagnóstico benigno serão classificados com
+\(y_{i} = -1\).
+
+Com base nos gráficos apresentados anteriormente em (referenciar
+pairplot), em que apenas duas características foram consideradas em cada
+vez, é possível intuir que os dados não são linearmente separáveis. Em
+vista disso, vamos aplicar a técnica SVM com margem flexível para
+classificar os dados deste conjunto em câncer Maligno ou Benigno e então
+discutir os resultados encontrados.
+
+Dos 569 dados do conjunto de entrada, 150 dados foram direcionados ao
+conjunto de treinamento e os 419 restantes ao conjunto de teste.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Random}\PY{o}{.}\PY{n}{seed!}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{trainsize} \PY{o}{=} \PY{l+m+mi}{150} 
+\PY{n}{train\PYZus{}set} \PY{o}{=} \PY{n}{sample}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{p}\PY{p}{,}\PY{n}{trainsize}\PY{p}{,}\PY{n}{replace}\PY{o}{=}\PY{k+kc}{false}\PY{p}{,}\PY{n}{ordered}\PY{o}{=}\PY{k+kc}{true}\PY{p}{)} 
+\PY{n}{test\PYZus{}set} \PY{o}{=} \PY{n}{setdiff}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{p}\PY{p}{,}\PY{n}{train\PYZus{}set}\PY{p}{)} 
+\PY{n}{Xtrain} \PY{o}{=} \PY{n}{X}\PY{p}{[}\PY{n}{train\PYZus{}set}\PY{p}{,}\PY{o}{:}\PY{p}{]}
+\PY{n}{Ytrain} \PY{o}{=} \PY{n}{cancer\PYZus{}df}\PY{o}{.}\PY{n}{Y}\PY{p}{[}\PY{n}{train\PYZus{}set}\PY{p}{]}
+\PY{n}{Xtest} \PY{o}{=} \PY{n}{X}\PY{p}{[}\PY{n}{test\PYZus{}set}\PY{p}{,}\PY{o}{:}\PY{p}{]}
+\PY{n}{Ytest} \PY{o}{=} \PY{n}{cancer\PYZus{}df}\PY{o}{.}\PY{n}{Y}\PY{p}{[}\PY{n}{test\PYZus{}set}\PY{p}{]}
+\PY{n}{ptrain} \PY{o}{=} \PY{n}{length}\PY{p}{(}\PY{n}{Ytrain}\PY{p}{)}
+\PY{n}{cancer\PYZus{}df}\PY{o}{.}\PY{n}{conjunto} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{o}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{p}\PY{p}{)}
+\PY{n}{cancer\PYZus{}df}\PY{o}{.}\PY{n}{conjunto}\PY{p}{[}\PY{n}{test\PYZus{}set}\PY{p}{]} \PY{o}{.=} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}
+\PY{n}{cancer\PYZus{}df}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Utilizando a função \texttt{SVM\_flexivel} criada com base na modelagem
+matemática desenvolvida no Capítulo 5.3, determinamos o hiperplano ótimo
+para os seguintes valores para o parâmetro \(C\):
+\(10^{-3}, 10^{-2}, 10^{-1} , 1, 10, 10^{2}, 10^{3}\) e \(10^{4}\). Para
+cada solução encontrada, apresentamos a matriz de confusão e a acurácia
+da classificação do conjunto de teste.
+
+  {  \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{w}\PY{p}{,} \PY{n}{b}\PY{p}{,} \PY{n}{ξ} \PY{o}{=} \PY{n}{SVM\PYZus{}flexivel}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{,} \PY{l+m+mf}{10e\PYZhy{}4}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+([-0.0007584283177882081, 0.024749817454506776, 0.009822094827128402,
+-0.011282507259653948, 0.00013295432105445867, 0.00041548982512510264,
+0.0006312360235894728, 0.00024384420872600567, 0.0002760113401957554,
+4.665038877030037e-5  …  0.0005756889944849921, 0.0461925021432539,
+0.024724367567079457, 0.011565605684616741, 0.0002859685759089533,
+0.0012359065820270936, 0.0014209902266727212, 0.0005180570571382945,
+0.0006807587758263868, 0.00016070250122321433], -8.404759750812234,
+[2.4959040020823596e-6, 2.4959043618068177e-6, 2.4959125710341423e-6,
+1.9276303108231725, 2.4959039350994583e-6, 2.4959039058835335e-6,
+2.495906246322225e-6, 1.2613350516644815, 2.495907890741904e-6,
+2.495316494429246e-6  …  2.495904539290505e-6, 2.49590568960438e-6,
+0.19402238303058858, 2.49590551951686e-6, 2.4959053464691815e-6,
+2.4959096108090774e-6, 2.4959059689534175e-6, 2.4959053893703754e-6,
+2.495910115702953e-6, 2.518615174704152e-6])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Maligno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZgt{}=} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{Benigno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{gdf} \PY{o}{=} \PY{n}{filter}\PY{p}{(}\PY{o}{:}\PY{n}{conjunto} \PY{o}{=\PYZgt{}} \PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{cancer\PYZus{}df}\PY{p}{)} 
+\PY{n}{gdf}\PY{o}{.}\PY{n}{Ypredito} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{n}{ptrain}\PY{p}{)}
+\PY{n}{gdf}\PY{p}{[}\PY{n}{Benigno}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{.=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+\PY{n}{Acuracia\PYZus{}Cancer1}\PY{p}{,} \PY{n}{MatrizConfusao\PYZus{}Cancer} \PY{o}{=} \PY{n}{MatrizConfusao}\PY{p}{(}\PY{n}{gdf}\PY{p}{)}\PY{p}{;}
+\PY{n+nd}{@show} \PY{n}{Acuracia\PYZus{}Cancer1}
+\PY{n}{MatrizConfusao\PYZus{}Cancer}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Acuracia\_Cancer1 = 0.9284009546539379
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{31}{}
+    
+    \begin{tabular}{r|ccc}
+	& Classe & Predita\_Positiva & Predita\_Negativa\\
+	\hline
+	
+	1 & Real Positiva & 134 & 26 \\
+	2 & Real Negativa & 4 & 255 \\
+\end{tabular}
+
+
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{w}\PY{p}{,} \PY{n}{b}\PY{p}{,} \PY{n}{ξ} \PY{o}{=} \PY{n}{SVM\PYZus{}flexivel}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{,} \PY{l+m+mf}{10e\PYZhy{}3}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+([-0.00807183454616408, 0.029645161704839523, 0.05439311212608334,
+-0.011592597530669189, 0.0010117589836746398, 0.003059179554266445,
+0.004690942167627082, 0.001831377789000468, 0.00233941318614483,
+0.0003206848554581692  …  0.0008173819959715592, 0.07826525542595365,
+0.09129580035637944, 0.005833410145061638, 0.00209067625247758,
+0.008699190259215592, 0.010333835136872381, 0.003564572710587319,
+0.00579540977912881, 0.0009855438257824064], -15.648973824054961,
+[8.090908928375011e-8, 8.090908690357925e-8, 8.090902577159509e-8,
+1.515171798298554, 8.090908937916708e-8, 8.090908950356853e-8,
+8.090908229597614e-8, 1.12770750004926, 8.090908126371524e-8,
+1.2533920792607554e-7  …  8.090908705997125e-8, 8.090908560549803e-8,
+8.090894497521895e-8, 8.090908643441776e-8, 8.090908688233132e-8,
+8.090906837019457e-8, 8.090908456189375e-8, 8.090908662184399e-8,
+8.090895727226532e-8, 0.30469823356286685])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Maligno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZgt{}=} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{Benigno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{gdf} \PY{o}{=} \PY{n}{filter}\PY{p}{(}\PY{o}{:}\PY{n}{conjunto} \PY{o}{=\PYZgt{}} \PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{cancer\PYZus{}df}\PY{p}{)} 
+\PY{n}{gdf}\PY{o}{.}\PY{n}{Ypredito} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{n}{ptrain}\PY{p}{)}
+\PY{n}{gdf}\PY{p}{[}\PY{n}{Benigno}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{.=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+\PY{n}{Acuracia\PYZus{}Cancer2}\PY{p}{,} \PY{n}{MatrizConfusao\PYZus{}Cancer} \PY{o}{=} \PY{n}{MatrizConfusao}\PY{p}{(}\PY{n}{gdf}\PY{p}{)}\PY{p}{;}
+\PY{n+nd}{@show} \PY{n}{Acuracia\PYZus{}Cancer2}
+\PY{n}{MatrizConfusao\PYZus{}Cancer}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Acuracia\_Cancer2 = 0.9451073985680191
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{33}{}
+    
+    \begin{tabular}{r|ccc}
+	& Classe & Predita\_Positiva & Predita\_Negativa\\
+	\hline
+	
+	1 & Real Positiva & 143 & 17 \\
+	2 & Real Negativa & 6 & 253 \\
+\end{tabular}
+
+
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{w}\PY{p}{,} \PY{n}{b}\PY{p}{,} \PY{n}{ξ} \PY{o}{=} \PY{n}{SVM\PYZus{}flexivel}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{,} \PY{l+m+mf}{10e\PYZhy{}2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+([-0.0888385993594153, -0.0007301764450360921, 0.11196686858229432,
+-0.015880476369110618, 0.0077308924966434205, 0.018283210568903693,
+0.031846521211455495, 0.012830609393021906, 0.01907002373044082,
+0.0014135096052743012  …  -0.020531240865719197, 0.1513050861013814,
+0.16282498544526955, 0.002965626781945999, 0.015498496314976474,
+0.05406193808794571, 0.06897533125709271, 0.02420806592934621,
+0.050462179986322554, 0.004051358075620071], -23.61668517011338,
+[1.5059034230248166e-8, 1.5059027840153314e-8, 1.5059013504676282e-8,
+1.4993461320183272, 1.5059034010093344e-8, 1.5059034338182133e-8,
+1.505902765553629e-8, 0.8223470172586039, 1.505902766103012e-8,
+3.245062406322756e-8  …  1.5059030618342077e-8, 1.505903134657942e-8,
+1.5058982821818752e-8, 1.505903210903274e-8, 1.5059032468137176e-8,
+1.5059015417531872e-8, 1.505903027745674e-8, 1.50590322278154e-8,
+1.505789454213542e-8, 0.36972957775112136])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Maligno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZgt{}=} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{Benigno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{gdf} \PY{o}{=} \PY{n}{filter}\PY{p}{(}\PY{o}{:}\PY{n}{conjunto} \PY{o}{=\PYZgt{}} \PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{cancer\PYZus{}df}\PY{p}{)} 
+\PY{n}{gdf}\PY{o}{.}\PY{n}{Ypredito} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{n}{ptrain}\PY{p}{)}
+\PY{n}{gdf}\PY{p}{[}\PY{n}{Benigno}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{.=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+\PY{n}{Acuracia\PYZus{}Cancer3}\PY{p}{,} \PY{n}{MatrizConfusao\PYZus{}Cancer} \PY{o}{=} \PY{n}{MatrizConfusao}\PY{p}{(}\PY{n}{gdf}\PY{p}{)}\PY{p}{;}
+\PY{n+nd}{@show} \PY{n}{Acuracia\PYZus{}Cancer3}
+\PY{n}{MatrizConfusao\PYZus{}Cancer}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Acuracia\_Cancer3 = 0.9474940334128878
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{35}{}
+    
+    \begin{tabular}{r|ccc}
+	& Classe & Predita\_Positiva & Predita\_Negativa\\
+	\hline
+	
+	1 & Real Positiva & 144 & 16 \\
+	2 & Real Negativa & 6 & 253 \\
+\end{tabular}
+
+
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{w}\PY{p}{,} \PY{n}{b}\PY{p}{,} \PY{n}{ξ} \PY{o}{=} \PY{n}{SVM\PYZus{}flexivel}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{,} \PY{l+m+mf}{1.0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+([-0.7729017246884616, -0.14065863740581222, 0.3284135282439728,
+-0.023165676695899372, 0.06467371096380567, 0.14063135523300033,
+0.261398355613183, 0.10085914480945435, 0.15929257739876304,
+0.008169698828665226  …  -0.20617919164135334, 0.3305765154420798,
+0.18364189309897133, 0.006979634425618022, 0.12293945576818556,
+0.4456773049378063, 0.5314645199933372, 0.17828478933449102, 0.4722469677605429,
+0.030492652655001107], -33.34340978921013, [0.0, 0.0, 0.0, 1.173797661723894,
+0.0, 0.0, 0.0, 0.28667623877021237, 0.0, 7.891659839422233e-9  …  0.0, 0.0, 0.0,
+0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Maligno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZgt{}=} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{Benigno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{gdf} \PY{o}{=} \PY{n}{filter}\PY{p}{(}\PY{o}{:}\PY{n}{conjunto} \PY{o}{=\PYZgt{}} \PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{cancer\PYZus{}df}\PY{p}{)} 
+\PY{n}{gdf}\PY{o}{.}\PY{n}{Ypredito} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{n}{ptrain}\PY{p}{)}
+\PY{n}{gdf}\PY{p}{[}\PY{n}{Benigno}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{.=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+\PY{n}{Acuracia\PYZus{}Cancer4}\PY{p}{,} \PY{n}{MatrizConfusao\PYZus{}Cancer} \PY{o}{=} \PY{n}{MatrizConfusao}\PY{p}{(}\PY{n}{gdf}\PY{p}{)}\PY{p}{;}
+\PY{n+nd}{@show} \PY{n}{Acuracia\PYZus{}Cancer4}
+\PY{n}{MatrizConfusao\PYZus{}Cancer}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Acuracia\_Cancer4 = 0.954653937947494
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{37}{}
+    
+    \begin{tabular}{r|ccc}
+	& Classe & Predita\_Positiva & Predita\_Negativa\\
+	\hline
+	
+	1 & Real Positiva & 151 & 9 \\
+	2 & Real Negativa & 10 & 249 \\
+\end{tabular}
+
+
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{w}\PY{p}{,} \PY{n}{b}\PY{p}{,} \PY{n}{ξ} \PY{o}{=} \PY{n}{SVM\PYZus{}flexivel}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+([-3.648776243632741, -0.29959521673733774, 0.5274961875893085,
+0.0012838659550483457, 0.31330786463628363, 0.6543943804337327,
+1.033880518051846, 0.42760649864954947, 0.9735932658298139,
+-0.006822715279178642  …  -1.5067614807593261, 0.5207062274097408,
+0.08134002685739974, 0.018028717775124204, 0.7427837309049196,
+1.2626847689040062, 1.7414994379041866, 1.0445809691645265, 2.9708814031073394,
+0.04484728066249232], -4.738710351251349, [0.0, 0.0, 0.0, 0.6794234691449968,
+0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+0.0])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Maligno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZgt{}=} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{Benigno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{gdf} \PY{o}{=} \PY{n}{filter}\PY{p}{(}\PY{o}{:}\PY{n}{conjunto} \PY{o}{=\PYZgt{}} \PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{cancer\PYZus{}df}\PY{p}{)} 
+\PY{n}{gdf}\PY{o}{.}\PY{n}{Ypredito} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{n}{ptrain}\PY{p}{)}
+\PY{n}{gdf}\PY{p}{[}\PY{n}{Benigno}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{.=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+\PY{n}{Acuracia\PYZus{}Cancer5}\PY{p}{,} \PY{n}{MatrizConfusao\PYZus{}Cancer} \PY{o}{=} \PY{n}{MatrizConfusao}\PY{p}{(}\PY{n}{gdf}\PY{p}{)}\PY{p}{;}
+\PY{n+nd}{@show} \PY{n}{Acuracia\PYZus{}Cancer5}
+\PY{n}{MatrizConfusao\PYZus{}Cancer}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Acuracia\_Cancer5 = 0.9618138424821002
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{39}{}
+    
+    \begin{tabular}{r|ccc}
+	& Classe & Predita\_Positiva & Predita\_Negativa\\
+	\hline
+	
+	1 & Real Positiva & 153 & 7 \\
+	2 & Real Negativa & 9 & 250 \\
+\end{tabular}
+
+
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{w}\PY{p}{,} \PY{n}{b}\PY{p}{,} \PY{n}{ξ} \PY{o}{=} \PY{n}{SVM\PYZus{}flexivel}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{,} \PY{l+m+mf}{10e1}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+([-10.399808449871003, -0.5900061147360639, 0.7872795210500106,
+0.06187996412575949, 2.057026937218021, 2.0193520960026095, 3.6825126010562954,
+2.0213907026966615, 2.044453763802937, -0.4367825977363361  …
+2.027399546550189, 1.093645039766674, 0.3479696975387944, -0.039436117524285705,
+3.5528705359144346, 1.1156727117988485, -0.6844515145653299, 2.3460191468328078,
+6.112286759070957, -0.907583497535017], -16.708195506553967, [0.0, 0.0, 0.0,
+0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+0.0, 0.0])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{norm}\PY{p}{(}\PY{n}{ξ}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0.3739366563914939
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Maligno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZgt{}=} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{Benigno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{gdf} \PY{o}{=} \PY{n}{filter}\PY{p}{(}\PY{o}{:}\PY{n}{conjunto} \PY{o}{=\PYZgt{}} \PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{cancer\PYZus{}df}\PY{p}{)} 
+\PY{n}{gdf}\PY{o}{.}\PY{n}{Ypredito} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{n}{ptrain}\PY{p}{)}
+\PY{n}{gdf}\PY{p}{[}\PY{n}{Benigno}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{.=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+\PY{n}{Acuracia\PYZus{}Cancer6}\PY{p}{,} \PY{n}{MatrizConfusao\PYZus{}Cancer} \PY{o}{=} \PY{n}{MatrizConfusao}\PY{p}{(}\PY{n}{gdf}\PY{p}{)}\PY{p}{;}
+\PY{n+nd}{@show} \PY{n}{Acuracia\PYZus{}Cancer6}
+\PY{n}{MatrizConfusao\PYZus{}Cancer}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Acuracia\_Cancer6 = 0.954653937947494
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{42}{}
+    
+    \begin{tabular}{r|ccc}
+	& Classe & Predita\_Positiva & Predita\_Negativa\\
+	\hline
+	
+	1 & Real Positiva & 150 & 10 \\
+	2 & Real Negativa & 9 & 250 \\
+\end{tabular}
+
+
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{w}\PY{p}{,} \PY{n}{b}\PY{p}{,} \PY{n}{ξ} \PY{o}{=} \PY{n}{SVM\PYZus{}flexivel}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{,} \PY{l+m+mf}{10e2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+([-11.728964719304933, -0.6531286380075365, 0.7857005039636348,
+0.07695537025813758, 2.3008892175891913, 2.2639524204024464, 4.165137374759066,
+2.3012285516249817, 2.2592551232672236, -0.5087724179919592  …
+2.7732654840040203, 1.21899738495789, 0.4555928575164795, -0.0545750115016787,
+3.971279700279385, 1.0295346824207534, -1.0368912700484516, 2.6204037204964554,
+6.95396797731379, -1.0591624084846365], -20.12810504457573, [0.0, 0.0, 0.0, 0.0,
+0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+0.0])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{norm}\PY{p}{(}\PY{n}{ξ}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Maligno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZgt{}=} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{Benigno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{gdf} \PY{o}{=} \PY{n}{filter}\PY{p}{(}\PY{o}{:}\PY{n}{conjunto} \PY{o}{=\PYZgt{}} \PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{cancer\PYZus{}df}\PY{p}{)} 
+\PY{n}{gdf}\PY{o}{.}\PY{n}{Ypredito} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{n}{ptrain}\PY{p}{)}
+\PY{n}{gdf}\PY{p}{[}\PY{n}{Benigno}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{.=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+\PY{n}{Acuracia\PYZus{}Cancer7}\PY{p}{,} \PY{n}{MatrizConfusao\PYZus{}Cancer} \PY{o}{=} \PY{n}{MatrizConfusao}\PY{p}{(}\PY{n}{gdf}\PY{p}{)}\PY{p}{;}
+\PY{n+nd}{@show} \PY{n}{Acuracia\PYZus{}Cancer7}
+\PY{n}{MatrizConfusao\PYZus{}Cancer}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Acuracia\_Cancer7 = 0.9522673031026253
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{45}{}
+    
+    \begin{tabular}{r|ccc}
+	& Classe & Predita\_Positiva & Predita\_Negativa\\
+	\hline
+	
+	1 & Real Positiva & 149 & 11 \\
+	2 & Real Negativa & 9 & 250 \\
+\end{tabular}
+
+
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{w}\PY{p}{,} \PY{n}{b}\PY{p}{,} \PY{n}{ξ} \PY{o}{=} \PY{n}{SVM\PYZus{}flexivel}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{ptrain}\PY{p}{,} \PY{n}{Xtrain}\PY{p}{,} \PY{n}{Ytrain}\PY{p}{,} \PY{l+m+mf}{10e3}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+([-11.728964150295672, -0.6531283956251774, 0.785700394537014,
+0.07695536854528762, 2.3008886785932074, 2.2639527719715997, 4.1651379691945705,
+2.3012284565415895, 2.259255049240005, -0.5087721011621773  …
+2.7732665653763204, 1.2189972289698063, 0.4555928463105896,
+-0.05457501831400019, 3.9712790196973615, 1.0295369295763481,
+-1.0368898026409277, 2.6204027600116238, 6.9539703707749085,
+-1.0591615387821254], -20.128115472989027, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{norm}\PY{p}{(}\PY{n}{ξ}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Maligno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZgt{}=} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{Benigno} \PY{o}{=} \PY{n}{findall}\PY{p}{(}\PY{n}{Xtest}\PY{o}{*}\PY{n}{w} \PY{o}{.+} \PY{n}{b} \PY{o}{.\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{gdf} \PY{o}{=} \PY{n}{filter}\PY{p}{(}\PY{o}{:}\PY{n}{conjunto} \PY{o}{=\PYZgt{}} \PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{==} \PY{l+s}{\PYZdq{}}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{e}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{cancer\PYZus{}df}\PY{p}{)} 
+\PY{n}{gdf}\PY{o}{.}\PY{n}{Ypredito} \PY{o}{=} \PY{n}{fill}\PY{p}{(}\PY{l+m+mf}{1.}\PY{p}{,} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{n}{ptrain}\PY{p}{)}
+\PY{n}{gdf}\PY{p}{[}\PY{n}{Benigno}\PY{p}{,} \PY{o}{:}\PY{n}{Ypredito}\PY{p}{]} \PY{o}{.=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+\PY{n}{Acuracia\PYZus{}Cancer8}\PY{p}{,} \PY{n}{MatrizConfusao\PYZus{}Cancer} \PY{o}{=} \PY{n}{MatrizConfusao}\PY{p}{(}\PY{n}{gdf}\PY{p}{)}\PY{p}{;}
+\PY{n+nd}{@show} \PY{n}{Acuracia\PYZus{}Cancer8}
+\PY{n}{MatrizConfusao\PYZus{}Cancer}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Acuracia\_Cancer8 = 0.9522673031026253
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{48}{}
+    
+    \begin{tabular}{r|ccc}
+	& Classe & Predita\_Positiva & Predita\_Negativa\\
+	\hline
+	
+	1 & Real Positiva & 149 & 11 \\
+	2 & Real Negativa & 9 & 250 \\
+\end{tabular}
+
+
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Resultados} \PY{o}{=} \PY{n}{DataFrame}\PY{p}{(}\PY{n}{C} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{10e\PYZhy{}4} \PY{p}{,} \PY{l+m+mf}{10e\PYZhy{}3}\PY{p}{,} \PY{l+m+mf}{10e\PYZhy{}2} \PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mf}{10e1}\PY{p}{,} \PY{l+m+mf}{10e2}\PY{p}{,} \PY{l+m+mf}{10e3}\PY{p}{]}\PY{p}{,}
+                           \PY{n}{Acurácia} \PY{o}{=} \PY{p}{[}\PY{n}{Acuracia\PYZus{}Cancer1}\PY{p}{,} \PY{n}{Acuracia\PYZus{}Cancer2}\PY{p}{,} \PY{n}{Acuracia\PYZus{}Cancer3}\PY{p}{,} 
+                                       \PY{n}{Acuracia\PYZus{}Cancer4}\PY{p}{,} \PY{n}{Acuracia\PYZus{}Cancer5}\PY{p}{,} \PY{n}{Acuracia\PYZus{}Cancer6}\PY{p}{,} 
+                                       \PY{n}{Acuracia\PYZus{}Cancer7}\PY{p}{,} \PY{n}{Acuracia\PYZus{}Cancer8}\PY{p}{]} 
+                           \PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+          
+\prompt{Out}{outcolor}{49}{}
+    
+    \begin{tabular}{r|cc}
+    & C & Acurácia\\
+    \hline
+    1 & 0.001 & 0.928401 \\
+    2 & 0.01 & 0.945107 \\
+    3 & 0.1 & 0.947494 \\
+    4 & 1.0 & 0.954654 \\
+    5 & 10.0 & 0.961814 \\
+    6 & 100.0 & 0.954654 \\
+    7 & 1000.0 & 0.952267 \\
+    8 & 10000.0 & 0.952267 \\
+\end{tabular}
+
+
+    }
+
+    Observe que, conforme diferentes valores são atribuídos ao parâmetro
+\(C\) a solução ótima também varia, porém nenhuma delas apresenta 100\%
+de acerto na classificação dos dados de teste. Em vista disso, para
+escolhermos o melhor hiperplano classificador dentre os hiperplanos
+calculados, é necessário analisar qual é o mais eficiente. Para realizar
+essa escolha é preciso compreender que no contexto do nosso problema o
+classificador que desejamos obter fornecerá o diagnóstico de câncer de
+mama em maligno ou benigno. Desse modo, além de possuir uma alta
+acurácia, é de suma importância que o classificador apresente uma baixa
+quantidade de falsos negativos, pois neste caso uma pessoa com câncer
+maligno receberia um diagnóstico benigno, comprometendo seu tratamento
+médico.
+
+Assim, a tabela ``Resultados'' acima apresenta na primeira coluna os
+diferentes valores atribuídos ao parâmetro \(C\) e, na segunda coluna, a
+respectiva acurácia na classificação dos dados de teste pelo hiperplano
+ótimo encontrado em cada caso.
+
+Primeiramente, analisando as soluções ótimas encotradas, notamos que
+conforme o parâmetro \(C\) aumenta, a quantidade de variáveis de folga
+não nulas diminui. Isso também implica que quanto maior o parâmetro
+\(C\), maior é a penalização sobre as variáveis de folga e, portanto,
+menor a margem de separação. Tanto é que a partir de \(C\) próximo a 100
+as variáveis de folga passam a ser todas nulas, pois neste caso temos
+\(\Vert \xi \Vert = 0\), e o problema assume a formulação da técnica SVM
+com margem rígida.
+
+Por conseguinte, com base na tabela ``Resultados'', os parâmetros
+\(C = 10^{3}\) e \(C = 10^{4}\) apresentam a mesma acurácia de 95,22\%,
+sugerindo que as soluções encontradas são muito próximas. Com efeito,
+calculando a norma da diferença entre a solução \(w\) encontrada para
+cada um desses parâmetros obtemos um valor muito pequeno.
+
+Por fim, temos que o parâmetro \(C = 10\) determina a solução com maior
+acurácia, 96,18\%, e menor quantidade de falsos negativos, que totalizam
+7. Enquanto que para as demais soluções a acurácia varia entre 92,84\% e
+95,46\% e a quantidade de falsos negativos fica entre 9 e 26. Portanto,
+tomando \(C = 10\) temos, dentre as escolhas de \(C\), o classificador
+que fornece o melhor diagnóstico para os dados de câncer.
 
 
 
