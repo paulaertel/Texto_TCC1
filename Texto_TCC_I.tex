@@ -2503,7 +2503,11 @@ Portanto, apresentamos neste capítulo alguns conceitos de otimização convexa 
 \newpage
 \section{Máquinas de Vetores Suporte} \label{chap:maquinas_vetores_suporte}
 
-A Aprendizagem de Máquina desempenha um papel importante dentro do campo de reconhecimento de padrões, o qual, de acordo com \textcite{bishop2016pattern}, "\textit{ (...) se preocupa com a descoberta automática de regularidades em dados através do uso de algoritmos de computador e com o uso destas regularidades para executar ações, como classificar dados em diferentes categorias}". Assim, em problemas que exigem a análise de uma grande quantidade de dados para classificá-los, um processo manual torna-se inviável, motivando o desenvolvimento de técnicas computacionais capazes de reconhecer padrões para desempenhar tal tarefa. Neste capítulo desenvolveremos a modelagem matemática de uma técnica de aprendizagem supervisionada aplicada ao problema de classificação de dados, as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}). 
+A Aprendizagem de Máquina desempenha um papel importante dentro do campo de reconhecimento de padrões, o qual, de acordo com \textcite{bishop2016pattern},
+\begin{quote}
+    \textit{ (...) se preocupa com a descoberta automática de regularidades em dados através do uso de algoritmos de computador e com o uso destas regularidades para executar ações, como classificar dados em diferentes categorias}.
+    \end{quote}
+Assim, em problemas que exigem a análise de uma grande quantidade de dados para classificá-los, um processo manual torna-se inviável, motivando o desenvolvimento de técnicas computacionais capazes de reconhecer padrões para desempenhar tal tarefa. Neste capítulo desenvolveremos a modelagem matemática de uma técnica de aprendizagem supervisionada aplicada ao problema de classificação de dados, as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}). 
 
 No primeiro momento discutiremos a formulação matemática de tal técnica para a classificação de dados linearmente separáveis, característica que qualifica a SVM com margem rígida. Posteriormente, estenderemos tal formulação para o caso em que os dados não são linearmente separáveis, obtendo assim a modelagem do problema de classificação com margem flexível.
 
@@ -2514,7 +2518,7 @@ Para o desenvolvimento deste capítulo, as principais bibliografias utilizadas f
 
 Nas palavras de \textcite[p. 11]{Faisal2019}, a área da Aprendizagem de Máquina está interessada em 
 \begin{quote}
-(...) como projetar algoritmos que extraem automaticamente informações valiosas dos dados. A ênfase aqui está em "automático", i.e., a aprendizagem de máquina está preocupada com metodologias de uso geral que possam ser aplicadas em muitos conjuntos de dados, enquanto produz algo significativo (tradução nossa). 
+(...) como projetar algoritmos que extraem automaticamente informações valiosas dos dados. A ênfase aqui está em ``automático", i.e., a aprendizagem de máquina está preocupada com metodologias de uso geral que possam ser aplicadas em muitos conjuntos de dados, enquanto produz algo significativo (tradução nossa). 
 \end{quote}
 O aprendizado da máquina pode ser comparado ao do cérebro humano, pois os algoritmos de aprendizagem de máquina buscam "aprender" com a experiência, o que ocorre através do reconhecimento de padrões em dados \cite{Evelin2017}. 
 
