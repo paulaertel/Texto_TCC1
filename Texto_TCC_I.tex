@@ -35,6 +35,7 @@
 \usepackage{dsfont}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{pdflscape}
 
 \DeclareMathOperator{\proj}{proj}
 \DeclareMathOperator*{\argmax}{arg\, max}
@@ -44,6 +45,7 @@
 \DeclareMathOperator{\dist}{dist}
 \DeclareMathOperator{\interior}{int}
 \DeclareMathOperator{\posto}{posto}
+\DeclareMathOperator{\sgn}{sgn}
 
 \def\Xset{\mathcal{X}}
 \def\Yset{\mathcal{Y}}
@@ -91,8 +93,8 @@ style=numeric-comp, noerroretextools=true, sorting=nty,
  \let\forlistloop\etoolboxforlistloop % restore the good meaning of \forlistloop
 
 
-\usepackage[left,mathlines]{lineno}
-\usepackage{etoolbox} %% <- for \pretocmd, \apptocmd and \patchcmd
+%\usepackage[left,mathlines]{lineno}
+%\usepackage{etoolbox} %% <- for \pretocmd, \apptocmd and \patchcmd
 
 %% Patch 'normal' math environment: (currently unused, but good to have)
 % \newcommand*\linenomathpatch[1]{%
@@ -102,30 +104,30 @@ style=numeric-comp, noerroretextools=true, sorting=nty,
 %   \expandafter\apptocmd\csname end#1*\endcsname{\endlinenomath}{}{}%
 % }
 %% Patch AMS math environment:
-\newcommand*\linenomathpatchAMS[1]{%
-  \expandafter\pretocmd\csname #1\endcsname {\linenomathAMS}{}{}%
-  \expandafter\pretocmd\csname #1*\endcsname{\linenomathAMS}{}{}%
-  \expandafter\apptocmd\csname end#1\endcsname {\endlinenomath}{}{}%
-  \expandafter\apptocmd\csname end#1*\endcsname{\endlinenomath}{}{}%
-}
+%5\newcommand*\linenomathpatchAMS[1]{%
+%  \expandafter\pretocmd\csname %#1\endcsname {\linenomathAMS}{}{}%
+%  \expandafter\pretocmd\csname %#1*\endcsname{\linenomathAMS}{}{}%
+%  \expandafter\apptocmd\csname %end#1\endcsname {\endlinenomath}{}{}%
+ % \expandafter\apptocmd\csname %end#1*\endcsname{\endlinenomath}{}{}%
+%}
 
 %% Definition of \linenomathAMS depends on whether the mathlines option is provided
-\expandafter\ifx\linenomath\linenomathWithnumbers
-  \let\linenomathAMS\linenomathWithnumbers
+%\expandafter\ifx\linenomath\linenomathWithnumbers
+%  \let\linenomathAMS\linenomathWithnumbers
   %% The following line gets rid of an extra line numbers at the bottom:
-  \patchcmd\linenomathAMS{\advance\postdisplaypenalty\linenopenalty}{}{}{}
-\else
-  \let\linenomathAMS\linenomathNonumbers
-\fi
+%  \patchcmd\linenomathAMS{\advance\postdisplaypenalty\linenopenalty}{}{}{}
+%\else
+%  \let\linenomathAMS\linenomathNonumbers
+%\fi
 
 % \linenomathpatch{equation} %% <- unnecessary, equation is already patched
-\linenomathpatchAMS{gather}
-\linenomathpatchAMS{multline}
-\linenomathpatchAMS{align}
-\linenomathpatchAMS{alignat}
-\linenomathpatchAMS{flalign}
+%\linenomathpatchAMS{gather}
+%\linenomathpatchAMS{multline}
+%\linenomathpatchAMS{align}
+%\linenomathpatchAMS{alignat}
+%\linenomathpatchAMS{flalign}
 
-\linenumbers
+%\linenumbers
   \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
     \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
     \usepackage{float}
@@ -457,6 +459,7 @@ style=numeric-comp, noerroretextools=true, sorting=nty,
 \textbf{Resumo}
 \end{center}
 
+Este relatório de pesquisa resume as atividades e resultados obtidos pelo bolsista durante sua iniciação científica entre Agosto de 2020 e Julho de 2021.
 Em problemas que exigem a análise de uma grande quantidade de dados para classificá-los, um processo manual torna-se inviável, motivando o desenvolvimento de técnicas computacionais capazes de reconhecer padrões para desempenhar tal tarefa. Assim, o objetivo central deste projeto foi desenvolver um estudo teórico, do ponto de vista da Otimização, de uma técnica de aprendizagem de máquina supervisionada aplicada à classificação binária de dados: as Máquinas de Vetores Suporte (SVM). Para tanto, tendo em vista que a formulação matemática da técnica SVM consiste num problema de programação quadrática convexa com restrições lineares, abordamos aspectos da teoria de otimização, com e sem restrições, assim como apresentamos definições e resultados de otimização convexa, que fornecem propriedades importantes relacionadas aos problemas de otimização, como a garantia de existência de soluções. Desenvolvemos com detalhes a modelagem matemática da técnica SVM com margem rígida, demonstrando que o problema de otimização decorrente admite solução e ela é única, e sua generalização para um dos casos em que os dados não são linearmente separáveis, denominada SVM com margem flexível. Por fim, utilizando a linguagem de programação Julia, realizamos uma implementação computacional da técnica SVM para classificar o conjunto de dados Flor Íris em relação às suas espécies e, posteriormente, para classificar um conjunto de dados sobre células de câncer de mama em tumor maligno ou benigno. Através desses experimentos numéricos foi possível analisar a eficiência da técnica SVM. Em particular, no caso em que aplicamos SVM com margem flexível, tal eficiência está relacionada com a escolha de um parâmetro de penalização adequado.
 
 \textbf{Palavras-chave:} Aprendizagem de Máquina, Classificação, Máquinas de Vetores Suporte, Otimização com restrições, Otimização convexa.
@@ -464,7 +467,7 @@ Em problemas que exigem a análise de uma grande quantidade de dados para classi
 
 \section{Introdução}
 
-A análise inteligente de dados tem se tornado cada vez mais importante para auxiliar na tomada de decisões em diversos campos da ciência. A Aprendizagem de Máquina (AM, do inglês \textit{Machine Learning}) é um campo da inteligência computacional que estuda o uso de técnicas computacionais para automaticamente detectar padrões em dados e utilizá-los para fazer predições e tomar decisões. Ela possui contribuições em diversos campos da ciência e também está presente em diferentes situações do cotidiano como na recomendação de filmes e séries em serviços de Streaming, nos mecanismos de pesquisa do Google e na detecção de spam em emails, por exemplo. 
+A análise inteligente de dados tem se tornado cada vez mais importante para auxiliar na tomada de decisões em diversos campos da ciência. A Aprendizagem de Máquina (AM, do inglês \textit{Machine Learning}) é um campo da inteligência computacional que estuda o uso de técnicas computacionais para automaticamente detectar padrões em dados e utilizá-los para fazer predições e tomar decisões. Ela possui contribuições em diversos campos da ciência e também está presente em diferentes situações do cotidiano como na recomendação de filmes e séries em serviços de Streaming, nos mecanismos de pesquisa do Google e na detecção de spam em e-mails, por exemplo. 
 
 A Aprendizagem de Máquina também está diretamente relacionada à Otimização, que contribui para a formulação matemática e para a implementação computacional de muitos de seus algoritmos. As técnicas de Aprendizagem de Máquina podem ser divididas em dois tipos principais, a aprendizagem supervisionada, em que através de um conjunto de dados, cujas saídas são previamente conhecidas, o algoritmo detecta padrões e produz um modelo capaz de deduzir as saídas corretas para novos dados, e a aprendizagem não-supervisionada, empregada em problemas que não possuem dados previamente rotulados. Nosso objetivo neste trabalho é realizar um estudo teórico, do ponto de vista da Otimização, de uma técnica de aprendizagem supervisionada: as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}).
 
@@ -2506,7 +2509,7 @@ Portanto, apresentamos neste capítulo alguns conceitos de otimização convexa 
 
 A Aprendizagem de Máquina desempenha um papel importante dentro do campo de reconhecimento de padrões, o qual, de acordo com \textcite{bishop2016pattern},
 \begin{quote}
-    \textit{ (...) se preocupa com a descoberta automática de regularidades em dados através do uso de algoritmos de computador e com o uso destas regularidades para executar ações, como classificar dados em diferentes categorias}.
+    (...) se preocupa com a descoberta automática de regularidades em dados através do uso de algoritmos de computador e com o uso destas regularidades para executar ações, como classificar dados em diferentes categorias.
     \end{quote}
 Assim, em problemas que exigem a análise de uma grande quantidade de dados para classificá-los, um processo manual torna-se inviável, motivando o desenvolvimento de técnicas computacionais capazes de reconhecer padrões para desempenhar tal tarefa. Neste capítulo desenvolveremos a modelagem matemática de uma técnica de aprendizagem supervisionada aplicada ao problema de classificação de dados, as Máquinas de Vetores Suporte (SVM, do inglês \textit{Support Vector Machine}). 
 
@@ -2519,17 +2522,17 @@ Para o desenvolvimento deste capítulo, as principais bibliografias utilizadas f
 
 Nas palavras de \textcite[p. 11]{Faisal2019}, a área da Aprendizagem de Máquina está interessada em 
 \begin{quote}
-(...) como projetar algoritmos que extraem automaticamente informações valiosas dos dados. A ênfase aqui está em ``automático", i.e., a aprendizagem de máquina está preocupada com metodologias de uso geral que possam ser aplicadas em muitos conjuntos de dados, enquanto produz algo significativo (tradução nossa). 
+(...) projetar algoritmos que extraem automaticamente informações valiosas dos dados. A ênfase aqui está em ``automático", \emph{i.e.}, a aprendizagem de máquina está preocupada com metodologias de uso geral que possam ser aplicadas em muitos conjuntos de dados, enquanto produz algo significativo (tradução nossa). 
 \end{quote}
 O aprendizado da máquina pode ser comparado ao do cérebro humano, pois os algoritmos de aprendizagem de máquina buscam "aprender" com a experiência, o que ocorre através do reconhecimento de padrões em dados \cite{Evelin2017}. 
 
-Considere o exemplo de reconhecimento de dígitos numéricos escritos à mão. Suponha que desejamos costruir um algoritmo capaz de diferenciá-los em 0,...,9. Perceba que neste caso, primeiramente é preciso fornecer à máquina imagens dos diferentes dígitos com suas respectivas classificações, isto é, informando quais dígitos são 0, quais são 1 e assim sucessivamente. A partir disso ela detecta padrões entre as características de cada dígito e sua classificação, e cria um modelo para deduzir a classificação de novos dígitos. Este é um exemplo de \emph{aprendizado supervisionado}, em que através de um conjunto de dados de entrada fornecidos na forma (entrada, saída desejada) \cite{Lorena&Carvalho}, a máquina detecta padrões e produz um modelo capaz de deduzir as saídas corretas para novos dados. Algumas técnicas para aprendizagem supervisionada são as Máquinas de Vetores Suporte (SVM), Regressão Linear, Regressão Logística e Redes Neurais.
+Considere o exemplo de reconhecimento de dígitos numéricos escritos à mão. Suponha que desejamos construir um algoritmo capaz de diferenciá-los dentre $0, 1, ...,9$. Perceba que neste caso, primeiramente é preciso fornecer à máquina imagens dos diferentes dígitos com suas respectivas classificações, isto é, informando quais dígitos são $0$, quais são $1$ e assim sucessivamente. A partir disso, esta técnica detecta padrões entre as características de cada dígito e sua classificação, e cria um modelo para deduzir a classificação de novos dígitos. Este é um exemplo de \emph{aprendizado supervisionado}, em que através de um conjunto de dados de entrada fornecidos na forma (entrada, saída desejada), a máquina detecta padrões e produz um modelo capaz de deduzir as saídas corretas para novos dados \cite{Lorena&Carvalho}. Algumas técnicas para aprendizagem supervisionada são as Máquinas de Vetores Suporte (SVM), Regressão Linear, Regressão Logística e Redes Neurais.
 
-A \emph{aprendizagem não-supervisionada} por sua vez é empregada em problemas que não possuem dados previamente rotulados. Em vista disso, tais técnicas são geralmente utilizadas com o intuito de auxiliar no entendimentos dos dados e obter informações acerca deles \cite{Lorena&Carvalho}. A Decomposição em Valor Singular (SVD), Clusterização e Análise de Componentes Principais \cite{Evelin2017} são exemplos de técnicas de aprendizagem não-supervisionada. 
+A \emph{aprendizagem não-supervisionada} por sua vez é empregada em problemas que não possuem dados previamente rotulados. Em vista disso, tais técnicas são geralmente utilizadas com o intuito de auxiliar no entendimentos dos dados e obter informações acerca destes \cite{Lorena&Carvalho}. A Decomposição em Valor Singular (SVD), Clusterização e Análise de Componentes Principais \cite{Evelin2017} são exemplos de técnicas de aprendizagem não-supervisionada. 
 
-A aprendizagem supervisionada é composta por uma etapa denominada \emph{fase de treinamento}, na qual um conjunto de treinamento que funciona como exemplo, formado por vários pares na forma $(x^{i}, y_{i})$, em que $x^{i}$ representa o vetor de características (ou atributos) e $y_{i}$ corresponde à saída (ou rótulo), é fornecido e a partir do qual a máquina detecta padrões e cria um modelo para deduzir a saída de novos dados não rotulados. Após este processo ocorre a \emph{fase de teste}, em que novas entradas serão testadas, denominadas conjunto de teste, no intuito de analisar se a máquina está gerando as saídas corretas. Na aprendizagem supervisionada, assim como o nome já salienta, há a presença de um supervisor externo, o qual será responsável por fornecer à máquina os dados devidamente rotulados e averiguar se ela está gerando as saídas corretas.
+A aprendizagem supervisionada é composta por uma etapa denominada \emph{fase de treinamento}, na qual um conjunto de treinamento que funciona como exemplo, formado por vários pares na forma $(x^{i}, y_{i})$, em que $x^{i}$ representa o vetor de características (ou atributos) e $y_{i}$ corresponde à saída (ou rótulo), são fornecidos e a partir do qual a máquina detecta padrões e cria um modelo para deduzir a saída de novos dados não rotulados. Após este processo ocorre a \emph{fase de teste}, em que novas entradas serão testadas, denominadas conjunto de teste, no intuito de analisar se a máquina está gerando as saídas corretas. Na aprendizagem supervisionada, assim como o nome já salienta, há a presença de um supervisor externo, o qual será responsável por fornecer à máquina os dados devidamente rotulados e averiguar se ela está gerando as saídas corretas.
 
-Em muitas situações a aprendizagem supervisionada é aplicada a problemas cujo objetivo é obter uma classificação dos dados. Alguns exemplos são a detecção de spam em emails, o reconhecimento facial e o reconhecimento de dígitos escritos à mão. Em todos estes casos a técnica SVM pode ser aplicada, pois além de apresentar bons resultados quando comparadas a outras técnicas de classificação, ela também  possui uma boa capacidade de generalização e é indicada nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos. 
+Em muitas situações a aprendizagem supervisionada é aplicada a problemas cujo objetivo é obter uma classificação dos dados. Alguns exemplos são a detecção de \emph{spam} em e-mails, o reconhecimento facial e o reconhecimento de dígitos escritos à mão. Em todos estes casos a técnica SVM pode ser aplicada, pois além de apresentar bons resultados quando comparadas a outras técnicas de classificação, ela também  possui uma boa capacidade de generalização e é indicada nos casos em que ocorrem dados de dimensões elevadas e com altos níveis de ruídos. 
 
 Cada dado (atributo) será representado por um vetor de características $x^{i}$ pertencente ao conjunto de entrada e a saída será representada por $y_{i} \in \{ -1,1 \}$, de modo que diremos que $x_{i}$ pertence à classe positiva se $y_{i} = 1$, e $x^{i}$ pertence à classe negativa se $y_{i} = -1$. Sucintamente, a técnica SVM se concentra em obter um hiperplano ótimo $(w^{*})^{T}x + b^{*} = 0$ que separe os dados de entrada $x^{i}$ em duas saídas (classes) $y_{i}$ através de uma função de decisão. Para uma melhor compreensão considere um conjunto de dados, pertencentes a duas classes distintas, conforme \Cref{fig:classificacao_dados}.
 
@@ -2557,9 +2560,9 @@ Observe que na \Cref{fig:classificacao_dados:hiperplano_SVM_linear} os dados pod
 
 Assim, mostraremos que a modelagem matemática do problema de classificação resulta num problema de programação quadrática, convexa e com restrições lineares, em que o objetivo é encontrar o hiperplano de máxima margem, isto é, que maximiza a distância entre os hiperplanos $w^{T}x+b = 1$ e $w^{T}x+b = -1$ que definem a faixa que separa os dados \cite{Evelin2017}. 
 
-É importante salientar que trataremos unicamente do problema de classificação binária, isto é, quando existem apenas duas saídas possíveis $\{-1,1\}$. No entanto é possível generalizar para problemas que envolvam mais saídas, se configurando neste caso num problema multiclasses. 
+É importante salientar que neste trabalho trataremos unicamente do problema de classificação binária, isto é, quando existem apenas duas saídas possíveis $\{-1,1\}$. No entanto é possível generalizar para problemas que envolvam mais saídas, se configurando neste caso num problema multi-classes. 
 
-Considere, por exemplo, o problema de detecção de câncer, em que desejamos identificar se um câncer é maligno ou benigno. Neste caso, a cada célula será associado um vetor de características $x^{i} \in \RR^{n}$ que contém $n$ informações relevantes observadas, dentre as quais medidas de raio, perímetro, área e textura por exemplo. As células com câncer maligno têm saída $y_{i} = 1$, enquanto que células com câncer benigno possuem saída $y_{i} = -1$. 
+Considere, por exemplo, o problema de detecção de câncer, em que desejamos identificar se um câncer é maligno ou benigno. Neste caso, a cada célula será associado um vetor de características $x^{i} \in \RR^{n}$ que contém $n$ informações relevantes observadas, dentre as quais, por exemplo, medidas de raio, perímetro, área e textura. As células classificadas como sendo do tipo câncer maligno teriam saída $y_{i} = 1$, enquanto que células que possuem saída $y_{i} = -1$, seriam classificadas como do tipo câncer benigno. 
 
 Problemas de classificação que envolvem situações reais dificilmente apresentam um conjunto de dados linearmente separáveis. Neste contexto é necessário generalizar os resultados obtidos na modelagem da SVM com margem rígida para o caso não linear. Em vista disso, estudaremos também a SVM com margem flexível, em que os dados não são linearmente separáveis e para garantir a classificação correta através de um hiperplano no espaço de característica utilizamos regularização, introduzindo variáveis de folga $\xi_{i}$ às restrições. No intuito de evitar classificações incorretas, tais variáveis são penalizadas na função objetivo através de um parâmetro $C>0$, por isso a técnica é também denominada CSVM.
 
@@ -2587,7 +2590,7 @@ A seguir, desenvolveremos a modelagem matemática da SVM com margem rígida e po
 
 Nesta seção formularemos matematicamente a técnica SVM para a classificação de dados linearmente separáveis, que caracteriza o problema com margem rígida. Para tanto, abordaremos alguns conceitos importantes para a modelagem do problema, como a definição de hiperplano, conjuntos linearmente separáveis, além de discutir a noção de margem. Veremos também que a modelagem de tal problema recai num problema de otimização. 
 
-Considere um conjunto de dados de treinamento representado no $\RR^2$ como na \Cref{fig:dados_e_hiperplanos:dados_treinamento}, em que os pontos em azul representam a classe positiva, e os pontos em laranja a classe negativa. Para obter a classificação desse conjunto em duas classes, azul ou laranja, a técnica SVM se concentra em determinar o hiperplano que melhor separa os dados corretamente. No entanto, para dados linearmente separáveis existem infinitos hiperplanos que separam corretamente os dados de treinamento, como apresentado na \Cref{fig:dados_e_hiperplanos:hiperplanos_separadores}. Assim, a escolha do hiperplano ideal se baseia no conceito de distância entre os pontos que representam os dados e o hiperplano. Isto é, o hiperplano ótimo, como será denominado o hiperplano que melhor separa os dados, será aquele que possibilita a maior faixa entre os dados positivos e negativos. Tal hiperplano é representado na \Cref{fig:dados_e_hiperplano_otimo:hiperplano_otimo} pela cor vermelha. Em outras palavras, estamos interessados em encontrar o hiperplano que maximiza a distância entre ele e os dados do conjunto de treinamento mais próximos. Note que, caso a faixa seja muito estreita pequenas perturbações no hiperplano ou no conjunto de dados podem resultar uma classificação incorreta. 
+Considere um conjunto de dados de treinamento representado no $\RR^2$ como na \Cref{fig:dados_e_hiperplanos:dados_treinamento}, em que os pontos em azul representam a classe positiva, e os pontos em laranja a classe negativa. Para obter a classificação desse conjunto em duas classes, azul ou laranja, a técnica SVM se concentra em determinar o hiperplano que melhor separa os dados corretamente. No entanto, para dados linearmente separáveis podem existir infinitos hiperplanos que separam corretamente os dados de treinamento; veja \Cref{fig:dados_e_hiperplanos:hiperplanos_separadores}. Assim, a escolha do hiperplano ideal se baseia no conceito de distância entre os pontos que representam os dados e o hiperplano. Isto é, o \emph{hiperplano ótimo}, como será denominado o hiperplano que melhor separa os dados, será aquele que possibilita a maior faixa entre os dados positivos e negativos. Tal hiperplano é representado na \Cref{fig:dados_e_hiperplano_otimo:hiperplano_otimo} pela cor vermelha. Em outras palavras, estamos interessados em encontrar o hiperplano que maximiza a distância entre ele e os dados do conjunto de treinamento mais próximos. Note que, caso a faixa seja muito estreita pequenas perturbações no hiperplano ou no conjunto de dados podem resultar uma classificação incorreta. 
 
 \begin{figure}[htbp] 
 	\centering
@@ -2796,9 +2799,9 @@ em que a função $g:\RR^{n+1} \rightarrow \RR^{m}$ pode ser escrita da forma
 \[ g(w,b)= e - (YX^{T}w+by) \leq 0, \]
 com $e$ sendo o vetor cujas $m$ componentes são todas iguais a $1$, $Y=\diag(y_{i})$, $X=\diag(x^{i})$, $y^{T}=[y_{1} \ \ldots \ y_{m}]$, $w\in \RR^n$ e $b\in \RR$.
 
-Primeiramente, observe que o conjunto factível $\Omega = \{ (w,b) \in \RR^{n+1} \mid g_{i}(w,b) \leq 0, i = 1, \ldots , m \}$ é um poliedro não-vazio, pois os conjuntos $\Xset^{+}$ e $\Xset^{-}$ são linearmente separáveis. Além disso, a função objetivo é limitada inferiormente, pois $\dfrac{1}{2}\Vert w \Vert^{2} >0$. Vale ressaltar também que por se tratar de um problema convexo, todo minimizador local é global.
+Primeiramente, observe que o conjunto factível $\Omega = \{ (w,b) \in \RR^{n+1} \mid g_{i}(w,b) \leq 0, i = 1, \ldots , m \}$ é um poliedro não-vazio, pois os conjuntos $\Xset^{+}$ e $\Xset^{-}$ são linearmente separáveis. Além disso, a função objetivo é limitada inferiormente, pois $\dfrac{1}{2}\Vert w \Vert^{2} >0$. Vale ressaltar também que por se tratar de um problema convexo, o \Cref{teo:convexidade_e_minimizador} garante que todo minimizador local é global.
 
-Agora, com base em \textcite{Evelin2017}, nosso objetivo será garantir a existência e unicidade de um minimizador para o problema \eqref{eq:problemageralSVM}.
+Agora, com base em \textcite[Teo. 2.5 e 2.7]{Evelin2017}, nosso objetivo será garantir a existência e unicidade de um minimizador para o problema \eqref{eq:problemageralSVM}.
 
 \begin{teo} \label{teo:existencia_minimizador_problema_SVM}
 O problema \eqref{eq:problemageralSVM} possui um minimizador global.
@@ -2808,13 +2811,13 @@ Primeiramente, note que a função objetivo do problema \eqref{eq:problemageralS
 \[
 f^{*} \coloneqq \inf_{(w,b) \in \Omega} f(w,b) > -\infty .
 \]
-Pela definição de ínfimo, temos que para todo $k \in \mathds{N}$, existe $(w_{k},b_{k}) \subset \Omega$ tal que
+Pela definição de ínfimo, temos que para todo $k \in \mathds{N}$, existe $(w_{k},b_{k})_{k\in \mathds{N}} \subset \Omega$ tal que
 \[ \label{eq:1_existencia_minimizador_problema_SVM}
 \dfrac{1}{2}\Vert w_{k} \Vert^{2} = f(w_{k}, b_{k}) \rightarrow f^{*} ,
 \]
-e portanto, $(\Vert w_{k} \Vert )$ é convergente. Consequentemente, como toda sequência convergente é limitada, concluímos que $(w_{k})$ é limitada.
+e portanto, a sequência $(\Vert w_{k} \Vert )_{k\in \mathds{N}}$ é convergente. Consequentemente, como toda sequência convergente é limitada, concluímos que $(w_{k})_{k\in \mathds{N}}$ é limitada.
 
-Mostraremos agora que $(b_{k})$ também é limitada. Para tanto, considere $\tilde{x} \in \Xset^{+}$ e $\xbar \in \Xset^{-}$ arbitrários. Temos que 
+Mostraremos agora que $(b_{k})_{k\in \mathds{N}}$ também é limitada. Para tanto, considere $\tilde{x} \in \Xset^{+}$ e $\xbar \in \Xset^{-}$ arbitrários. Temos que 
 \[
 w_{k}^{T}\tilde{x} + b_{k} \geq 1
 \]
@@ -2828,7 +2831,7 @@ e portanto,
 \]
 Então, como $(w_{k})$ é uma sequência limitada segue que $(b_{k})$ é limitada também. 
 
-Como a sequência $(w_{k}, b_{k})$ é limitada, pelo Teorema de Bolzano-Weierstrass, ela possui uma subsequência convergente 
+Como a sequência $(w_{k}, b_{k})$ é limitada, pelo Teorema de Bolzano-Weierstrass, ela possui uma subsequência convergente $(w_{k_{j}}, b_{k_{j}})_{j\in \mathds{N}}$, isto é, 
 \[
 (w_{k_{j}}, b_{k_{j}}) \rightarrow (w^{*}, b^{*}).
 \]
@@ -2890,19 +2893,23 @@ Utilizando o \Cref{lema:solucao_otima_SVM_margens}, podemos agora demonstrar a u
 O minimizador global para o problema \eqref{eq:problemageralSVM} é único.
 \end{teo}
 \begin{proof}
-Suponhamos que $(\bar{w}, \bar{b})$ e $(\tilde{w}, \tilde{b})$ são soluções ótimas para o problema \eqref{eq:problemageralSVM}. Então, 
+Suponhamos que $(\bar{w}, \bar{b})$ e $(\tilde{w}, \tilde{b})$ são soluções ótimas para o problema \eqref{eq:problemageralSVM}. Então, temos que $f(\bar{w}, \bar{b}) = f(\tilde{w}, \tilde{b})$, o que implica 
 \[
 \dfrac{1}{2}\Vert \bar{w} \Vert^{2} = \dfrac{1}{2}\Vert \tilde{w} \Vert^{2},
 \]
-e portanto, 
+e consequentemente, 
 \[
 \Vert \bar{w} \Vert = \Vert \tilde{w} \Vert .
 \]
-Como $\Omega$ é um conjunto convexo, temos que
-\[
-(\hat{w}, \hat{b}) = \dfrac{1}{2}((\bar{w}, \bar{b}) + (\tilde{w}, \tilde{b})) \in \Omega .
+Como $\Omega$ é um conjunto convexo, temos que o segmento $[(1-t)(\bar{w}, \bar{b}) + t(\tilde{w}, \tilde{b})]$, tal que $t\in [0,1]$, está contido em $\Omega$. Em particular, tomando $t=\dfrac{1}{2}$,
+\[ \label{eq:1_teo_unicidade_solucao_SVM_rigida}
+(\hat{w}, \hat{b}) = \dfrac{1}{2}(\bar{w}, \bar{b}) + \dfrac{1}{2}(\tilde{w}, \tilde{b}) \in \Omega .
 \]
-Ademais, pelo \Cref{lema:1_convexidade} temos que $\Vert \hat{w} \Vert < \Vert \bar{w} \Vert$ o que implica 
+Pela igualdade de vetores em \eqref{eq:1_teo_unicidade_solucao_SVM_rigida}, temos que o vetor $\hat{w} = \dfrac{1}{2}(\bar{w} + \tilde{w})$. Ademais, pelo \Cref{lema:1_convexidade} temos que, se $\Vert \bar{w} \Vert = \Vert \tilde{w} \Vert = r$, então $\Vert \dfrac{1}{2}(\bar{w} + \tilde{w}) \Vert  < r$. Portanto,
+\[
+\Vert \hat{w} \Vert = \Vert \dfrac{1}{2}(\bar{w} + \tilde{w}) \Vert < r = \Vert \bar{w} \Vert ,
+\]
+o que implica 
 \[
 f(\hat{w}, \hat{b}) < f(\bar{w}, \bar{b}),
 \]
@@ -2918,10 +2925,10 @@ o que é uma contradição.
 A seguir apresentamos a definição de vetores suporte, conceito que nomeia a técnica SVM, a abordamos brevemente sua relevância com base nas considerações feitas em \cite{Evelin2017,bishop2016pattern}.
 
 \begin{defi} \label{defi:vetores_suporte}
-Considere um conjunto $\Xset$ de vetores linearmente separáveris e $(w^{*}, b^{*})$ a solução do problema \eqref{eq:problemageralSVM}. Os \emph{vetores suporte} são os vetores $x^{i} \in \Xset$ tais que $y_{i}((w^{*})^{T} x^{i} + b^{*}) = 1$.
+Considere um conjunto $\Xset$ de vetores linearmente separáveis e $(w^{*}, b^{*})$ a solução do problema \eqref{eq:problemageralSVM}. Os \emph{vetores suporte} são os vetores $x^{i} \in \Xset$ tais que $y_{i}((w^{*})^{T} x^{i} + b^{*}) = 1$.
 \end{defi}
 
-Desse modo, os vetores suporte serão aqueles localizados sobre os hiperplanos que definem a máxima margem que separa os dados, ou, em outras palavras, são os vetores que correpondem às restrições ativas na solução $(w^{*}, b^{*})$ do problema \eqref{eq:problemageralSVM}. Tal propriedade detém grande importância na aplicação prática da técnica SVM, pois de acordo com o \Cref{teo:vetores_suporte} a seguir, temos que após o modelo ser treinado uma significativa quantidade de dados pode ser descartada e apenas os vetores suporte mantidos de modo que o classificador se mantém o mesmo. 
+Desse modo, os vetores suporte serão aqueles localizados sobre os hiperplanos que definem a máxima margem que separa os dados, ou, em outras palavras, são os vetores que correspondem às restrições ativas na solução $(w^{*}, b^{*})$ do problema \eqref{eq:problemageralSVM}. Tal propriedade detém grande importância na aplicação prática da técnica SVM, pois de acordo com o \Cref{teo:vetores_suporte} a seguir, temos que após o modelo ser treinado uma significativa quantidade de dados pode ser descartada e apenas os vetores suporte mantidos de modo que o classificador se mantém o mesmo. 
 
 \begin{teo} \label{teo:vetores_suporte}
 Considere $(w^{*}, b^{*})$ a solução do problema \eqref{eq:problemageralSVM} e $\mathcal{I}^{*} = \mathcal{I} (w^{*}, b^{*})$ o conjunto dos índices das restrições ativas na solução. Então, a solução do problema
@@ -3054,7 +3061,7 @@ para $i=1, \ldots, m$, e assim, o conjunto factível
 f(w,b,\xi) = \dfrac{1}{2} \Vert w\Vert^{2} + \underbrace{C}_{> 0} \sum_{i=1}^{m} \underbrace{\xi_{i}}_{\geq 0} \geq 0.
 \]
 
-Novamente, baseando-se em \textcite{Evelin2017}, apresentamos a seguir o teorema que garante a existência de um minimizador global para o problema \eqref{eq:problemaCSVM}.
+Novamente, baseando-se em \textcite[Teo. 2.13]{Evelin2017}, apresentamos a seguir o teorema que garante a existência de um minimizador global para o problema \eqref{eq:problemaCSVM}.
 
 \begin{teo} \label{teo:unicidade_solucao_problema_SVM_flexivel}
 O problema \eqref{eq:problemaCSVM} possui um minimizador global.
@@ -3080,7 +3087,7 @@ temos que as sequências $(w_{k})$ e $(\xi_{k})$ são limitadas. Vejamos que a s
 \[
 1 - (\xi_{k})_{j} - w_{k}^{T} x^{j} \leq b_{k} \leq -1 + (\xi_{k})_{l} - w_{k}^{T} x^{l} .
 \]
-Dessa forma, a sequência $(w_{k}, b_{k}, \xi_{k})$ é limitada e, pelo Teorema de Bolzano Weierstrass, possui uma subsequência convergente 
+Dessa forma, a sequência $(w_{k}, b_{k}, \xi_{k})$ é limitada e, pelo Teorema de Bolzano-Weierstrass, possui uma subsequência convergente 
 \[
 (w_{k_{j}}, b_{k_{j}}, \xi_{k_{j}}) \rightarrow  (w^{*}, b^{*}, \xi^{*}) .
 \]
@@ -3099,21 +3106,19 @@ Portanto, para o caso em que os dados não são linearmente separáveis, mas é 
 
 Em síntese, com base na formulação matemática da técnica SVM desenvolvida neste capítulo, sua atuação consiste em resolver, para o conjunto de treino, o problema \eqref{eq:problemageralSVM} caso o conjunto de dados seja linearmente separável ou o problema \eqref{eq:problemaCSVM} caso contrário. Em seguida, através da solução ($w^{*}, b^{*})$ encontrada definimos a função de decisão $F: \RR^{n} \rightarrow \RR$ dada por
 \[
-F(x) = sinal((w^{*})^{T} x + b^{*}),
+F(x) = \sgn ((w^{*})^{T} x + b^{*}),
 \]
-através da qual podemos classificar um novo dado $x\in \RR^{n}$. Assim, se $F(x) >0$, o ponto $x$ será classificado como da classe $\Xset^{+}$, e se $F(x)<0$, o ponto $x$ será classificado como da classe $\Xset^{-}$.
+em que $\sgn (a)$ é $1$ se $a$ for não-negativo e $-1$ se $a$ for negativo, e através da qual podemos classificar um novo dado $x\in \RR^{n}$. Assim, se $F(x) >0$, o ponto $x$ será classificado como da classe $\Xset^{+}$, e se $F(x)<0$, o ponto $x$ será classificado como da classe $\Xset^{-}$.
 
-No capítulo seguinte utilizaremos o referencial teórico apresentado até o momento, assim como os problemas formulados em \eqref{eq:problemageralSVM} e \eqref{eq:problemaCSVM}, para testar a técnica SVM na classificação de dois conjuntos de dados.
+No próximo capítulo utilizaremos o referencial teórico apresentado até o momento, assim como os problemas formulados em \eqref{eq:problemageralSVM} e \eqref{eq:problemaCSVM}, para testar numericamente através de uma implementação computacional, a técnica SVM para classificação.
 
 \newpage
 \section{Experimentos Numéricos} \label{chap:experimentos_numericos}
 
 
-Este capítulo é dedicado a alguns experimentos numéricos que têm como
+Este capítulo é dedicado a apresentar alguns experimentos numéricos que desenvolvemos e que têm como
 objetivo visualizar na prática a implementação da técnica Máquinas de
-Vetores Suporte (SVM), possibilitando assim analisar as particularidades
-da sua implementação juntamente com o referencial teórico matemático
-desenvolvido no capítulo anterior. Para tanto, o capítulo é dividido em
+Vetores Suporte (SVM), possibilitando assim analisar suas particularidades. Para tanto, o capítulo é dividido em
 duas seções. Na primeira, discutimos a aplicação de SVM para classificar
 o conjunto de dados flor Íris entre suas espécies. A segunda seção
 aborda a aplicação da técnica CSVM para detectar num conjunto de dados
@@ -3125,7 +3130,7 @@ programação Julia em sua versão 1.4.0, além dos pacotes \texttt{Plots}
 para gerar as imagens, \texttt{JuMP} e \texttt{Ipopt} para resolução dos
 problemas de otimização, \texttt{RDatasets} para ter acesso ao conjunto
 de dados Íris e o pacote \texttt{DataFrame} para gerar as tabelas de
-dados. Ademais, nos baseamos nos vídeos de \textcite{AbelSVM1,AbelSVM2} para desenvolvimento dos códigos utilizados.
+dados. Ademais, nos baseamos nos vídeos de \textcite{AbelSVM1,AbelSVM2} para desenvolvimento dos códigos na plataforma Jupyter Notebook. Assim, os principais códigos serão apresentados no decorrer das seções seguintes associados às explicações da implementação computacional.
 
 Como abordado no capítulo anterior, Máquinas de Vetores Suporte é uma
 técnica de Aprendizagem de Máquina muito utilizada para classificação e
@@ -3273,9 +3278,9 @@ $y_{i} \in \{ -1,1 \}$.
 \end{Verbatim}
 \end{tcolorbox}
 
-    Portanto, nosso objetivo é classificar o conjunto de dados Íris em
+Portanto, nosso objetivo é classificar o conjunto de dados Íris em
 setosa e não setosa com base nas características ``comprimento de
-sépala'' e ``largura de sépala''. O gráfico a seguir representa tais
+sépala'' e ``largura de sépala''. O gráfico a seguir (\Cref{fig:grafico_Iris_duas_caracteristicas}) representa tais
 dados em relação às duas características citadas. Através dele podemos
 ter uma noção acerca da separabilidade do conjunto Íris neste contexto.
 
@@ -3470,7 +3475,7 @@ hiperplano encontrado também os separa corretamente.
      % { \hspace*{\fill} \\}
     } 
 
-Analisando o gráfico acima percebe-se que há um ponto da espécie setosa
+Analisando o gráfico na \Cref{fig:classificacao_conjunto_teste_margem_rigida} percebe-se que há um ponto da espécie setosa
 do conjunto de teste que está localizado ligeiramente do lado direito do
 hiperplano ótimo, fazendo com que seja classificado incorretamente como
 não setosa. Assim, como determinar se o classificador encontrado é o
@@ -3563,12 +3568,12 @@ Acuracia\_Iris = 0.99
             
 {\prompt{Out}{outcolor}{11}{}
     
-    \begin{tabular}{r|ccc}
-    & Classe & Predita\_Positiva & Predita\_Negativa\\
+    \begin{tabular}{ccc}
+    Classe & Predita\_Positiva & Predita\_Negativa\\
     \hline
     
-    1 & Real Positiva & 35 & 1 \\
-    2 & Real Negativa & 0 & 64 \\
+    Real Positiva & 35 & 1 \\
+    Real Negativa & 0 & 64 \\
 \end{tabular}
 \vspace{0.5cm}
 }
@@ -3726,12 +3731,12 @@ Acuracia\_Iris = 1.0
             
 {\prompt{Out}{outcolor}{14}{}
     
-    \begin{tabular}{r|ccc}
-    & Classe & Predita\_Positiva & Predita\_Negativa\\
+    \begin{tabular}{ccc}
+    Classe & Predita\_Positiva & Predita\_Negativa\\
     \hline
     
-    1 & Real Positiva & 36 & 0 \\
-    2 & Real Negativa & 0 & 64 \\
+    Real Positiva & 36 & 0 \\
+    Real Negativa & 0 & 64 \\
 \end{tabular}
 \vspace{0.5cm}
     }
@@ -3771,7 +3776,7 @@ conjunto de teste.
 \subsubsection{Classificação com quatro
 características}\label{classificauxe7uxe3o-com-quatro-caracteruxedsticas}}
 
-Agora, vamos analisar a implementação da técnica SVM com margem rígida
+Agora, vamos apresentar a implementação da técnica SVM com margem rígida
 para a classificação do conjunto de dados Íris em setosa e não setosa
 levando em consideração quatro características: comprimento e largura
 das sépalas e pétalas.
@@ -3886,12 +3891,12 @@ Acuracia\_Iris = 1.0
 {            
 \prompt{Out}{outcolor}{20}{}
     
-    \begin{tabular}{r|ccc}
-    & Classe & Predita\_Positiva & Predita\_Negativa\\
+    \begin{tabular}{ccc}
+    Classe & Predita\_Positiva & Predita\_Negativa\\
     \hline
     
-    1 & Real Positiva & 36 & 0 \\
-    2 & Real Negativa & 0 & 64 \\
+    Real Positiva & 36 & 0 \\
+    Real Negativa & 0 & 64 \\
 \end{tabular}
 \vspace{0.5cm}
     }
@@ -4029,12 +4034,12 @@ Acuracia\_Iris = 1.0
 {            
 \prompt{Out}{outcolor}{25}{}
     
-    \begin{tabular}{r|ccc}
-    & Classe & Predita\_Positiva & Predita\_Negativa\\
+    \begin{tabular}{ccc}
+    Classe & Predita\_Positiva & Predita\_Negativa\\
     \hline
     
-    1 & Real Positiva & 23 & 0 \\
-    2 & Real Negativa & 0 & 52 \\
+    Real Positiva & 23 & 0 \\
+    Real Negativa & 0 & 52 \\
 \end{tabular}
 \vspace{0.5cm}
 }
@@ -4059,12 +4064,12 @@ Dividindo-se rapidamente, estas células tendem a ser muito agressivas incontrol
 
 O câncer de mama por sua
 vez ocorre quando há formação de tumor na mama, sendo o tipo de câncer
-mais incidente entre as mulheres, tanto no Brasil quanto no mundo. Segundo estimativas (\cite{Inca,Femama,SocBraMastologia}, no
+mais incidente entre as mulheres, tanto no Brasil quanto no mundo. Segundo estimativas \cite{Inca,Femama,SocBraMastologia}, no
 mundo, somente em 2018, foram registrados cerca de 2,1 milhões de novos
 casos, número que equivale a 11,6\% de todos os cânceres estimados. No
 Brasil, em 2017, ocorreram 16.724 óbitos por câncer de mama e, segundo
-estimativas do INCA (\cite{Inca}), são estimados cerca de 66.280 novos casos de câncer
-de mama no Brasil para cada ano do triênio 2020-2022, o que correponde a
+estimativas do INCA \cite{Inca}, são estimados cerca de 66.280 novos casos de câncer
+de mama no Brasil para cada ano do triênio 2020-2022, o que corresponde a
 uma taxa de incidência de 61,61 novos casos a cada 100 mil mulheres.
 
 O diagnóstico precoce é um dos principais fatores que contribuem para
@@ -4136,26 +4141,35 @@ tabela a seguir.
  {
              
  \prompt{Out}{outcolor}{26}{}
-     
-     \begin{tabular}{r|cccccccc}
-     & id & diagnosis & radius\_mean & texture\_mean & perimeter\_mean & area\_mean & smoothness\_mean & \\
+}     
+%\begin{landscape}
+\begin{table}[h]
+    \centering
+    {\footnotesize  \begin{tabular}{ccccccc}
+     \hline
+     id & diagnosis & radius\_mean & texture\_mean & perimeter\_mean & area\_mean & smoothness\_mean \\
      \hline
      
-     1 & 842302 & M & 17.99 & 10.38 & 122.8 & 1001.0 & 0.1184 & $\dots$ \\
-     2 & 842517 & M & 20.57 & 17.77 & 132.9 & 1326.0 & 0.08474 & $\dots$ \\
-     3 & 84300903 & M & 19.69 & 21.25 & 130.0 & 1203.0 & 0.1096 & $\dots$ \\
-     4 & 84348301 & M & 11.42 & 20.38 & 77.58 & 386.1 & 0.1425 & $\dots$ \\
-     5 & 84358402 & M & 20.29 & 14.34 & 135.1 & 1297.0 & 0.1003 & $\dots$ \\
-     6 & 843786 & M & 12.45 & 15.7 & 82.57 & 477.1 & 0.1278 & $\dots$ \\
-     7 & 844359 & M & 18.25 & 19.98 & 119.6 & 1040.0 & 0.09463 & $\dots$ \\
-     8 & 84458202 & M & 13.71 & 20.83 & 90.2 & 577.9 & 0.1189 & $\dots$ \\
-     9 & 844981 & M & 13.0 & 21.82 & 87.5 & 519.8 & 0.1273 & $\dots$ \\
-     10 & 84501001 & M & 12.46 & 24.04 & 83.97 & 475.9 & 0.1186 & $\dots$ \\
+    842302 & M & 17.99 & 10.38 & 122.8 & 1001.0 & 0.1184  \\
+    842517 & M & 20.57 & 17.77 & 132.9 & 1326.0 & 0.08474  \\
+    843	00903 & M & 19.69 & 21.25 & 130.0 & 1203.0 & 0.1096  \\
+    84348301 & M & 11.42 & 20.38 & 77.58 & 386.1 & 0.1425  \\
+    84358402 & M & 20.29 & 14.34 & 135.1 & 1297.0 & 0.1003  \\
+    843786 & M & 12.45 & 15.7 & 82.57 & 477.1 & 0.1278  \\
+    844359 & M & 18.25 & 19.98 & 119.6 & 1040.0 & 0.09463  \\
+    84458202 & M & 13.71 & 20.83 & 90.2 & 577.9 & 0.1189  \\
+    844981 & M & 13.0 & 21.82 & 87.5 & 519.8 & 0.1273  \\
+    84501001 & M & 12.46 & 24.04 & 83.97 & 475.9 & 0.1186  \\ 
+     \hline
  \end{tabular}
- \vspace{0.5cm}
  }
+    %\caption{Caption}
+    \label{tab:tabela_dados_cancer}
+\end{table}
+ 
+%\end{landscape}
     
-    A seguir temos a representação gráfica destes dados considerando-se
+A seguir, na \Cref{fig:pairplot_dados_cancer}, temos a representação gráfica destes dados considerando-se
 algumas das características mencionadas. Nestes gráficos, os pontos em
 azul correspondem aos dados que pertencem à classe benigna e os dados em
 vermelho à classe maligna.
@@ -4276,12 +4290,12 @@ Acuracia\_Cancer1 = 0.9284009546539379
             
 \prompt{Out}{outcolor}{31}{}
     
-    \begin{tabular}{r|ccc}
-	& Classe & Predita\_Positiva & Predita\_Negativa\\
+    \begin{tabular}{ccc}
+	Classe & Predita\_Positiva & Predita\_Negativa\\
 	\hline
 	
-	1 & Real Positiva & 134 & 26 \\
-	2 & Real Negativa & 4 & 255 \\
+	Real Positiva & 134 & 26 \\
+	Real Negativa & 4 & 255 \\
 \end{tabular}
 \vspace{0.5cm}
 
@@ -4332,12 +4346,12 @@ Acuracia\_Cancer2 = 0.9451073985680191
             
 \prompt{Out}{outcolor}{33}{}
     
-    \begin{tabular}{r|ccc}
-	& Classe & Predita\_Positiva & Predita\_Negativa\\
+    \begin{tabular}{ccc}
+	Classe & Predita\_Positiva & Predita\_Negativa\\
 	\hline
 	
-	1 & Real Positiva & 143 & 17 \\
-	2 & Real Negativa & 6 & 253 \\
+	Real Positiva & 143 & 17 \\
+	Real Negativa & 6 & 253 \\
 \end{tabular}
 \vspace{0.5cm}
 
@@ -4389,12 +4403,12 @@ Acuracia\_Cancer3 = 0.9474940334128878
             
 \prompt{Out}{outcolor}{35}{}
     
-    \begin{tabular}{r|ccc}
-	& Classe & Predita\_Positiva & Predita\_Negativa\\
+    \begin{tabular}{ccc}
+	Classe & Predita\_Positiva & Predita\_Negativa\\
 	\hline
 	
-	1 & Real Positiva & 144 & 16 \\
-	2 & Real Negativa & 6 & 253 \\
+	Real Positiva & 144 & 16 \\
+	Real Negativa & 6 & 253 \\
 \end{tabular}
 \vspace{0.5cm}
 
@@ -4441,12 +4455,12 @@ Acuracia\_Cancer4 = 0.954653937947494
             
 \prompt{Out}{outcolor}{37}{}
     
-    \begin{tabular}{r|ccc}
-	& Classe & Predita\_Positiva & Predita\_Negativa\\
+    \begin{tabular}{ccc}
+	Classe & Predita\_Positiva & Predita\_Negativa\\
 	\hline
 	
-	1 & Real Positiva & 151 & 9 \\
-	2 & Real Negativa & 10 & 249 \\
+	Real Positiva & 151 & 9 \\
+	Real Negativa & 10 & 249 \\
 \end{tabular}
 \vspace{0.5cm}
 
@@ -4493,12 +4507,12 @@ Acuracia\_Cancer5 = 0.9618138424821002
             
 \prompt{Out}{outcolor}{39}{}
     
-    \begin{tabular}{r|ccc}
-	& Classe & Predita\_Positiva & Predita\_Negativa\\
+    \begin{tabular}{ccc}
+	Classe & Predita\_Positiva & Predita\_Negativa\\
 	\hline
 	
-	1 & Real Positiva & 153 & 7 \\
-	2 & Real Negativa & 9 & 250 \\
+	Real Positiva & 153 & 7 \\
+	Real Negativa & 9 & 250 \\
 \end{tabular}
 \vspace{0.5cm}
 
@@ -4558,12 +4572,12 @@ Acuracia\_Cancer6 = 0.954653937947494
             
 \prompt{Out}{outcolor}{42}{}
     
-    \begin{tabular}{r|ccc}
-	& Classe & Predita\_Positiva & Predita\_Negativa\\
+    \begin{tabular}{ccc}
+	Classe & Predita\_Positiva & Predita\_Negativa\\
 	\hline
 	
-	1 & Real Positiva & 150 & 10 \\
-	2 & Real Negativa & 9 & 250 \\
+	Real Positiva & 150 & 10 \\
+	Real Negativa & 9 & 250 \\
 \end{tabular}
 \vspace{0.5cm}
 
@@ -4623,12 +4637,12 @@ Acuracia\_Cancer7 = 0.9522673031026253
             
 \prompt{Out}{outcolor}{45}{}
     
-    \begin{tabular}{r|ccc}
-	& Classe & Predita\_Positiva & Predita\_Negativa\\
+    \begin{tabular}{ccc}
+	Classe & Predita\_Positiva & Predita\_Negativa\\
 	\hline
 	
-	1 & Real Positiva & 149 & 11 \\
-	2 & Real Negativa & 9 & 250 \\
+	Real Positiva & 149 & 11 \\
+	Real Negativa & 9 & 250 \\
 \end{tabular}
 \vspace{0.5cm}
 
@@ -4688,12 +4702,12 @@ Acuracia\_Cancer8 = 0.9522673031026253
             
 \prompt{Out}{outcolor}{48}{}
     
-    \begin{tabular}{r|ccc}
-	& Classe & Predita\_Positiva & Predita\_Negativa\\
+    \begin{tabular}{ccc}
+	Classe & Predita\_Positiva & Predita\_Negativa\\
 	\hline
 	
-	1 & Real Positiva & 149 & 11 \\
-	2 & Real Negativa & 9 & 250 \\
+	Real Positiva & 149 & 11 \\
+	Real Negativa & 9 & 250 \\
 \end{tabular}
 \vspace{0.5cm}
 
@@ -4711,17 +4725,17 @@ Acuracia\_Cancer8 = 0.9522673031026253
           
 \prompt{Out}{outcolor}{49}{}
     
-    \begin{tabular}{r|cc}
-    & C & Acurácia\\
+    \begin{tabular}{c|c}
+    C & Acurácia\\
     \hline
-    1 & 0.001 & 0.928401 \\
-    2 & 0.01 & 0.945107 \\
-    3 & 0.1 & 0.947494 \\
-    4 & 1.0 & 0.954654 \\
-    5 & 10.0 & 0.961814 \\
-    6 & 100.0 & 0.954654 \\
-    7 & 1000.0 & 0.952267 \\
-    8 & 10000.0 & 0.952267 \\
+    0.001 & 0.928401 \\
+    0.01 & 0.945107 \\
+    0.1 & 0.947494 \\
+    1.0 & 0.954654 \\
+    10.0 & 0.961814 \\
+    100.0 & 0.954654 \\
+    1000.0 & 0.952267 \\
+    10000.0 & 0.952267 \\
 \end{tabular}
 \vspace{0.5cm}
     }
@@ -4764,7 +4778,7 @@ acurácia, $96,18\%$, e menor quantidade de falsos negativos, que totalizam
 tomando $C = 10$ temos, dentre as escolhas de $C$, o classificador
 que fornece o melhor diagnóstico para os dados de câncer.
 
-Portanto, analisando os experimentos numéricos realizados neste capítulo concluímos que a técnica SVM, tanto com margem rígida quanto com margem flexível, apresenta resultados satisfatórios na classificação de dados. A implementação da técnica para classificação do conjunto de dados Íris foi realizado com fins mais didáticos, através da qual foi possível compreender a atuação prática da técnica SVM e suas particularidades, além de visualizar as etapas (treinamento e teste) que são características das técnicas de aprendizagem supervisionada. Posteriormente, a aplicação da técnica SVM com margem flexível na classificação de dados de células de câncer de mama em tumor maligno e benigno consiste num problema prático. Neste experimento percebemos que a eficiência do classificador encontrado depende da escolha do parâmetro de penalização $C$, escolha esta que nem sempre é trivial.
+Analisando os experimentos numéricos realizados neste capítulo concluímos que a técnica SVM, tanto com margem rígida quanto com margem flexível, apresenta resultados satisfatórios na classificação de dados. A implementação da técnica para classificação do conjunto de dados Íris foi realizado com fins mais didáticos, através da qual foi possível compreender a atuação prática da técnica SVM e suas particularidades, além de visualizar as etapas (treinamento e teste) que são características das técnicas de aprendizagem supervisionada. Posteriormente, a aplicação da técnica SVM com margem flexível na classificação de dados de células de câncer de mama em tumor maligno e benigno consiste num problema prático. Neste experimento, percebemos que a eficiência do classificador encontrado depende da escolha do parâmetro de penalização $C$, escolha esta que nem sempre é trivial.
 
 \newpage
 \section{Conclusões}
@@ -4778,13 +4792,13 @@ Este projeto teve como principal objetivo apresentar uma análise teórica matem
 
 %No capítulo 3, utilizando o referencial teórico dos capítulos anteriores, desenvolvemos a formulação matemática da técnica SVM com margem rígida, aplicada quando os dados são linearmente separáveis, e SVM com margem flexível, caso em que os dados não são linearmente separáveis e a obtenção do classificador se dá promovendo um relaxamento nas restrições através de variáveis de folga $\xi_{i^}$. Com base nas demonstrações apresentadas por \textcite{Evelin2017}, garantimos que o problema formulado para a técnica SVM tem solução, e no caso em que os dados são linearmente separáveis esta solução é única.
 
-Para tanto, vimos que a formulação matemática da técnica SVM para classificação se concentra em obter um hiperplano que melhor separa os dados em duas classes, de modo a possibilitar a máxima margem de separação. E a partir disso derivamos o problema de otimização com restrições lineares cuja solução fornece o hiperplano separador que atuará como classificador para novos dados. Esta abordagem é um dos fatores que torna a técnica SVM tão interessante, pois ela permite pensar a aprendizagem de máquina supervisionada baseada em argumentos geométricos, e não somente estatísticos como em outras técnicas.
+Para tanto, vimos que a formulação matemática da técnica SVM para classificação se concentra em obter um hiperplano que melhor separa os dados em duas classes, de modo a possibilitar a máxima margem de separação. A partir disso, derivamos o problema de otimização com restrições lineares cuja solução fornece o hiperplano separador que atuará como classificador para novos dados. Esta abordagem é um dos fatores que torna a técnica SVM tão interessante, pois permite pensar a aprendizagem de máquina supervisionada baseada em argumentos geométricos, e não somente estatísticos como em outras técnicas.
 
-Ademais, verificamos na \Cref{chap:maquinas_vetores_suporte} que o problema empregado pela técnica SVM na fase de treinamento para determinar o hiperplano separador é um problema de programação quadrática convexa com restrições lineares. Tendo isso em vista, na \Cref{chap:conceitos_de_otimizacao} discutimos alguns conceitos e resultados da teoria de otimização, apresentando o desenvolvimento das condições de otimalidade para problemas de otimização irrestrita e com restrições lineares, dentre as quais as condições de Karush-Kuhn-Tucker por exemplo. Na \cref{chap:otimizacao_convexa}, por sua vez, tratamos de alguns elementos da teoria de otimização convexa, a qual fornece resultados importantes aos problemas de otimização, como a garantia de que minimizadores locais são globais. 
+Ademais, verificamos na \Cref{chap:maquinas_vetores_suporte} que o problema empregado pela técnica SVM na fase de treinamento para determinar o hiperplano separador é um problema de programação quadrática convexa com restrições lineares. Tendo isso em vista, na \Cref{chap:conceitos_de_otimizacao} discutimos alguns conceitos e resultados da teoria de otimização, apresentando o desenvolvimento das condições de otimalidade para problemas de otimização irrestrita e com restrições lineares, dentre as quais as condições de Karush-Kuhn-Tucker por exemplo. Na \Cref{chap:otimizacao_convexa}, por sua vez, tratamos de alguns elementos da teoria de otimização convexa, a qual fornece resultados importantes aos problemas de otimização, como a garantia de que minimizadores locais são globais. 
 
 Na \Cref{chap:experimentos_numericos} implementamos a técnica SVM para classificação binária do conjunto de dados Flor Íris e de um conjunto de dados de células de câncer de mama \cite{Dua:2019}. Através destes experimentos numéricos concluímos que a técnica SVM apresenta, de fato, bons resultados na determinação de um classificador, de modo que foi possível atingir uma acurácia de 100\% nos testes realizados com o conjunto Íris, e uma acurácia de 96,18\% na classificação dos dados de câncer em tumor maligno ou benigno. Além disso, na implementação da técnica SVM para classificar os dados de câncer, que não são linearmente separáveis, constatamos que a eficiência do classificador está relacionada com a escolha adequada do parâmetro de penalização.
 
-É importante pontuar que neste trabalho nos limitamos a formular somente o problema primal da técnica SVM, tanto de margem rígida quanto flexível. Assim, algumas sugestões para serem desenvolvidas em trabalhos futuros são realizar um estudo da teoria de dualidade para obter o dual dos problemas \eqref{eq:problemageralSVM} e \eqref{eq:problemaCSVM}, assim como, desenvolver a formulação matemática da técnica SVM não linear, que utiliza o chamado Truque do \emph{Kernel} para classificar conjuntos de dados não-linearmente separáveis nos casos em que a técnica com margem flexível não fornece um bom classificador.
+É importante pontuar que neste trabalho nos limitamos a formular somente o problema primal da técnica SVM, tanto de margem rígida quanto flexível. Assim, algumas sugestões para serem desenvolvidas em trabalhos futuros são realizar um estudo da teoria de dualidade para obter o dual dos problemas \eqref{eq:problemageralSVM} e \eqref{eq:problemaCSVM}, assim como, desenvolver a formulação matemática da técnica SVM não linear, que utiliza \emph{Kernels} não-lineares para classificar conjuntos de dados não-linearmente separáveis nos casos em que a técnica com margem flexível não fornece um bom classificador.
 
 Por fim, o desenvolvimento deste projeto de Iniciação Científica trouxe inúmeros benefícios para a minha formação acadêmica. Através dele tive a oportunidade de ampliar meus conhecimentos com o estudo de conteúdos que não são abordados nas disciplinas usuais do curso de Licenciatura em Matemática, além de possibilitar um maior contato com a pesquisa em matemática, despertando meu interesse em cursar uma pós-graduação na área de Matemática e fornecendo ideias de projetos de pesquisa que poderiam ser desenvolvidos futuramente. 
 \newpage
